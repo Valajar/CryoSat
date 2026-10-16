@@ -18,7 +18,7 @@ public class RegistrationTests {
     public static void liquidNitrogenIsMekanismChemical(GameTestHelper helper) {
         helper.assertTrue(MekanismAPI.CHEMICAL_REGISTRY.containsKey(CryoSat.rl("liquid_nitrogen")),
               "cryosat:liquid_nitrogen missing from Mekanism's chemical registry");
-        helper.assertFalse(CryoChemicals.LIQUID_NITROGEN.get().isEmptyType(), "liquid nitrogen resolved to the empty chemical");
+        helper.assertFalse(CryoChemicals.LIQUID_NITROGEN.is(MekanismAPI.EMPTY_CHEMICAL_KEY), "liquid nitrogen resolved to the empty chemical");
         helper.succeed();
     }
 }
