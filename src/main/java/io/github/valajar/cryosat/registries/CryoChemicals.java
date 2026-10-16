@@ -9,13 +9,22 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * Chemicals are registered straight into Mekanism's chemical registry, so they flow through
- * pressurized tubes, chemical tanks and every other Mekanism chemical handler for free.
+ * pressurized tubes, chemical tanks and every other Mekanism chemical handler for free. Gases are marked by the
+ * {@code mekanism:gaseous} chemical tag in data generation.
  */
 public final class CryoChemicals {
     public static final DeferredRegister<Chemical> CHEMICALS = DeferredRegister.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, CryoSat.MODID);
 
+    public static final DeferredHolder<Chemical, Chemical> COMPRESSED_AIR = CHEMICALS.register("compressed_air",
+          () -> new Chemical(ChemicalBuilder.builder().tint(0xC9D3DC)));
     public static final DeferredHolder<Chemical, Chemical> LIQUID_NITROGEN = CHEMICALS.register("liquid_nitrogen",
           () -> new Chemical(ChemicalBuilder.builder().tint(0xD8E4F5)));
+    public static final DeferredHolder<Chemical, Chemical> LIQUID_OXYGEN = CHEMICALS.register("liquid_oxygen",
+          () -> new Chemical(ChemicalBuilder.builder().tint(0x8FB4FF)));
+    public static final DeferredHolder<Chemical, Chemical> LIQUID_ARGON = CHEMICALS.register("liquid_argon",
+          () -> new Chemical(ChemicalBuilder.builder().tint(0xC9B8FF)));
+    public static final DeferredHolder<Chemical, Chemical> LIQUID_HYDROGEN = CHEMICALS.register("liquid_hydrogen",
+          () -> new Chemical(ChemicalBuilder.builder().tint(0xE8F1FF)));
 
     private CryoChemicals() {
     }

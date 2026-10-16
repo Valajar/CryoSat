@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "O": {
+      "tag": "c:ingots/osmium"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "OMO",
+    "SAS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:atmospheric_compressor"
+  }
+}

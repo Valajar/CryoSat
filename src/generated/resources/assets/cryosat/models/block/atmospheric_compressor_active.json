@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/atmospheric_compressor/bottom",
+    "east": "cryosat:block/atmospheric_compressor/left",
+    "north": "cryosat:block/atmospheric_compressor/front_active",
+    "particle": "cryosat:block/atmospheric_compressor/front",
+    "south": "cryosat:block/atmospheric_compressor/back",
+    "up": "cryosat:block/atmospheric_compressor/top",
+    "west": "cryosat:block/atmospheric_compressor/right"
+  }
+}

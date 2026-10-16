@@ -23,8 +23,15 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
 * Chemicals go into Mekanism's chemical registry (`MekanismAPI.CHEMICAL_REGISTRY_NAME`) so they
   work with Mekanism tubes and tanks.
 * Lang keys: chemicals use `chemical.cryosat.<name>`.
-* Prefer data generation for models, blockstates, loot tables, recipes and tags once a datagen
-  setup exists; hand written JSON only for Blockbench models.
+* Data generation (`./gradlew runData`, providers in `datagen/`) owns blockstates, block and item
+  models, lang, loot tables, tags and recipes; its output in `src/generated` is committed. Hand
+  written JSON only for Blockbench models and our own datapack types (e.g. atmospheres). Run it
+  after adding textures, since it validates that referenced textures exist.
+* Machines extend `machine.MachineBlockEntity` (energy, per side tanks, status, sync) and use
+  `MachineBlock`; register their capabilities via `CryoSat.registerMachine`. Mekanism items in
+  recipes are referenced by id or `c:` tags, never by class.
+* Atmospheres for the Atmospheric Compressor are datapack files in
+  `data/<ns>/cryosat/atmosphere/`.
 
 ## Textures and models
 

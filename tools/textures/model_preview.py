@@ -42,6 +42,16 @@ def load_model(path: Path) -> dict:
         model.setdefault("elements", pm.get("elements"))
         parent = pm.get("parent")
     model["textures"] = textures
+    if not model.get("elements") and parent in ("minecraft:block/cube", "block/cube", "minecraft:block/cube_all", "block/cube_all",
+                                                 "minecraft:block/orientable", "block/orientable"):
+        # Vanilla cube parents: synthesise the full block they describe
+        if "all" in textures:
+            textures = {**{f: "#all" for f in ("down", "up", "north", "south", "east", "west")}, **textures}
+        if "front" in textures:
+            textures = {"north": "#front", "south": "#side", "east": "#side", "west": "#side", "up": "#top", "down": "#top", **textures}
+        model["textures"] = textures
+        model["elements"] = [{"from": [0, 0, 0], "to": [16, 16, 16],
+                              "faces": {f: {"texture": f"#{f}"} for f in ("down", "up", "north", "south", "east", "west")}}]
     return model
 
 

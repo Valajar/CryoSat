@@ -1,0 +1,6 @@
+{
+  "dimension": "minecraft:the_nether",
+  "chemical": "mekanism:sulfur_dioxide",
+  "rate": 0.5,
+  "altitude_scaling": false
+}

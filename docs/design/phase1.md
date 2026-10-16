@@ -48,14 +48,20 @@ idea and is deliberately left out here.
 
 Pulls air from the environment and outputs Compressed Air.
 
-* Needs at least 4 open air blocks adjacent to it (any side), otherwise it stalls with a tooltip
-  explaining why.
-* Output scales with dimension and altitude: Overworld 100 percent at sea level, falling linearly to
-  40 percent at build height (thin air). The Nether yields Mekanism's sulfur dioxide instead of air,
-  a small nod that rewards curiosity. The End and other dimensions without an atmosphere yield
-  nothing.
-* Base: 200 J per mB, 10 mB per tick. Accepts Mekanism speed and energy upgrades if we can do so
-  through the API (see "Integration notes"), otherwise our own upgrade slots.
+* Needs room to breathe: output scales with the number of air blocks in the 3x3x3 around it, full
+  output from 8 air blocks up. Fully enclosed, it stalls and its GUI says it needs open air.
+* What it pulls in depends on the dimension, defined by datapack JSON files
+  (`data/<namespace>/cryosat/atmosphere/<name>.json`: dimension id, output chemical, rate
+  multiplier). Modpacks can add atmospheres for modded dimensions or remove ours. Defaults:
+  * Overworld: Compressed Air at 100 percent.
+  * Nether: Mekanism's sulfur dioxide. An optional late game bonus, not part of progression,
+    since powering machines in the Nether is awkward before Quantum Entangloporters. A Mekanism
+    Heat Generator next to a lava lake is the early way to run one there.
+  * End and anything without an entry: nothing, the machine shows "no atmosphere".
+* Output also scales with altitude: 100 percent at sea level, falling linearly to 40 percent at
+  build height (thin air). Dimensions can opt out of altitude scaling in their atmosphere file.
+* Base: 10 mB per tick for 10 J per mB (100 J/t at full output), 10,000 mB output buffer,
+  40,000 J energy buffer. Mekanism upgrade support comes later.
 * Ports: energy on the back and bottom, chemical output on top. Fixed sides in phase 1, Mekanism
   style side config later.
 
@@ -278,9 +284,10 @@ Texture and model work runs in parallel from step 1, driven by the asset list.
 * Rocket names: plain descriptive names (Light Rocket, Heavy Rocket).
 * Exhaust: cosmetic only, never touches blocks.
 * Launches: announced to the whole server.
+* Atmospheres: datapack driven. Nether gives sulfur dioxide as an optional late game bonus.
 * Satellite viewing: custom globe screen (Orbital Display), color coded by category.
 * Phase 2: resources first, brainstormed separately once phase 1 runs.
 
 ## Open questions
 
-1. Atmospheric Compressor in the Nether: sulfur dioxide output, or simply refuse to run?
+None for phase 1 right now.

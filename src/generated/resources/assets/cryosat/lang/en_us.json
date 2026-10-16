@@ -1,0 +1,20 @@
+{
+  "block.cryosat.atmospheric_compressor": "Atmospheric Compressor",
+  "chemical.cryosat.compressed_air": "Compressed Air",
+  "chemical.cryosat.liquid_argon": "Liquid Argon",
+  "chemical.cryosat.liquid_hydrogen": "Liquid Hydrogen",
+  "chemical.cryosat.liquid_nitrogen": "Liquid Nitrogen",
+  "chemical.cryosat.liquid_oxygen": "Liquid Oxygen",
+  "gui.cryosat.amount": "%s / %s mB",
+  "gui.cryosat.empty": "Empty",
+  "gui.cryosat.energy": "%s / %s J",
+  "gui.cryosat.rate": "%s mB/t",
+  "itemGroup.cryosat": "CryoSat",
+  "status.cryosat.idle": "Idle",
+  "status.cryosat.no_air": "Needs open air around it",
+  "status.cryosat.no_atmosphere": "No atmosphere here",
+  "status.cryosat.no_power": "Not enough power",
+  "status.cryosat.output_full": "Output full",
+  "status.cryosat.output_mismatch": "Output holds a different chemical",
+  "status.cryosat.running": "Running"
+}
