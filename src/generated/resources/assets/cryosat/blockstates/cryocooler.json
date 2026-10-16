@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "cryosat:block/cryocooler"
+    },
+    "active=true": {
+      "model": "cryosat:block/cryocooler_active"
+    }
+  }
+}

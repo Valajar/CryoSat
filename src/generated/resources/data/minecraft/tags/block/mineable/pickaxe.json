@@ -1,5 +1,10 @@
 {
   "values": [
-    "cryosat:atmospheric_compressor"
+    "cryosat:atmospheric_compressor",
+    "cryosat:cryo_casing",
+    "cryosat:cryo_valve",
+    "cryosat:cryocooler",
+    "cryosat:heat_rejection_port",
+    "cryosat:liquefaction_controller"
   ]
 }

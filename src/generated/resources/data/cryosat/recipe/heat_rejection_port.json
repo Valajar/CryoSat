@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "mekanism:basic_thermodynamic_conductor"
+    },
+    "X": {
+      "item": "cryosat:cryo_casing"
+    }
+  },
+  "pattern": [
+    " H ",
+    "HXH",
+    " H "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:heat_rejection_port"
+  }
+}

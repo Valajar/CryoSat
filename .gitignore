@@ -42,3 +42,4 @@ repo/
 ### CryoSat ###
 .mekanism-refs
 __pycache__/
+.claude/worktrees/

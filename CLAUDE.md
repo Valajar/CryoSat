@@ -35,6 +35,10 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
 * Machines extend `machine.MachineBlockEntity` (energy, per side tanks, status, sync) and use
   `MachineBlock`; register their capabilities via `CryoSat.registerMachine`. Mekanism items in
   recipes are referenced by id or `c:` tags, never by class.
+* Multiblocks follow Mekanism's pattern (see Generators' turbine and fission reactor): a
+  `MultiblockData` subclass, `MultiblockCache`, `CuboidStructureValidator`, tiles extending
+  `TileEntityMultiblock`, and a `MultiblockManager` in `multiblock.CryoMultiblocks`. The Liquefaction
+  Plant lives in `multiblock.liquefaction` and `tile.liquefaction`; game tests build real structures.
 * Atmospheres for the Atmospheric Compressor are datapack files in
   `data/<ns>/cryosat/atmosphere/`.
 

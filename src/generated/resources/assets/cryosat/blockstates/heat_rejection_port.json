@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "cryosat:block/heat_rejection_port"
+    },
+    "active=true": {
+      "model": "cryosat:block/heat_rejection_port_active"
+    }
+  }
+}

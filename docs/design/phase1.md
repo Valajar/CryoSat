@@ -70,16 +70,19 @@ Pulls air from the environment and outputs Compressed Air.
 The centrepiece of the cryogenics half. It inverts Mekanism's Thermal Evaporation Plant: instead of
 collecting heat, it fights it.
 
-**Structure.** A hollow box from 3x3x3 up to 5x5x7 (width, depth, height), built from:
+**Structure.** A hollow box from 3x3x3 up to 9x9x9, built on Mekanism's multiblock framework. Edges must
+be Cryo Casing; walls may also hold:
 
 | Block | Role |
 | --- | --- |
 | Cryo Casing | Frame and walls |
-| Insulated Glass | Optional wall windows, shows the coolant level inside |
-| Cryo Valve | Chemical input and output (mode set with a configurator) |
-| Cryocooler | Wall component. Each one removes heat from the plant while it has power |
-| Heat Rejection Port | Wall component. Pushes the plant's removed heat into any Mekanism heat handler |
-| Liquefaction Controller | One per plant, holds the GUI |
+| Mekanism Structural Glass | Optional windows. Leaks four times as much heat as casing |
+| Cryo Valve | Chemical port. Sneak right click cycles Input, Output 1, Output 2, Output 3; output modes auto eject |
+| Cryocooler | Has its own 40 kJ energy buffer (power it from outside, any side) and pumps heat out every tick |
+| Heat Rejection Port | Exposes the hot side as a Mekanism heat handler and pushes heat into adjacent heat handlers |
+| Liquefaction Controller | Exactly one per plant. Any part opens the plant GUI |
+
+There is no 3D model: like Mekanism's own multiblocks, the formed plant is its casing blocks.
 
 Volume decides tank sizes and how much heat leaks in from outside. Cryocoolers decide cooling power.
 
@@ -286,6 +289,10 @@ Texture and model work runs in parallel from step 1, driven by the asset list.
 * Launches: announced to the whole server.
 * Atmospheres: datapack driven. Nether gives sulfur dioxide as an optional late game bonus.
 * Satellite viewing: custom globe screen (Orbital Display), color coded by category.
+* CryoSat builds on Mekanism internals (machine base, GUI, multiblock framework) for native look and
+  features; supported Mekanism range is pinned to the tested minor version.
+* Liquefaction Plant: any size box, casing textures only (no assembled 3D model), Mekanism
+  Structural Glass instead of a custom Insulated Glass.
 * Phase 2: resources first, brainstormed separately once phase 1 runs.
 
 ## Open questions

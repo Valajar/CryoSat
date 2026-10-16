@@ -1,5 +1,6 @@
 package io.github.valajar.cryosat.datagen;
 
+import io.github.valajar.cryosat.datagen.plant.PlantRecipes;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPI;
@@ -39,6 +40,8 @@ public class CryoRecipeProvider extends RecipeProvider {
               .define('A', common("alloys/advanced"))
               .unlockedBy("has_steel_casing", has(steelCasing))
               .save(output);
+
+        PlantRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "C": {
+      "tag": "c:circuits/advanced"
+    },
+    "E": {
+      "item": "mekanism:basic_universal_cable"
+    },
+    "X": {
+      "item": "cryosat:cryo_casing"
+    }
+  },
+  "pattern": [
+    " C ",
+    "AXA",
+    " E "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:cryocooler"
+  }
+}

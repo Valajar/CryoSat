@@ -4,6 +4,10 @@ import com.mojang.logging.LogUtils;
 import io.github.valajar.cryosat.atmosphere.AtmosphereManager;
 import io.github.valajar.cryosat.capability.MekCapabilities;
 import io.github.valajar.cryosat.machine.MachineBlockEntity;
+import io.github.valajar.cryosat.multiblock.CryoMultiblocks;
+import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.plant.PlantContainerTypes;
+import io.github.valajar.cryosat.registries.plant.PlantTileEntityTypes;
 import io.github.valajar.cryosat.registries.CryoBlockEntities;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoChemicals;
@@ -33,6 +37,11 @@ public class CryoSat {
         CryoBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CryoMenus.MENUS.register(modEventBus);
         CryoCreativeTabs.TABS.register(modEventBus);
+        // Liquefaction Plant, registered through Mekanism's helpers
+        PlantBlocks.BLOCKS.register(modEventBus);
+        PlantTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        PlantContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        CryoMultiblocks.init();
         modEventBus.addListener(CryoSat::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(CryoSat::addReloadListeners);
     }

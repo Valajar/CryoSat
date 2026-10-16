@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/liquefaction/casing",
+    "east": "cryosat:block/liquefaction/casing",
+    "north": "cryosat:block/liquefaction/controller_front",
+    "particle": "cryosat:block/liquefaction/casing",
+    "south": "cryosat:block/liquefaction/casing",
+    "up": "cryosat:block/liquefaction/casing",
+    "west": "cryosat:block/liquefaction/casing"
+  }
+}

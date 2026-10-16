@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/advanced"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "X": {
+      "item": "cryosat:cryo_casing"
+    }
+  },
+  "pattern": [
+    " C ",
+    "GXG",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:liquefaction_controller"
+  }
+}

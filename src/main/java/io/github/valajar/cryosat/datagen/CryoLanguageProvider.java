@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.plant.PlantLang;
 import io.github.valajar.cryosat.machine.MachineStatus;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoChemicals;
@@ -38,6 +39,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         gui("energy", "%s / %s J");
         gui("amount", "%s / %s mB");
         gui("empty", "Empty");
+
+        PlantLang.addTo(this);
     }
 
     private void chemical(DeferredHolder<Chemical, Chemical> chemical, String name) {
