@@ -1,25 +1,61 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.registries.CryoBlocks;
+import java.util.List;
 import java.util.Set;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class CryoBlockLoot extends BlockLootSubProvider {
+    /**
+     * What a Mekanism machine keeps when broken, as in Mekanism's own loot tables: configuration, upgrades, security
+     * and the contents of its energy buffers, slots and tanks.
+     */
+    private static final List<DeferredHolder<DataComponentType<?>, ? extends DataComponentType<?>>> MACHINE_COMPONENTS = List.of(
+          MekanismDataComponents.EJECTOR,
+          MekanismDataComponents.OWNER,
+          MekanismDataComponents.REDSTONE_CONTROL,
+          MekanismDataComponents.SECURITY,
+          MekanismDataComponents.SIDE_CONFIG,
+          MekanismDataComponents.UPGRADES,
+          MekanismDataComponents.ATTACHED_ENERGY,
+          MekanismDataComponents.ATTACHED_ITEMS,
+          MekanismDataComponents.ATTACHED_CHEMICALS
+    );
+
     public CryoBlockLoot(HolderLookup.Provider registries) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
 
     @Override
     protected void generate() {
-        dropSelf(CryoBlocks.ATMOSPHERIC_COMPRESSOR.get());
+        dropMachine(CryoBlocks.ATMOSPHERIC_COMPRESSOR.get());
+    }
+
+    private void dropMachine(Block block) {
+        CopyComponentsFunction.Builder components = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY);
+        MACHINE_COMPONENTS.forEach(component -> components.include(component.get()));
+        add(block, LootTable.lootTable().withPool(LootPool.lootPool()
+              .name("main")
+              .setRolls(ConstantValue.exactly(1))
+              .add(LootItem.lootTableItem(block)
+                    .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+                    .apply(components))));
     }
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return CryoBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::value).map(Block.class::cast).toList();
+        return CryoBlocks.BLOCKS.getPrimaryEntries().stream().map(DeferredHolder::value).map(Block.class::cast).toList();
     }
 }

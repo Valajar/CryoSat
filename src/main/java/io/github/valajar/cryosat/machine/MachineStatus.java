@@ -1,13 +1,14 @@
 package io.github.valajar.cryosat.machine;
 
 import io.github.valajar.cryosat.CryoSat;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.StringRepresentable;
+import java.util.function.IntFunction;
+import mekanism.api.text.ILangEntry;
+import net.minecraft.util.ByIdMap;
 
 /**
  * Why a machine is or is not working, shown in its GUI. Shared across machines so the wording stays consistent.
  */
-public enum MachineStatus implements StringRepresentable {
+public enum MachineStatus implements ILangEntry {
     IDLE("idle"),
     RUNNING("running"),
     NO_POWER("no_power"),
@@ -16,6 +17,8 @@ public enum MachineStatus implements StringRepresentable {
     NO_ATMOSPHERE("no_atmosphere"),
     NO_AIR("no_air");
 
+    public static final IntFunction<MachineStatus> BY_ID = ByIdMap.continuous(MachineStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+
     private final String name;
 
     MachineStatus(String name) {
@@ -23,24 +26,7 @@ public enum MachineStatus implements StringRepresentable {
     }
 
     @Override
-    public String getSerializedName() {
-        return name;
-    }
-
-    public String translationKey() {
+    public String getTranslationKey() {
         return "status." + CryoSat.MODID + "." + name;
-    }
-
-    public Component text() {
-        return Component.translatable(translationKey());
-    }
-
-    public static MachineStatus byName(String name) {
-        for (MachineStatus status : values()) {
-            if (status.name.equals(name)) {
-                return status;
-            }
-        }
-        return IDLE;
     }
 }

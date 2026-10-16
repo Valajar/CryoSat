@@ -12,8 +12,11 @@ public final class CryoCreativeTabs {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = TABS.register("main", () -> CreativeModeTab.builder()
           .title(Component.translatable("itemGroup." + CryoSat.MODID))
-          .icon(() -> CryoItems.ATMOSPHERIC_COMPRESSOR.get().getDefaultInstance())
-          .displayItems((parameters, output) -> CryoItems.ITEMS.getEntries().forEach(item -> output.accept(item.get())))
+          .icon(() -> CryoBlocks.ATMOSPHERIC_COMPRESSOR.asItem().getDefaultInstance())
+          .displayItems((parameters, output) -> {
+              CryoBlocks.BLOCKS.getSecondaryEntries().forEach(item -> output.accept(item.get()));
+              CryoItems.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
+          })
           .build());
 
     private CryoCreativeTabs() {

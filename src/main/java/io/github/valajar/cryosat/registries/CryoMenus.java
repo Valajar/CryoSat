@@ -1,18 +1,20 @@
 package io.github.valajar.cryosat.registries;
 
 import io.github.valajar.cryosat.CryoSat;
-import io.github.valajar.cryosat.machine.MachineMenu;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import io.github.valajar.cryosat.machine.compressor.AtmosphericCompressorBlockEntity;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 
+/**
+ * Menu types, registered through Mekanism's {@link ContainerTypeDeferredRegister}. A {@link MekanismTileContainer} holds
+ * the tile's slots and the player inventory and syncs everything the tile tracks in {@code addContainerTrackers}.
+ */
 public final class CryoMenus {
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, CryoSat.MODID);
+    public static final ContainerTypeDeferredRegister MENUS = new ContainerTypeDeferredRegister(CryoSat.MODID);
 
-    public static final DeferredHolder<MenuType<?>, MenuType<MachineMenu>> MACHINE = MENUS.register("machine",
-          () -> IMenuTypeExtension.create(MachineMenu::fromNetwork));
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<AtmosphericCompressorBlockEntity>> ATMOSPHERIC_COMPRESSOR =
+          MENUS.register(CryoBlocks.ATMOSPHERIC_COMPRESSOR, AtmosphericCompressorBlockEntity.class);
 
     private CryoMenus() {
     }
