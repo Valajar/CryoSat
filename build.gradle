@@ -120,8 +120,9 @@ configurations {
 }
 
 dependencies {
-    // Compile against Mekanism's API only, run with the full mod (plus Generators for fission/fusion testing)
-    compileOnly "mekanism:Mekanism:${mekanism_version}:api"
+    // Compile against the full Mekanism jar: CryoSat builds on Mekanism's machine, GUI and multiblock internals.
+    // Generators is only needed at runtime for testing (fission/fusion, heat generators).
+    compileOnly "mekanism:Mekanism:${mekanism_version}"
     localRuntime "mekanism:Mekanism:${mekanism_version}"
     localRuntime "mekanism:Mekanism:${mekanism_version}:generators"
 

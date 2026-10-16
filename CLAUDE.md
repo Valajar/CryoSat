@@ -11,9 +11,14 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
   `io.github.valajar.cryosat.gametest` headless and exits (non zero on failure). Tests use the
   1x1x1 `cryosat:empty` structure unless they need a real arena. `runServer` does not receive
   stdin through Gradle, so it never stops on its own.
-* Mekanism is a `compileOnly` dependency on its `api` classifier. Only use `mekanism.api.*`
-  unless there is no API for something; if you must reach into Mekanism internals, switch that
-  dependency deliberately and say why in the commit.
+* CryoSat deliberately builds on Mekanism internals (`mekanism.common.*`, `mekanism.client.*`):
+  machines extend Mekanism's tile, container and GUI classes to get native side config, upgrades,
+  security and the Mekanism look, and multiblocks use `mekanism.common.lib.multiblock`. Internals
+  can change in any Mekanism release, so `mekanism_version` in `gradle.properties` is the single
+  tested version and the mods.toml range stops at the next minor. Bumping Mekanism means bumping
+  that property and running the game tests. Prefer `mekanism.api.*` where it covers the need.
+* Use Generators (`mekanism.generators.*`) as the reference for how an addon registers blocks,
+  tiles, containers and multiblocks through Mekanism's registration helpers.
 
 ## Conventions
 
