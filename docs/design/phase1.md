@@ -224,16 +224,13 @@ for it (resource category in the registry and the globe, payload slots that can 
 
 * **Chemicals:** `mekanism.api.chemical` (`BasicChemicalTank`, `IChemicalHandler`). Done for liquid
   nitrogen already.
-* **Capabilities:** Mekanism defines its block capabilities in non API code, but NeoForge identifies
-  capabilities by name and type. A small `MekCapabilities` class in our code that calls
-  `BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("mekanism", "chemical_handler"),
-  IChemicalHandler.class)` (likewise `heat_handler` with `IHeatHandler`, `strict_energy_handler` with
-  `IStrictEnergyHandler`) gets the same capability objects without touching Mekanism internals.
+* **Capabilities:** machines built on Mekanism's tiles get Mekanism's capability providers from
+  `TileEntityTypeDeferredRegister.mekBuilder`; elsewhere use `mekanism.common.capabilities.Capabilities`.
 * **Energy:** expose both Mekanism's strict energy handler (Joules) and NeoForge's FE capability.
 * **Heat:** Heat Rejection Ports find neighbouring `IHeatHandler`s and push heat into them with
   `handleHeat`. Ambient temperature constant: `mekanism.api.heat.HeatAPI.AMBIENT_TEMP`.
-* **Upgrades:** if Mekanism's upgrade system turns out to be internal only, we use our own upgrade
-  slot accepting Mekanism's upgrade items through their item tags or ids.
+* **Upgrades:** Mekanism's own upgrade component (`TileComponentUpgrade`), enabled by the block
+  type's `AttributeUpgradeSupport`.
 * **Rocket rendering:** the rocket entity renders baked JSON models (registered as standalone
   models), so rockets are made in Blockbench like the other 3D assets. Each rocket is split into a
   lower stage and an upper stage model, because one block model cannot exceed 3 blocks.
