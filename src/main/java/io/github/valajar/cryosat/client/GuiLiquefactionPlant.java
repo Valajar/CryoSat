@@ -39,9 +39,9 @@ public class GuiLiquefactionPlant extends GuiMekanismTile<TileEntityCryoCasing, 
         addRenderableWidget(new GuiChemicalGauge(() -> plant().inputTank, this::allTanks, GaugeType.STANDARD, this, 6, 13));
         for (int i = 0; i < LiquefactionMultiblockData.OUTPUT_TANKS; i++) {
             int index = i;
-            addRenderableWidget(new GuiChemicalGauge(() -> plant().getOutputTanks().get(index), this::allTanks, GaugeType.STANDARD, this, 116 + 18 * i, 13));
+            addRenderableWidget(new GuiChemicalGauge(() -> plant().getOutputTanks().get(index), this::allTanks, GaugeType.STANDARD, this, 120 + 18 * i, 13));
         }
-        addRenderableWidget(new GuiInnerScreen(this, 26, 17, 88, 56, () -> {
+        addRenderableWidget(new GuiInnerScreen(this, 26, 17, 92, 56, () -> {
             LiquefactionMultiblockData plant = plant();
             return List.of(
                   plant.status.getTextComponent(),
@@ -69,7 +69,7 @@ public class GuiLiquefactionPlant extends GuiMekanismTile<TileEntityCryoCasing, 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
         // Between the input gauge and the first output gauge, like Mekanism's evaporation plant
-        renderTitleTextWithOffset(graphics, 26, 114);
+        renderTitleTextWithOffset(graphics, 24, 120);
         renderInventoryText(graphics);
         super.drawForegroundText(graphics, mouseX, mouseY);
     }
