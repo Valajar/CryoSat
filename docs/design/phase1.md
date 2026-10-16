@@ -120,8 +120,8 @@ cooling, rejected), input and output tanks, energy bar.
 
 | Tier | Fuel | Reach | Payload slots |
 | --- | --- | --- | --- |
-| Tier 1 "Kestrel" | Mekanism Ethene + Liquid Oxygen | LEO only | 1 |
-| Tier 2 "Albatross" | Liquid Hydrogen + Liquid Oxygen | LEO or GEO | 2 |
+| Tier 1 Light Rocket | Mekanism Ethene + Liquid Oxygen | LEO only | 1 |
+| Tier 2 Heavy Rocket | Liquid Hydrogen + Liquid Oxygen | LEO or GEO | 2 |
 
 Tier 1 needs the plant only for liquid oxygen (77 K), so a player can launch early. Tier 2 needs
 liquid hydrogen (20 K) and is where the cryogenics investment pays off. A tier 3 nuclear thermal
@@ -135,11 +135,12 @@ rocket using Mekanism fissile fuel or antimatter is pencilled in for phase 3.
 4. A 10 second countdown with alarm and venting particles, then the rocket entity spawns on the pad
    and climbs with exhaust particles and camera shake for nearby players. Above build height the
    entity despawns and its payloads are added to the orbital registry.
-5. The pad plating scorches (cosmetic block state) and cools back over a minute. Launching again
-   while it is hot is allowed but damages the plating.
+5. Every player on the server gets a chat announcement ("Valajar launched a Heavy Rocket carrying
+   an Orbital Solar Array") and the rocket's smoke trail is visible from far away.
+6. The pad plating scorches (cosmetic block state) and cools back over a minute.
 
-Blocks in the exhaust path get burned, like a mini explosion without block damage by default
-(configurable).
+Exhaust never damages or burns blocks. It is particles, sound and a short knockback push on
+entities standing in the flame, nothing more.
 
 ### 4. Orbital registry (system, no block)
 
@@ -172,6 +173,32 @@ satellites keep working without it.
   percent and thunderstorms by 60 percent. Must have open sky above it.
 * Output target: a GEO array should roughly match a few Mekanism Advanced Solar Generators per
   launch, because the launch is expensive. Tuned in playtesting.
+
+### 7. Orbital Display (holographic globe)
+
+A block whose screen is not an inventory GUI but a full custom view: a slowly rotating globe in the
+middle of the screen with every orbital asset drawn on it.
+
+* Orbits are traced as rings around the globe. LEO rings sit close and the dots move along them
+  visibly; GEO assets hang still above their ground position.
+* Color coded by category: **energy** (cryo cobalt), **resource** (MLI gold), **utility** (white),
+  **offensive** (ordnance red). Dead satellites show as grey debris.
+* Drag to rotate, scroll to zoom, hover a satellite for its name, health and status, click to
+  select it (and open the same actions as Mission Control).
+* The globe itself is a stylised sphere using our palette. A nice stretch goal is to texture it
+  from the world's actual biome map around spawn, so the planet is recognisably your world.
+* The block itself has a 3D model with a holographic projector on top, so the globe can also float
+  above the block in the world when someone is using it.
+
+Phase 1 ships the globe with the energy category only (that is all that exists yet), but the
+renderer is built for all four categories from the start.
+
+## Phase 2 direction
+
+Phase 2 focuses on **resources**: asteroid mining and other space sourced materials that are hard or
+impossible to get in a normal world, including the new elements needed for superconducting power
+transfer. It gets its own brainstorm once phase 1 is playable, so phase 1 only needs to leave room
+for it (resource category in the registry and the globe, payload slots that can hold a miner).
 
 ## New items and components
 
@@ -223,6 +250,7 @@ left, right, top, bottom, reusing faces where they are identical.
 | Launch Controller | 1x1 faces | Console face with a big launch button, ordnance red trim |
 | Umbilical Tower and Arm | 3D model | Steel lattice column, MLI gold wrapped arm, small tier free |
 | Mission Control | 3D model | Desk with three screens (screens on an `_led` sheet) |
+| Orbital Display | 3D model | Pedestal with a holo projector lens on top (lens glow on an `_led` sheet) |
 | Rectenna Panel and Controller | 3D model (flat) | Low mesh grid on struts; controller with a status LED |
 | Rocket T1 and T2 | 3D models, 2 stages each | Steel body, MLI gold interstage, tier accent ring (basic for T1, advanced for T2) |
 | Orbital Solar Array | Item, plus a 3D model for Mission Control and the launch | Solar cells and gold foil |
@@ -238,17 +266,21 @@ Each step is one pull request with game tests where behaviour can be tested.
 3. **Liquefaction Plant:** multiblock validation, thermal model, recipes, heat rejection into
    Mekanism heat handlers. Game tests for structure formation and for equilibrium temperatures.
 4. **Orbital registry and Mission Control:** data and GUI, with a debug command to add assets.
-5. **Launch Complex and rockets:** structure, fuelling, launch sequence, rocket entity and rendering.
-6. **Orbital Solar Array and Rectenna:** first payload, closing the loop.
-7. **Balance and polish:** recipes, JEI categories, configs, sounds.
+5. **Orbital Display:** the custom globe screen and the block's hologram.
+6. **Launch Complex and rockets:** structure, fuelling, launch sequence, rocket entity and rendering.
+7. **Orbital Solar Array and Rectenna:** first payload, closing the loop.
+8. **Balance and polish:** recipes, JEI categories, configs, sounds.
 
 Texture and model work runs in parallel from step 1, driven by the asset list.
 
-## Open questions for Valajar
+## Decisions log
 
-1. Do the rocket names (Kestrel, Albatross) and the mod's naming tone work for you, or do you want
-   something more technical?
-2. Should the rocket's exhaust burn blocks by default, or only cosmetically?
-3. Is the Nether sulfur dioxide twist welcome, or should the compressor just refuse to work there?
-4. Should launches be visible to everyone on a server (chat message, sky trail), or only locally?
-5. Phase 2 priority: asteroid miners first or survey and comms satellites first?
+* Rocket names: plain descriptive names (Light Rocket, Heavy Rocket).
+* Exhaust: cosmetic only, never touches blocks.
+* Launches: announced to the whole server.
+* Satellite viewing: custom globe screen (Orbital Display), color coded by category.
+* Phase 2: resources first, brainstormed separately once phase 1 runs.
+
+## Open questions
+
+1. Atmospheric Compressor in the Nether: sulfur dioxide output, or simply refuse to run?
