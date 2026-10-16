@@ -1,13 +1,18 @@
-package io.github.valajar.cryosat.registries.plant;
+package io.github.valajar.cryosat;
 
-import io.github.valajar.cryosat.CryoSat;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 
 /**
- * Translation keys used through Mekanism's text helpers (block descriptions, GUI lines, chat messages).
+ * Translation keys used from code, in the style of Mekanism's {@code MekanismLang}. Block descriptions are shown by
+ * Mekanism's block item tooltip (hold the description key), GUI entries in machine screens.
  */
 public enum CryoLang implements ILangEntry {
+    DESCRIPTION_ATMOSPHERIC_COMPRESSOR("description", "atmospheric_compressor"),
+    OUTPUT_RATE("gui", "output_rate"),
+    ENERGY_PER_MB("gui", "energy_per_mb"),
+
+    // Liquefaction Plant
     LIQUEFACTION_PLANT("gui", "liquefaction_plant"),
     DESCRIPTION_CRYO_CASING("description", "cryo_casing"),
     DESCRIPTION_CRYO_VALVE("description", "cryo_valve"),

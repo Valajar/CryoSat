@@ -5,7 +5,7 @@ import io.github.valajar.cryosat.multiblock.liquefaction.LiquefactionMultiblockD
 import io.github.valajar.cryosat.multiblock.liquefaction.PlantStatus;
 import io.github.valajar.cryosat.multiblock.liquefaction.ValveMode;
 import io.github.valajar.cryosat.registries.CryoChemicals;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityLiquefactionController;
@@ -38,13 +38,13 @@ public class LiquefactionPlantTests {
     private static void build(GameTestHelper helper) {
         for (BlockPos pos : BlockPos.betweenClosed(BlockPos.ZERO, new BlockPos(2, 2, 2))) {
             if (!pos.equals(INTERIOR)) {
-                helper.setBlock(pos, PlantBlocks.CRYO_CASING.get());
+                helper.setBlock(pos, CryoBlocks.CRYO_CASING.get());
             }
         }
-        place(helper, CONTROLLER, PlantBlocks.LIQUEFACTION_CONTROLLER.get());
-        place(helper, COOLER, PlantBlocks.CRYOCOOLER.get());
-        place(helper, VALVE, PlantBlocks.CRYO_VALVE.get());
-        place(helper, PORT, PlantBlocks.HEAT_REJECTION_PORT.get());
+        place(helper, CONTROLLER, CryoBlocks.LIQUEFACTION_CONTROLLER.get());
+        place(helper, COOLER, CryoBlocks.CRYOCOOLER.get());
+        place(helper, VALVE, CryoBlocks.CRYO_VALVE.get());
+        place(helper, PORT, CryoBlocks.HEAT_REJECTION_PORT.get());
     }
 
     private static void place(GameTestHelper helper, BlockPos pos, Block block) {

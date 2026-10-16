@@ -1,10 +1,11 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
-import io.github.valajar.cryosat.machine.MachineBlock;
 import io.github.valajar.cryosat.registries.CryoBlocks;
+import mekanism.common.block.attribute.Attribute;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -22,14 +23,15 @@ public class CryoBlockStateProvider extends BlockStateProvider {
 
     /**
      * A 1x1 machine with per face textures in {@code textures/block/<name>/}: front, front_active, back, left, right,
-     * top, bottom. "Left" and "right" are as seen when looking at the front.
+     * top, bottom. "Left" and "right" are as seen when looking at the front. Facing and active state are Mekanism's
+     * block state attributes.
      */
-    private void machine(MachineBlock block, String name) {
+    private void machine(Block block, String name) {
         BlockModelBuilder idle = machineModel(name, "front");
         BlockModelBuilder active = machineModel(name + "_active", "front_active", name);
         getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
-              .modelFile(state.getValue(MachineBlock.ACTIVE) ? active : idle)
-              .rotationY(((int) state.getValue(MachineBlock.FACING).toYRot() + 180) % 360)
+              .modelFile(Attribute.isActive(state) ? active : idle)
+              .rotationY(((int) Attribute.getFacing(state).toYRot() + 180) % 360)
               .build());
         simpleBlockItem(block, idle);
     }

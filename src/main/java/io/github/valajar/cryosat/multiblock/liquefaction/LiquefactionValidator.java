@@ -1,6 +1,6 @@
 package io.github.valajar.cryosat.multiblock.liquefaction;
 
-import io.github.valajar.cryosat.registries.plant.PlantBlockTypes;
+import io.github.valajar.cryosat.registries.CryoBlockTypes;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityHeatRejectionPort;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityLiquefactionController;
@@ -37,11 +37,11 @@ public class LiquefactionValidator extends CuboidStructureValidator<Liquefaction
     @Override
     protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
-        if (BlockType.is(block, PlantBlockTypes.CRYO_CASING)) {
+        if (BlockType.is(block, CryoBlockTypes.CRYO_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockType.is(block, PlantBlockTypes.CRYO_VALVE)) {
+        } else if (BlockType.is(block, CryoBlockTypes.CRYO_VALVE)) {
             return CasingType.VALVE;
-        } else if (BlockType.is(block, PlantBlockTypes.LIQUEFACTION_CONTROLLER, PlantBlockTypes.CRYOCOOLER, PlantBlockTypes.HEAT_REJECTION_PORT)) {
+        } else if (BlockType.is(block, CryoBlockTypes.LIQUEFACTION_CONTROLLER, CryoBlockTypes.CRYOCOOLER, CryoBlockTypes.HEAT_REJECTION_PORT)) {
             return CasingType.OTHER;
         }
         return CasingType.INVALID;

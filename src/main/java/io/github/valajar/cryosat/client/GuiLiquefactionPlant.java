@@ -1,7 +1,7 @@
 package io.github.valajar.cryosat.client;
 
 import io.github.valajar.cryosat.multiblock.liquefaction.LiquefactionMultiblockData;
-import io.github.valajar.cryosat.registries.plant.CryoLang;
+import io.github.valajar.cryosat.CryoLang;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;

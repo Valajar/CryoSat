@@ -1,8 +1,8 @@
 package io.github.valajar.cryosat.client;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.client.gui.GuiAtmosphericCompressor;
 import io.github.valajar.cryosat.registries.CryoMenus;
-import io.github.valajar.cryosat.registries.plant.PlantContainerTypes;
 import mekanism.client.ClientRegistrationUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,8 +13,8 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 public final class CryoSatClient {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(CryoMenus.MACHINE.get(), MachineScreen::new);
-        ClientRegistrationUtil.registerScreen(event, PlantContainerTypes.LIQUEFACTION_PLANT, GuiLiquefactionPlant::new);
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.ATMOSPHERIC_COMPRESSOR, GuiAtmosphericCompressor::new);
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.LIQUEFACTION_PLANT, GuiLiquefactionPlant::new);
     }
 
     private CryoSatClient() {

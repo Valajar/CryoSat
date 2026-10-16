@@ -1,6 +1,6 @@
 package io.github.valajar.cryosat.datagen.plant;
 
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import mekanism.api.MekanismAPI;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.ItemLike;
 public final class PlantRecipes {
     /** Called from the main recipe provider (recipe providers cannot be renamed, so there can only be one). */
     public static void build(RecipeOutput output) {
-        Item casing = PlantBlocks.CRYO_CASING.asItem();
+        Item casing = CryoBlocks.CRYO_CASING.asItem();
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, casing, 4)
               .pattern("SHS").pattern("HMH").pattern("SHS")
               .define('S', common("ingots/steel"))
@@ -29,14 +29,14 @@ public final class PlantRecipes {
               .define('M', mekanism("steel_casing"))
               .unlockedBy("has_steel_casing", has(mekanism("steel_casing")))
               .save(output);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PlantBlocks.CRYO_VALVE)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoBlocks.CRYO_VALVE)
               .pattern(" C ").pattern("TXT")
               .define('C', common("circuits/basic"))
               .define('T', mekanism("basic_pressurized_tube"))
               .define('X', casing)
               .unlockedBy("has_cryo_casing", has(casing))
               .save(output);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PlantBlocks.CRYOCOOLER)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoBlocks.CRYOCOOLER)
               .pattern(" C ").pattern("AXA").pattern(" E ")
               .define('C', common("circuits/advanced"))
               .define('A', common("alloys/advanced"))
@@ -44,13 +44,13 @@ public final class PlantRecipes {
               .define('E', mekanism("basic_universal_cable"))
               .unlockedBy("has_cryo_casing", has(casing))
               .save(output);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PlantBlocks.HEAT_REJECTION_PORT)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoBlocks.HEAT_REJECTION_PORT)
               .pattern(" H ").pattern("HXH").pattern(" H ")
               .define('H', mekanism("basic_thermodynamic_conductor"))
               .define('X', casing)
               .unlockedBy("has_cryo_casing", has(casing))
               .save(output);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, PlantBlocks.LIQUEFACTION_CONTROLLER)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoBlocks.LIQUEFACTION_CONTROLLER)
               .pattern(" C ").pattern("GXG").pattern(" C ")
               .define('C', common("circuits/advanced"))
               .define('G', Items.GLASS_PANE)

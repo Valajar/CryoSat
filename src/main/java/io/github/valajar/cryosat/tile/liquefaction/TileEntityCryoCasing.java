@@ -2,7 +2,7 @@ package io.github.valajar.cryosat.tile.liquefaction;
 
 import io.github.valajar.cryosat.multiblock.CryoMultiblocks;
 import io.github.valajar.cryosat.multiblock.liquefaction.LiquefactionMultiblockData;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityCryoCasing extends TileEntityMultiblock<LiquefactionMultiblockData> {
 
     public TileEntityCryoCasing(BlockPos pos, BlockState state) {
-        this(PlantBlocks.CRYO_CASING, pos, state);
+        this(CryoBlocks.CRYO_CASING, pos, state);
     }
 
     public TileEntityCryoCasing(Holder<Block> provider, BlockPos pos, BlockState state) {

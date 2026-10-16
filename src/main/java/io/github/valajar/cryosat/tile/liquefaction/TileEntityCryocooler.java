@@ -1,7 +1,7 @@
 package io.github.valajar.cryosat.tile.liquefaction;
 
 import io.github.valajar.cryosat.multiblock.liquefaction.LiquefactionMultiblockData;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import mekanism.api.IContentsListener;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -18,7 +18,7 @@ public class TileEntityCryocooler extends TileEntityCryoCasing {
     private MachineEnergyContainer<TileEntityCryocooler> energyContainer;
 
     public TileEntityCryocooler(BlockPos pos, BlockState state) {
-        super(PlantBlocks.CRYOCOOLER, pos, state);
+        super(CryoBlocks.CRYOCOOLER, pos, state);
     }
 
     @NotNull

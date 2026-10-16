@@ -1,7 +1,7 @@
 package io.github.valajar.cryosat.datagen.plant;
 
-import io.github.valajar.cryosat.registries.plant.CryoLang;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.CryoLang;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import java.util.function.BiConsumer;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -10,11 +10,11 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
  */
 public final class PlantLang {
     public static void addTo(LanguageProvider provider) {
-        provider.addBlock(PlantBlocks.CRYO_CASING, "Cryo Casing");
-        provider.addBlock(PlantBlocks.CRYO_VALVE, "Cryo Valve");
-        provider.addBlock(PlantBlocks.CRYOCOOLER, "Cryocooler");
-        provider.addBlock(PlantBlocks.HEAT_REJECTION_PORT, "Heat Rejection Port");
-        provider.addBlock(PlantBlocks.LIQUEFACTION_CONTROLLER, "Liquefaction Controller");
+        provider.addBlock(CryoBlocks.CRYO_CASING, "Cryo Casing");
+        provider.addBlock(CryoBlocks.CRYO_VALVE, "Cryo Valve");
+        provider.addBlock(CryoBlocks.CRYOCOOLER, "Cryocooler");
+        provider.addBlock(CryoBlocks.HEAT_REJECTION_PORT, "Heat Rejection Port");
+        provider.addBlock(CryoBlocks.LIQUEFACTION_CONTROLLER, "Liquefaction Controller");
 
         BiConsumer<CryoLang, String> add = (lang, text) -> provider.add(lang.getTranslationKey(), text);
         add.accept(CryoLang.LIQUEFACTION_PLANT, "Liquefaction Plant");

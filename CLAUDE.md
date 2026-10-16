@@ -22,9 +22,13 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
 
 ## Conventions
 
-* Registries live in `io.github.valajar.cryosat.registries`, one class per registry
-  (`CryoChemicals`, later `CryoBlocks`, `CryoItems`, ...), each exposing a `DeferredRegister`
-  registered from the `CryoSat` constructor.
+* Registries live in `io.github.valajar.cryosat.registries`, one class per registry, each
+  registered from the `CryoSat` constructor. Blocks, block entities, menus and items use
+  Mekanism's registers like Generators does: `CryoBlockTypes` (Mekanism `Machine`/`BlockTypeTile`
+  attributes), `CryoBlocks` (`BlockDeferredRegister`, registers the block items too),
+  `CryoBlockEntities` (`TileEntityTypeDeferredRegister.mekBuilder`, which also registers the
+  capabilities), `CryoMenus` (`ContainerTypeDeferredRegister`), `CryoItems`
+  (`ItemDeferredRegister`). `CryoChemicals` stays a plain `DeferredRegister`.
 * Chemicals go into Mekanism's chemical registry (`MekanismAPI.CHEMICAL_REGISTRY_NAME`) so they
   work with Mekanism tubes and tanks.
 * Lang keys: chemicals use `chemical.cryosat.<name>`.
@@ -32,13 +36,19 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
   models, lang, loot tables, tags and recipes; its output in `src/generated` is committed. Hand
   written JSON only for Blockbench models and our own datapack types (e.g. atmospheres). Run it
   after adding textures, since it validates that referenced textures exist.
-* Machines extend `machine.MachineBlockEntity` (energy, per side tanks, status, sync) and use
-  `MachineBlock`; register their capabilities via `CryoSat.registerMachine`. Mekanism items in
-  recipes are referenced by id or `c:` tags, never by class.
+* Machines extend Mekanism's `TileEntityConfigurableMachine` (side config, ejector, upgrades,
+  redstone, security) with a `BlockTile` block and a `GuiConfigurableTile` screen registered in
+  `client/CryoSatClient`; `machine/compressor` is the worked example (block type, block with item
+  attachments and default side config, tile type, menu, GUI, lang, loot via
+  `CryoBlockLoot.dropMachine`). Fields assigned in `getInitial*` must not have initialisers.
+  Status reasons shown in GUIs use `machine.MachineStatus`. Mekanism items in recipes are
+  referenced by id or `c:` tags, never by class.
 * Multiblocks follow Mekanism's pattern (see Generators' turbine and fission reactor): a
   `MultiblockData` subclass, `MultiblockCache`, `CuboidStructureValidator`, tiles extending
   `TileEntityMultiblock`, and a `MultiblockManager` in `multiblock.CryoMultiblocks`. The Liquefaction
-  Plant lives in `multiblock.liquefaction` and `tile.liquefaction`; game tests build real structures.
+  Plant lives in `multiblock.liquefaction` and `tile.liquefaction`; game tests build real
+  structures. All blocks, tiles and menus, machines and multiblock parts alike, are registered in the
+  same `registries/Cryo*` classes.
 * Atmospheres for the Atmospheric Compressor are datapack files in
   `data/<ns>/cryosat/atmosphere/`.
 

@@ -1,6 +1,6 @@
 package io.github.valajar.cryosat.multiblock.liquefaction;
 
-import io.github.valajar.cryosat.registries.plant.CryoLang;
+import io.github.valajar.cryosat.CryoLang;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.network.chat.Component;
 

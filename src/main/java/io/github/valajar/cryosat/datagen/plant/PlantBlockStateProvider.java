@@ -1,7 +1,7 @@
 package io.github.valajar.cryosat.datagen.plant;
 
 import io.github.valajar.cryosat.CryoSat;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -31,11 +31,11 @@ public class PlantBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         ModelFile casing = models().cubeAll("cryo_casing", tex("casing"));
-        simpleBlockWithItem(PlantBlocks.CRYO_CASING.get(), casing);
-        simpleBlockWithItem(PlantBlocks.CRYO_VALVE.get(), models().cubeAll("cryo_valve", tex("valve")));
-        activeCube(PlantBlocks.CRYOCOOLER.get(), "cryocooler");
-        activeCube(PlantBlocks.HEAT_REJECTION_PORT.get(), "heat_rejection_port");
-        controller(PlantBlocks.LIQUEFACTION_CONTROLLER.get());
+        simpleBlockWithItem(CryoBlocks.CRYO_CASING.get(), casing);
+        simpleBlockWithItem(CryoBlocks.CRYO_VALVE.get(), models().cubeAll("cryo_valve", tex("valve")));
+        activeCube(CryoBlocks.CRYOCOOLER.get(), "cryocooler");
+        activeCube(CryoBlocks.HEAT_REJECTION_PORT.get(), "heat_rejection_port");
+        controller(CryoBlocks.LIQUEFACTION_CONTROLLER.get());
     }
 
     private ResourceLocation tex(String name) {

@@ -1,8 +1,8 @@
 package io.github.valajar.cryosat.tile.liquefaction;
 
 import io.github.valajar.cryosat.multiblock.liquefaction.ValveMode;
-import io.github.valajar.cryosat.registries.plant.CryoLang;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.CryoLang;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class TileEntityCryoValve extends TileEntityCryoCasing {
     private ValveMode mode = ValveMode.INPUT;
 
     public TileEntityCryoValve(BlockPos pos, BlockState state) {
-        super(PlantBlocks.CRYO_VALVE, pos, state);
+        super(CryoBlocks.CRYO_VALVE, pos, state);
         delaySupplier = NO_DELAY;
     }
 

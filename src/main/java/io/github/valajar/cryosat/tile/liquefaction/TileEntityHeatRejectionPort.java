@@ -1,7 +1,7 @@
 package io.github.valajar.cryosat.tile.liquefaction;
 
 import io.github.valajar.cryosat.multiblock.liquefaction.LiquefactionMultiblockData;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import mekanism.api.IContentsListener;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.attachments.containers.ContainerType;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityHeatRejectionPort extends TileEntityCryoCasing {
 
     public TileEntityHeatRejectionPort(BlockPos pos, BlockState state) {
-        super(PlantBlocks.HEAT_REJECTION_PORT, pos, state);
+        super(CryoBlocks.HEAT_REJECTION_PORT, pos, state);
         delaySupplier = NO_DELAY;
     }
 

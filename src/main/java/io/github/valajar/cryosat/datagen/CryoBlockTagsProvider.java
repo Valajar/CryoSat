@@ -2,7 +2,6 @@ package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.registries.CryoBlocks;
-import io.github.valajar.cryosat.registries.plant.PlantBlocks;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -17,7 +16,6 @@ public class CryoBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(CryoBlocks.ATMOSPHERIC_COMPRESSOR.get());
-        PlantBlocks.BLOCKS.getPrimaryEntries().forEach(block -> tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block.get()));
+        CryoBlocks.BLOCKS.getPrimaryEntries().forEach(block -> tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block.get()));
     }
 }

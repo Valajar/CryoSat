@@ -1,7 +1,6 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
-import io.github.valajar.cryosat.datagen.plant.PlantBlockLoot;
 import io.github.valajar.cryosat.datagen.plant.PlantBlockStateProvider;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +27,7 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new CryoBlockStateProvider(output, files));
         generator.addProvider(event.includeClient(), new CryoLanguageProvider(output));
         generator.addProvider(event.includeServer(), new LootTableProvider(output, Set.of(),
-              List.of(new LootTableProvider.SubProviderEntry(CryoBlockLoot::new, LootContextParamSets.BLOCK),
-                    new LootTableProvider.SubProviderEntry(PlantBlockLoot::new, LootContextParamSets.BLOCK)), lookup));
+              List.of(new LootTableProvider.SubProviderEntry(CryoBlockLoot::new, LootContextParamSets.BLOCK)), lookup));
         generator.addProvider(event.includeServer(), new CryoBlockTagsProvider(output, lookup, files));
         generator.addProvider(event.includeServer(), new CryoChemicalTagsProvider(output, lookup, files));
         generator.addProvider(event.includeServer(), new CryoRecipeProvider(output, lookup));
