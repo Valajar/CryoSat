@@ -1,0 +1,93 @@
+# CryoSat playtest guide
+
+What to try in game, what you should see, and what to report back. Everything here was checked by
+automated game tests and a quick look in a headless client, but nobody has *played* it yet, so the
+interesting results are the ones that feel wrong.
+
+## Setup
+
+* Latest build: <https://github.com/Valajar/CryoSat/releases/tag/dev> (the jar name contains the commit).
+* Needs NeoForge 1.21.1 and **Mekanism 10.7.19 or any later 10.7.x**. Mekanism Generators is
+  recommended (Heat Generators, Thermoelectric Boiler). JEI is optional but makes this much easier.
+* A creative world is fastest. Useful items: `mekanism:creative_energy_cube`, Mekanism cables,
+  `mekanism:basic_pressurized_tube`, `mekanism:basic_chemical_tank`, `mekanism:basic_thermodynamic_conductor`,
+  `mekanism:configurator`, `mekanism:speed_upgrade`, `mekanism:energy_upgrade`.
+* Everything CryoSat adds is in the **CryoSat** creative tab.
+
+## 1. Atmospheric Compressor (about 10 minutes)
+
+1. Place it outdoors on the ground. Power it from the back or bottom (cable from a creative energy
+   cube). Put a pressurized tube on top leading into a chemical tank.
+2. Open it. Expect: **Status: Running**, **Output 10.0 mB/t**, **Energy 10 J/mB** (shown as 4 FE/mB
+   if your energy unit is FE). The tank fills with **Compressed Air**.
+3. Box it in with stone on all sides (leave the tube): status changes to **Needs open air around it**.
+   Remove a few blocks: it restarts, slower until about 8 of the 26 surrounding blocks are air.
+4. Move it high up (y 250 or so): output drops towards 40 percent of the sea level rate.
+5. Upgrades: add Speed upgrades through the **upgrade tab** (output should rise, 4 upgrades about
+   3.16x), then Energy upgrades (energy per mB should fall). Also try **sneak right clicking the
+   block with an upgrade in hand**: this is the one thing not confirmed yet, please tell me if it works.
+6. Side config tab: move the chemical output to another face and check the tube on top stops
+   receiving. Use the Configurator to do the same in world.
+7. Break it and place it again: energy, contents, upgrades and side config should all be kept.
+8. Optional: in the **Nether** it should produce Mekanism **Sulfur Dioxide** at half rate; in the
+   **End** it shows **No atmosphere here**.
+
+## 2. Liquefaction Plant: forming (about 5 minutes)
+
+1. Build a hollow **3x3x3** box of **Cryo Casing**. The 12 edges and 8 corners must stay casing.
+2. Swap the centres of four faces for: the **Liquefaction Controller**, a **Cryo Valve**, a
+   **Cryocooler** and a **Heat Rejection Port** (the top centre is fine for one of them). You can also
+   use **Mekanism Structural Glass** in face centres.
+3. Right click any part: the **Liquefaction Plant** GUI should open showing **Idle, Temp ~300 K,
+   Coolers: 1**. If it does not open, the structure did not form: check the edges.
+4. Try a bigger box (5x5x5 up to 9x9x9) with several cryocoolers. Bigger plants hold more
+   and process faster, but leak more heat.
+
+## 3. Liquefaction Plant: cooling and liquefying (about 15 minutes)
+
+1. Power every Cryocooler with a cable (any side). Watch **Temp** fall and **Hot side** rise in the GUI.
+2. Feed **Compressed Air** into a Cryo Valve (valves start in **Input** mode). Sneak right click
+   other valves to cycle them to **Output 1 / 2 / 3** and pipe each into its own chemical tank.
+3. Once **Temp** reaches **77 K**, status becomes **Liquefying**: Output 1 fills with **Liquid
+   Nitrogen**, Output 2 with **Liquid Oxygen**, Output 3 with **Liquid Argon** (78 / 21 / 1).
+4. **Heat test:** leave the Heat Rejection Port with nothing attached. Hot side keeps climbing;
+   at **1200 K** the status becomes **Hot side overheated!** and cooling stops. Then attach
+   Thermodynamic Conductors to the port (a short line into the air, or into a Thermoelectric
+   Boiler from Generators): hot side should drop and cooling should resume.
+5. **Oxygen and hydrogen:** feed Mekanism Oxygen (90 K) or Mekanism Hydrogen (20 K) from an
+   Electrolytic Separator instead of air. Hydrogen is meant to be hard: note how big a plant and how
+   many coolers you needed, and how much power it took.
+
+## 4. JEI (2 minutes)
+
+* Hover the Liquefaction Controller and press **U**, or a Liquid Nitrogen tank and press **R**:
+  a **Liquefaction Plant** page shows each recipe with its temperature limit and heat released,
+  and all plant parts as the machines that make it.
+* Known gap: atmospheres (what the compressor produces where) are not in JEI yet.
+
+## 5. Optional: datapack recipes
+
+Recipes are plain JSON now. Drop a datapack into the world with, for example,
+`data/test/recipe/liquefaction/nitrogen_gas.json` and run `/reload`; it should appear in JEI and work
+in the plant. The built in ones are a good template:
+`cryosat:liquefaction/compressed_air`, `.../oxygen`, `.../hydrogen`.
+
+## What to report
+
+Copy this and fill in what applies:
+
+```
+Mekanism version / other mods:
+Compressor: works? numbers as expected? upgrade by sneak right click works?
+Plant formed at sizes:
+Time to reach 77 K, plant size, number of coolers, power source:
+Hydrogen (20 K) reached? plant size, coolers, power:
+Overheating: happened? how long without heat rejection? conductors fixed it?
+Anything confusing in the GUIs or tooltips:
+Balance feel (too fast / too slow / too expensive / too cheap):
+Bugs (attach logs/latest.log for crashes or errors):
+```
+
+Numbers worth commenting on, all easy to change: 10 J per mB of compressed air; cooler 200 heat/t
+max; plant interior 1000 heat per K per interior block; heat leak 0.02 per casing and 0.08 per glass
+per Kelvin; overheat at 1200 K; liquefying up to 20 mB/t per interior block.
