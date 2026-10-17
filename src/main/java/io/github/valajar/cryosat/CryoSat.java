@@ -9,6 +9,7 @@ import io.github.valajar.cryosat.registries.CryoChemicals;
 import io.github.valajar.cryosat.registries.CryoCreativeTabs;
 import io.github.valajar.cryosat.registries.CryoItems;
 import io.github.valajar.cryosat.registries.CryoMenus;
+import io.github.valajar.cryosat.registries.CryoRecipes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -30,6 +31,8 @@ public class CryoSat {
         CryoBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CryoMenus.MENUS.register(modEventBus);
         CryoCreativeTabs.TABS.register(modEventBus);
+        CryoRecipes.TYPES.register(modEventBus);
+        CryoRecipes.SERIALIZERS.register(modEventBus);
         CryoMultiblocks.init();
         NeoForge.EVENT_BUS.addListener(CryoSat::addReloadListeners);
     }

@@ -1,7 +1,15 @@
 package io.github.valajar.cryosat.datagen.plant;
 
 import io.github.valajar.cryosat.registries.CryoBlocks;
+import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.recipe.LiquefactionRecipe;
+import io.github.valajar.cryosat.registries.CryoChemicals;
+import java.util.List;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import net.minecraft.core.Holder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,6 +65,27 @@ public final class PlantRecipes {
               .define('X', casing)
               .unlockedBy("has_cryo_casing", has(casing))
               .save(output);
+
+        liquefaction(output);
+    }
+
+    /** Liquefaction recipes, written as {@code data/cryosat/recipe/liquefaction/*.json}. */
+    private static void liquefaction(RecipeOutput output) {
+        liquefaction(output, "compressed_air", CryoChemicals.COMPRESSED_AIR, 100, 77, 2,
+              CryoChemicals.LIQUID_NITROGEN.get().getStack(78), CryoChemicals.LIQUID_OXYGEN.get().getStack(21), CryoChemicals.LIQUID_ARGON.get().getStack(1));
+        liquefaction(output, "oxygen", mekanismChemical("oxygen"), 100, 90, 2, CryoChemicals.LIQUID_OXYGEN.get().getStack(100));
+        liquefaction(output, "hydrogen", mekanismChemical("hydrogen"), 100, 20, 1, CryoChemicals.LIQUID_HYDROGEN.get().getStack(100));
+    }
+
+    private static void liquefaction(RecipeOutput output, String name, Holder<Chemical> input, long amount, double maxTemperature, double latentHeat,
+          ChemicalStack... outputs) {
+        LiquefactionRecipe recipe = new LiquefactionRecipe(IngredientCreatorAccess.chemicalStack().fromHolder(input, amount), List.of(outputs),
+              maxTemperature, latentHeat);
+        output.accept(CryoSat.rl("liquefaction/" + name), recipe, null);
+    }
+
+    private static Holder<Chemical> mekanismChemical(String path) {
+        return MekanismAPI.CHEMICAL_REGISTRY.getHolder(ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path)).orElseThrow();
     }
 
     private static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike item) {

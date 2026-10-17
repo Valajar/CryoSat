@@ -39,7 +39,13 @@ public enum CryoLang implements ILangEntry {
     PLANT_STATUS_NO_COOLERS("status", "plant.no_coolers"),
     PLANT_STATUS_OUTPUT_FULL("status", "plant.output_full"),
     PLANT_STATUS_OUTPUT_MISMATCH("status", "plant.output_mismatch"),
-    PLANT_STATUS_OVERHEATED("status", "plant.overheated");
+    PLANT_STATUS_OVERHEATED("status", "plant.overheated"),
+
+    // Recipe viewers
+    RECIPE_MAX_TEMPERATURE("recipe", "liquefaction.max_temperature"),
+    RECIPE_LATENT_HEAT("recipe", "liquefaction.latent_heat"),
+    RECIPE_INPUT("recipe", "liquefaction.input"),
+    RECIPE_OUTPUT("recipe", "liquefaction.output");
 
     private final String key;
 

@@ -1,0 +1,23 @@
+{
+  "type": "cryosat:liquefaction",
+  "input": {
+    "amount": 100,
+    "chemical": "cryosat:compressed_air"
+  },
+  "latent_heat": 2.0,
+  "max_temperature": 77.0,
+  "outputs": [
+    {
+      "amount": 78,
+      "id": "cryosat:liquid_nitrogen"
+    },
+    {
+      "amount": 21,
+      "id": "cryosat:liquid_oxygen"
+    },
+    {
+      "amount": 1,
+      "id": "cryosat:liquid_argon"
+    }
+  ]
+}

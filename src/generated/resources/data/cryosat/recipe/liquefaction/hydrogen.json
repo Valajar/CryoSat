@@ -1,0 +1,14 @@
+{
+  "type": "cryosat:liquefaction",
+  "input": {
+    "amount": 100,
+    "chemical": "mekanism:hydrogen"
+  },
+  "max_temperature": 20.0,
+  "outputs": [
+    {
+      "amount": 100,
+      "id": "cryosat:liquid_hydrogen"
+    }
+  ]
+}

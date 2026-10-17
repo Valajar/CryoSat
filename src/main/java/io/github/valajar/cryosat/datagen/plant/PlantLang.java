@@ -43,6 +43,11 @@ public final class PlantLang {
         add.accept(CryoLang.PLANT_STATUS_OUTPUT_FULL, "Output full");
         add.accept(CryoLang.PLANT_STATUS_OUTPUT_MISMATCH, "Output holds other chemical");
         add.accept(CryoLang.PLANT_STATUS_OVERHEATED, "Hot side overheated!");
+
+        add.accept(CryoLang.RECIPE_MAX_TEMPERATURE, "Max: %1$s");
+        add.accept(CryoLang.RECIPE_LATENT_HEAT, "Heat: %1$s/mB");
+        add.accept(CryoLang.RECIPE_INPUT, "Input");
+        add.accept(CryoLang.RECIPE_OUTPUT, "Output %1$s");
     }
 
     private PlantLang() {

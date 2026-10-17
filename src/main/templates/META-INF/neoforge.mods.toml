@@ -98,3 +98,10 @@ Cryogenics and orbital infrastructure for Mekanism.
     versionRange="[10.7.19,10.8)"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[19,)"
+    ordering="AFTER"
+    side="CLIENT"

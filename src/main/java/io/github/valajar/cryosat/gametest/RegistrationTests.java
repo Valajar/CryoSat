@@ -37,4 +37,13 @@ public class RegistrationTests {
               "atmospheric compressor recipe missing");
         helper.succeed();
     }
+
+    @GameTest(template = "empty")
+    public static void liquefactionRecipesLoad(GameTestHelper helper) {
+        var recipes = io.github.valajar.cryosat.recipe.LiquefactionRecipe.all(helper.getLevel());
+        helper.assertTrue(recipes.size() >= 3, "expected at least 3 liquefaction recipes, found " + recipes.size());
+        var air = io.github.valajar.cryosat.recipe.LiquefactionRecipe.find(helper.getLevel(), CryoChemicals.COMPRESSED_AIR);
+        helper.assertTrue(air != null && air.outputs().size() == 3 && air.maxTemperature() == 77, "compressed air recipe wrong: " + air);
+        helper.succeed();
+    }
 }

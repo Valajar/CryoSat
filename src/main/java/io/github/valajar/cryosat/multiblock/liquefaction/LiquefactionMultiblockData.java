@@ -1,5 +1,6 @@
 package io.github.valajar.cryosat.multiblock.liquefaction;
 
+import io.github.valajar.cryosat.recipe.LiquefactionRecipe;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         super(tile);
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         chemicalTanks.add(inputTank = VariableCapacityChemicalTank.input(this, this::getTankCapacity,
-              stack -> LiquefactionRecipe.find(stack.getChemicalHolder()) != null, this));
+              stack -> getLevel() == null || LiquefactionRecipe.find(getLevel(), stack.getChemicalHolder()) != null, this));
         chemicalTanks.add(outputTank1 = VariableCapacityChemicalTank.output(this, this::getTankCapacity, stack -> true, this));
         chemicalTanks.add(outputTank2 = VariableCapacityChemicalTank.output(this, this::getTankCapacity, stack -> true, this));
         chemicalTanks.add(outputTank3 = VariableCapacityChemicalTank.output(this, this::getTankCapacity, stack -> true, this));
@@ -180,7 +181,7 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         if (inputTank.isEmpty()) {
             return coolers == 0 ? PlantStatus.NO_COOLERS : PlantStatus.IDLE;
         }
-        LiquefactionRecipe recipe = LiquefactionRecipe.find(inputTank.getTypeHolder());
+        LiquefactionRecipe recipe = LiquefactionRecipe.find(getLevel(), inputTank.getTypeHolder());
         if (recipe == null) {
             return PlantStatus.IDLE;
         }
@@ -190,10 +191,10 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         long amount = Math.min(inputTank.getStored(), RATE_PER_BLOCK * getInteriorVolume());
         for (int i = 0; i < recipe.outputs().size(); i++) {
             IChemicalTank tank = outputTanks.get(i);
-            if (!tank.isEmpty() && !tank.isTypeEqual(recipe.outputs().get(i).get())) {
+            if (!tank.isEmpty() && !tank.isTypeEqual(recipe.outputs().get(i).getChemicalHolder())) {
                 return PlantStatus.OUTPUT_MISMATCH;
             }
-            double fraction = recipe.fractions()[i];
+            double fraction = recipe.fraction(i);
             if (fraction > 0) {
                 amount = Math.min(amount, (long) Math.floor((tank.getNeeded() - outputRemainders[i]) / fraction));
             }
@@ -203,10 +204,10 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         }
         inputTank.shrinkStack(amount, Action.EXECUTE);
         for (int i = 0; i < recipe.outputs().size(); i++) {
-            outputRemainders[i] += amount * recipe.fractions()[i];
+            outputRemainders[i] += amount * recipe.fraction(i);
             long whole = (long) outputRemainders[i];
             if (whole > 0) {
-                outputTanks.get(i).insert(new ChemicalStack(recipe.outputs().get(i).get(), whole), Action.EXECUTE, AutomationType.INTERNAL);
+                outputTanks.get(i).insert(recipe.outputs().get(i).copyWithAmount(whole), Action.EXECUTE, AutomationType.INTERNAL);
                 outputRemainders[i] -= whole;
             }
         }
