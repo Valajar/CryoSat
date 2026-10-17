@@ -117,6 +117,9 @@ the point where Mekanism players have fission or a big solar array.
 **GUI.** Temperature gauge with the three recipe thresholds marked, a heat flow readout (leak in,
 cooling, rejected), input and output tanks, energy bar.
 
+> The space sections below (Launch Complex, orbital registry, Mission Control, Orbital Display, power
+> satellite and Rectenna) are superseded by [space-age.md](space-age.md).
+
 ### 3. Launch Complex (multiblock)
 
 **Structure.**
