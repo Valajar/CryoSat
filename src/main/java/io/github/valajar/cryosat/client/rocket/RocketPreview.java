@@ -6,6 +6,7 @@ import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.space.PayloadType;
 import io.github.valajar.cryosat.space.RocketDesign;
 import io.github.valajar.cryosat.space.RocketTier;
+import io.github.valajar.cryosat.space.launch.LaunchSequence;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -17,7 +18,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -38,16 +38,12 @@ import org.jetbrains.annotations.Nullable;
  *     <li>{@code /cryosat rocket preview launch} plays a launch: ignition, climb and exhaust, then the rocket is gone</li>
  *     <li>{@code /cryosat rocket preview clear} removes it</li>
  * </ul>
- * The launch here only approximates the Launch Pad's sequence, which owns the real timing.
+ * The launch uses the Launch Pad's timing from {@link LaunchSequence}.
  */
 @EventBusSubscriber(modid = CryoSat.MODID, value = Dist.CLIENT)
 public final class RocketPreview {
     private static final String PREFIX = "[CryoSat debug] ";
-    private static final int LAUNCH_TICKS = 100;
-    /** Share of the launch spent on the pad at full thrust before it lifts off. */
-    private static final float HOLD = 0.2F;
-    /** Height climbed by the end of the launch, in blocks. */
-    private static final double CLIMB = 120;
+    private static final int LAUNCH_TICKS = LaunchSequence.DURATION_TICKS;
     private static final double REACH = 32;
 
     @Nullable
@@ -144,10 +140,9 @@ public final class RocketPreview {
         preview = null;
     }
 
-    /** Height above the pad at a point of the launch: holds on the pad at full thrust, then accelerates away. */
+    /** Height above the pad at a point of the launch, using the Launch Pad's timing. */
     private static double rise(float progress) {
-        float climb = Mth.clamp((progress - HOLD) / (1 - HOLD), 0, 1);
-        return CLIMB * climb * climb * climb;
+        return LaunchSequence.rise(progress * LAUNCH_TICKS);
     }
 
     private static final class Preview {

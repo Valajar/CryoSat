@@ -46,7 +46,7 @@
   "gui.cryosat.launch_pad.assemble": "Assemble",
   "gui.cryosat.launch_pad.destination": "To: %1$s",
   "gui.cryosat.launch_pad.destination.tooltip": "Click for the next destination, right click for the previous one",
-  "gui.cryosat.launch_pad.disassemble": "Disassemble",
+  "gui.cryosat.launch_pad.disassemble": "Dismantle",
   "gui.cryosat.launch_pad.fuel.grains": "Grains: %1$s/%2$s",
   "gui.cryosat.launch_pad.fuel.oxidiser": "Oxidiser: %1$s/%2$s mB",
   "gui.cryosat.launch_pad.fuel.propellant": "Propellant: %1$s/%2$s mB",

@@ -68,9 +68,9 @@ public class GuiRocketAssembly extends GuiMekanismTile<TileEntityLaunchControlle
               (element, mouseX, mouseY) -> send(LaunchPadAction.Action.NEXT_DESTINATION),
               (element, mouseX, mouseY) -> send(LaunchPadAction.Action.PREVIOUS_DESTINATION)))
               .setTooltip(LaunchLang.DESTINATION_TOOLTIP);
-        assembleButton = addRenderableWidget(new TranslationButton(this, 70, 88, 49, 14, LaunchLang.BUTTON_ASSEMBLE,
+        assembleButton = addRenderableWidget(new TranslationButton(this, 70, 88, 46, 14, LaunchLang.BUTTON_ASSEMBLE,
               (element, mouseX, mouseY) -> send(LaunchPadAction.Action.ASSEMBLE)));
-        disassembleButton = addRenderableWidget(new TranslationButton(this, 121, 88, 49, 14, LaunchLang.BUTTON_DISASSEMBLE,
+        disassembleButton = addRenderableWidget(new TranslationButton(this, 118, 88, 52, 14, LaunchLang.BUTTON_DISASSEMBLE,
               (element, mouseX, mouseY) -> send(LaunchPadAction.Action.DISASSEMBLE)));
         launchButton = addRenderableWidget(new TranslationButton(this, 70, 105, 100, 14, LaunchLang.BUTTON_LAUNCH,
               (element, mouseX, mouseY) -> send(LaunchPadAction.Action.LAUNCH)));

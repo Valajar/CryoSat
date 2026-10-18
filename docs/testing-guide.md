@@ -72,6 +72,37 @@ Recipes are plain JSON now. Drop a datapack into the world with, for example,
 in the plant. The built in ones are a good template:
 `cryosat:liquefaction/compressed_air`, `.../oxygen`, `.../hydrogen`.
 
+## 6. Space: asteroid mining (about 20 minutes)
+
+Commands that help: `/cryosat orbit skip` (operator) makes every miner reach its next arrival or
+batch right away; `/cryosat rocket preview <tier>` and `/cryosat rocket preview launch` (creative,
+client only) show a rocket on the block you look at, for screenshots.
+
+1. **Cargo Receiver and Uplink Card.** Place a Cargo Receiver. Right click it with an Uplink Card:
+   the action bar confirms and the card lights up blue. Sneak right click in the air clears it.
+2. **Launch Pad.** Build a flat 5x5 of Launch Pad Plating with one Launch Controller and at least
+   one Launch Pad Fuel Port on the outer ring. The 3x3 column above the centre must be clear for 6
+   blocks. Right click the controller (or a fuel port): the Rocket Assembly screen opens.
+3. **Assemble.** Shift click a Basic Rocket Engine, Basic Fuel Tank, Guidance Computer and Basic
+   Asteroid Miner into the four part slots, the Uplink Card into its slot and 16 Solid Propellant
+   Grains into the fuel slot (or pipe them into a fuel port). Press **Assemble**: the rocket appears
+   on the pad in Basic green. **Dismantle** gives the parts back.
+4. **Launch.** Press **Launch** (or give the controller a redstone pulse). Expect about 2 seconds of
+   engines on the pad, then a climb out of sight over the next 8 seconds, smoke that lingers, and a
+   chat line "<you> launched Basic Miner #1". The fuel is used up and the pad is empty afterwards.
+5. **Mission Control.** Place one and open it: your miner is listed as Travelling (about 2 minutes),
+   then Mining. Select it to see the asteroid's class, size and hardness, how much the miner can
+   extract, batches delivered and time to the next batch. Try renaming it, Unlink and Relink (card in
+   the slot), and Decommission on a second miner.
+6. **Deliveries.** Batches arrive every few minutes (or use `/cryosat orbit skip` repeatedly). A
+   small asteroid gives 6 to 10 stacks of raw iron, 4 to 6 stacks of Enriched Carbon and 2 stacks
+   each of raw gold and raw osmium over 3 batches. Fill the receiver up: the rest waits in orbit
+   (Mission Control shows it) and arrives once there is room. A redstone signal pauses the receiver.
+7. **Advanced and Elite.** Advanced rockets burn Liquid Oxygen plus Mekanism Ethene, Elite rockets
+   Liquid Oxygen plus Liquid Hydrogen (4000 mB each, 8000 mB hydrogen), piped into a fuel port.
+   Bigger rockets find bigger asteroids more often, and a miner smaller than its asteroid only
+   extracts part of it.
+
 ## What to report
 
 Copy this and fill in what applies:
@@ -85,9 +116,12 @@ Hydrogen (20 K) reached? plant size, coolers, power:
 Overheating: happened? how long without heat rejection? conductors fixed it?
 Anything confusing in the GUIs or tooltips:
 Balance feel (too fast / too slow / too expensive / too cheap):
+Space: pad formed? launch looked right? deliveries arrived? Mission Control readable?
 Bugs (attach logs/latest.log for crashes or errors):
 ```
 
 Numbers worth commenting on, all easy to change: 10 J per mB of compressed air; cooler 200 heat/t
 max; plant interior 1000 heat per K per interior block; heat leak 0.02 per casing and 0.08 per glass
-per Kelvin; overheat at 1200 K; liquefying up to 20 mB/t per interior block.
+per Kelvin; overheat at 1200 K; liquefying up to 20 mB/t per interior block. Space: 16 grains per
+Basic launch, travel 2 minutes, a batch every 5 minutes at hardness 1, small asteroid yields above
+(data file `data/cryosat/cryosat/asteroid/chondrite.json`).

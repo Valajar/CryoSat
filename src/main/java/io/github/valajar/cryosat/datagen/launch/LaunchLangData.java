@@ -25,7 +25,7 @@ public final class LaunchLangData {
         add.accept(LaunchLang.INVALID_INNER_PART, "Controllers and fuel ports go on the outer ring of the pad, not at %1$s.");
 
         add.accept(LaunchLang.BUTTON_ASSEMBLE, "Assemble");
-        add.accept(LaunchLang.BUTTON_DISASSEMBLE, "Disassemble");
+        add.accept(LaunchLang.BUTTON_DISASSEMBLE, "Dismantle");
         add.accept(LaunchLang.BUTTON_LAUNCH, "Launch");
         add.accept(LaunchLang.DESTINATION, "To: %1$s");
         add.accept(LaunchLang.DESTINATION_TOOLTIP, "Click for the next destination, right click for the previous one");

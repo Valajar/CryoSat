@@ -1,5 +1,8 @@
 # Milestone 1 build plan: asteroid mining
 
+Status: built and merged; the whole loop was played once in a headless client (see the space
+section of `docs/testing-guide.md`).
+
 How Milestone 1 of `space-age.md` is split so several agents can build it in parallel. The
 foundation is done and merged; every workstream builds against it and must not change its public
 contracts without saying so in its report.

@@ -213,7 +213,7 @@ public class LaunchPadTests {
         });
     }
 
-    @GameTest(template = ARENA, timeoutTicks = 200)
+    @GameTest(template = ARENA, timeoutTicks = LaunchSequence.DURATION_TICKS + 100)
     public static void launchBurnsFuelAndClearsThePad(GameTestHelper helper) {
         UUID owner = UUID.randomUUID();
         formed(helper, owner, pad -> {
