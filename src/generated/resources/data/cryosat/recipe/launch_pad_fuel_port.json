@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "T": {
+      "item": "mekanism:basic_pressurized_tube"
+    },
+    "X": {
+      "item": "cryosat:launch_pad_plating"
+    }
+  },
+  "pattern": [
+    " H ",
+    "TXT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:launch_pad_fuel_port"
+  }
+}

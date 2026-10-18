@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.launch.LaunchPadBlockStateProvider;
 import io.github.valajar.cryosat.datagen.plant.PlantBlockStateProvider;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new CryoItemModelProvider(output, files));
         // Cargo Receiver and Uplink Card (space workstream A)
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.receiver.ReceiverModelProvider(output, files));
+        // Launch Pad (workstream B)
+        generator.addProvider(event.includeClient(), new LaunchPadBlockStateProvider(output, files));
     }
 
     private CryoDataGen() {

@@ -6,6 +6,7 @@ import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchController;
 import io.github.valajar.cryosat.machine.compressor.AtmosphericCompressorBlockEntity;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
@@ -37,6 +38,9 @@ public final class CryoMenus {
     public static final int MISSION_CONTROL_INVENTORY_Y = 77;
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMissionControl>> MISSION_CONTROL =
           MENUS.custom(CryoBlocks.MISSION_CONTROL, TileEntityMissionControl.class).offset(MISSION_CONTROL_INVENTORY_X, MISSION_CONTROL_INVENTORY_Y).build();
+    // Launch Pad (workstream B): Rocket Assembly, opened from the controller (fuel ports forward to it)
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLaunchController>> LAUNCH_CONTROLLER =
+          MENUS.custom(CryoBlocks.LAUNCH_CONTROLLER, TileEntityLaunchController.class).offset(0, 50).build();
 
     private CryoMenus() {
     }

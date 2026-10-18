@@ -10,6 +10,9 @@ import io.github.valajar.cryosat.tile.liquefaction.TileEntityHeatRejectionPort;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityLiquefactionController;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchController;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadFuelPort;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadPlating;
 import io.github.valajar.cryosat.machine.compressor.AtmosphericCompressorBlockEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
@@ -77,6 +80,26 @@ public final class CryoBlockEntities {
           .mekBuilder(CryoBlocks.MISSION_CONTROL, TileEntityMissionControl::new)
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
+          .build();
+
+    // Launch Pad (workstream B)
+    public static final TileEntityTypeRegistryObject<TileEntityLaunchPadPlating> LAUNCH_PAD_PLATING = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.LAUNCH_PAD_PLATING, TileEntityLaunchPadPlating::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIGURABLE)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityLaunchPadFuelPort> LAUNCH_PAD_FUEL_PORT = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.LAUNCH_PAD_FUEL_PORT, TileEntityLaunchPadFuelPort::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIGURABLE)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityLaunchController> LAUNCH_CONTROLLER = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.LAUNCH_CONTROLLER, TileEntityLaunchController::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIGURABLE)
           .build();
 
     private CryoBlockEntities() {

@@ -4,6 +4,7 @@ import io.github.valajar.cryosat.registries.CryoMenus;
 import io.github.valajar.cryosat.space.mission.MissionAction;
 import io.github.valajar.cryosat.space.mission.MissionActionPayload;
 import io.github.valajar.cryosat.space.mission.MissionControl;
+import io.github.valajar.cryosat.space.SpaceLang;
 import io.github.valajar.cryosat.space.mission.MissionLang;
 import io.github.valajar.cryosat.space.mission.MissionSummary;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
@@ -130,9 +131,9 @@ public class GuiMissionControl extends GuiMekanismTile<TileEntityMissionControl,
         }
         List<Component> lines = new ArrayList<>();
         lines.add(mission.displayName());
-        lines.add(MissionLang.DESTINATION.translate(MissionLang.destinationName(mission.destination())));
+        lines.add(MissionLang.DESTINATION.translate(SpaceLang.destinationName(mission.destination())));
         mission.asteroid().ifPresent(asteroid -> {
-            lines.add(MissionLang.ASTEROID.translate(MissionLang.asteroidName(asteroid.asteroidClass()), MissionLang.sizeName(asteroid.size())));
+            lines.add(MissionLang.ASTEROID.translate(SpaceLang.asteroidName(asteroid.asteroidClass()), SpaceLang.sizeName(asteroid.size())));
             lines.add(MissionLang.HARDNESS.translate(String.format("%.1f", asteroid.hardness())));
             lines.add(MissionLang.EXTRACTED.translate(Math.round(asteroid.extracted() * 100) + "%"));
             lines.add(MissionLang.BATCHES.translate(mission.batchesDelivered(), mission.totalBatches()));

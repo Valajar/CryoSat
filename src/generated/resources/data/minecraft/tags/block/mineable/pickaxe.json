@@ -7,6 +7,9 @@
     "cryosat:heat_rejection_port",
     "cryosat:liquefaction_controller",
     "cryosat:cargo_receiver",
-    "cryosat:mission_control"
+    "cryosat:mission_control",
+    "cryosat:launch_pad_plating",
+    "cryosat:launch_pad_fuel_port",
+    "cryosat:launch_controller"
   ]
 }

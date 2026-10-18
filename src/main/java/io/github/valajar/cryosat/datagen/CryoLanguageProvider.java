@@ -2,6 +2,7 @@ package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoLang;
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.launch.LaunchLangData;
 import io.github.valajar.cryosat.datagen.plant.PlantLang;
 import io.github.valajar.cryosat.datagen.space.SpaceLangData;
 import io.github.valajar.cryosat.machine.MachineStatus;
@@ -53,6 +54,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         io.github.valajar.cryosat.datagen.receiver.ReceiverLangData.addTo(this);
         // Mission Control (workstream D)
         MissionLangData.addTo(this);
+        // Launch Pad (workstream B)
+        LaunchLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

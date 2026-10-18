@@ -1,9 +1,6 @@
 package io.github.valajar.cryosat.datagen.mission;
 
-import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.registries.CryoBlocks;
-import io.github.valajar.cryosat.space.AsteroidClass;
-import io.github.valajar.cryosat.space.AsteroidSize;
 import io.github.valajar.cryosat.space.mission.MissionLang;
 import java.util.function.BiConsumer;
 import net.minecraft.Util;
@@ -55,14 +52,6 @@ public final class MissionLangData {
         add.accept(MissionLang.RESULT_DECOMMISSIONED, "Mission decommissioned");
         add.accept(MissionLang.RESULT_NOT_YOURS, "That mission is not yours");
         add.accept(MissionLang.RESULT_NO_CARD, "Put a linked Uplink Card in the slot first");
-
-        // Names of the default space data; datapack additions fall back to a title cased id
-        provider.add(Util.makeDescriptionId("destination", AsteroidClass.ASTEROID_BELT), "Asteroid Belt");
-        provider.add(Util.makeDescriptionId("asteroid", CryoSat.rl("chondrite")), "Chondrite");
-        provider.add(MissionLang.sizeKey(AsteroidSize.SMALL), "Small");
-        provider.add(MissionLang.sizeKey(AsteroidSize.MEDIUM), "Medium");
-        provider.add(MissionLang.sizeKey(AsteroidSize.LARGE), "Large");
-        provider.add(MissionLang.sizeKey(AsteroidSize.HUGE), "Huge");
     }
 
     private MissionLangData() {

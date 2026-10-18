@@ -9,11 +9,15 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.client.gui.GuiAtmosphericCompressor;
 import io.github.valajar.cryosat.client.gui.GuiMissionControl;
+import io.github.valajar.cryosat.client.gui.GuiRocketAssembly;
+import io.github.valajar.cryosat.client.render.RenderLaunchController;
+import io.github.valajar.cryosat.registries.CryoBlockEntities;
 import io.github.valajar.cryosat.registries.CryoMenus;
 import mekanism.client.ClientRegistrationUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 @EventBusSubscriber(modid = CryoSat.MODID, value = Dist.CLIENT)
@@ -26,6 +30,8 @@ public final class CryoSatClient {
         ClientRegistrationUtil.registerScreen(event, CryoMenus.CARGO_RECEIVER, GuiCargoReceiver::new);
         // Mission Control (workstream D)
         ClientRegistrationUtil.registerScreen(event, CryoMenus.MISSION_CONTROL, GuiMissionControl::new);
+        // Launch Pad (workstream B)
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.LAUNCH_CONTROLLER, GuiRocketAssembly::new);
     }
 
     // Uplink Card (space workstream A): the "linked" model override shows whether the card holds a target
@@ -33,6 +39,12 @@ public final class CryoSatClient {
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(CryoItems.UPLINK_CARD, CryoSat.rl("linked"),
               (stack, level, entity, seed) -> stack.has(CryoDataComponents.UPLINK_TARGET) ? 1 : 0));
+    }
+
+    // Launch Pad (workstream B): the rocket on the pad
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(CryoBlockEntities.LAUNCH_CONTROLLER.get(), RenderLaunchController::new);
     }
 
     private CryoSatClient() {

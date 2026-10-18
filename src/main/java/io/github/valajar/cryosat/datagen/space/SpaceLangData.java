@@ -1,6 +1,10 @@
 package io.github.valajar.cryosat.datagen.space;
 
+import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.registries.CryoItems;
+import io.github.valajar.cryosat.space.AsteroidClass;
+import io.github.valajar.cryosat.space.AsteroidSize;
+import net.minecraft.Util;
 import io.github.valajar.cryosat.space.RocketTier;
 import io.github.valajar.cryosat.space.SpaceLang;
 import java.util.function.BiConsumer;
@@ -45,6 +49,14 @@ public final class SpaceLangData {
 
         add.accept(SpaceLang.DEFAULT_MINER_NAME, "%1$s Miner #%2$s");
         add.accept(SpaceLang.LAUNCH_ANNOUNCEMENT, "%1$s launched %2$s");
+
+        // Names of the default space data; datapack additions fall back to a title cased id
+        provider.add(Util.makeDescriptionId("destination", AsteroidClass.ASTEROID_BELT), "Asteroid Belt");
+        provider.add(Util.makeDescriptionId("asteroid", CryoSat.rl("chondrite")), "Chondrite");
+        provider.add(SpaceLang.sizeKey(AsteroidSize.SMALL), "Small");
+        provider.add(SpaceLang.sizeKey(AsteroidSize.MEDIUM), "Medium");
+        provider.add(SpaceLang.sizeKey(AsteroidSize.LARGE), "Large");
+        provider.add(SpaceLang.sizeKey(AsteroidSize.HUGE), "Huge");
     }
 
     private SpaceLangData() {

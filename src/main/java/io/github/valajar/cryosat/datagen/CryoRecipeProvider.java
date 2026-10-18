@@ -1,5 +1,6 @@
 package io.github.valajar.cryosat.datagen;
 
+import io.github.valajar.cryosat.datagen.launch.LaunchPadRecipes;
 import io.github.valajar.cryosat.datagen.plant.PlantRecipes;
 import io.github.valajar.cryosat.datagen.space.SpaceRecipes;
 import io.github.valajar.cryosat.registries.CryoBlocks;
@@ -50,6 +51,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         io.github.valajar.cryosat.datagen.receiver.ReceiverRecipes.build(output);
         // Mission Control (workstream D)
         MissionRecipes.build(output);
+        // Launch Pad (workstream B)
+        LaunchPadRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

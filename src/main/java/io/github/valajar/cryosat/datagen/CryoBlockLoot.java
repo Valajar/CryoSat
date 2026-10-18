@@ -51,6 +51,10 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropMachine(CryoBlocks.CARGO_RECEIVER.get());
         // Mission Control (workstream D): keeps security and the Uplink Card in its slot
         dropMachine(CryoBlocks.MISSION_CONTROL.get());
+        // Launch Pad (workstream B): the rocket, its parts and fuel live in the pad's multiblock cache
+        dropSelf(CryoBlocks.LAUNCH_PAD_PLATING.get());
+        dropSelf(CryoBlocks.LAUNCH_PAD_FUEL_PORT.get());
+        dropSelf(CryoBlocks.LAUNCH_CONTROLLER.get());
     }
 
     private void dropMachine(Block block) {
