@@ -29,7 +29,7 @@ Power from space (a Dyson swarm) is wanted but low priority.
 | Risk | No launch failures, no debris, for now |
 | Ownership | Per player, no PvP. WarSats are PvE and spectacle when they come |
 | Dimensions | None for the core loop. The Space Hub may become one later |
-| Superconductors | Not cables. Superconducting magnets that boost miners (see below) |
+| Superconductors | Not cables. Magnets and coils that only work while kept cold. Milestone 2, right after asteroid mining |
 
 ## Milestone 1: Asteroid mining
 
@@ -45,7 +45,7 @@ glance:
 
 | Tier | Fuel | Unlocks |
 | --- | --- | --- |
-| Basic | Solid propellant from early Mekanism materials | Small miners. Early game, no cryo needed |
+| Basic | Solid propellant (see below) | Small miners. Early game, no cryo needed |
 | Advanced | Liquid oxygen plus Mekanism ethene | Bigger miners, more cargo |
 | Elite | Liquid oxygen plus liquid hydrogen | Large miners, rare asteroid classes |
 | Ultimate | To be decided (antimatter or nuclear) | Endgame classes, Dyson swarm segments |
@@ -53,17 +53,31 @@ glance:
 This makes the first launch possible before the Liquefaction Plant, and the plant becomes the gate
 to better launches rather than to space itself.
 
-**Asteroid Miner (payload).** Once launched it stays in orbit and sends batches of cargo to a linked
-Cargo Receiver every so often, until it wears out (slow decay, then replace it). Bigger miners from
-higher tier rockets send bigger batches and can reach rarer asteroid classes.
+**Solid propellant** is sulfur, carbon and a binder, like a real composite rocket motor: Mekanism
+sulfur dust (`c:dusts/sulfur`), Mekanism Enriched Carbon, and slime balls (`c:slime_balls`) as the
+rubbery binder that makes it a solid, mixed by crafting into a Propellant Mix and pressed into a
+Solid Propellant Grain in a Mekanism machine. Everything in it is available in the early game,
+none of it is free.
+
+**Asteroid Miner (payload).** Once launched it locks onto one asteroid rolled from the classes its
+tier can reach, and sends a few batches of cargo to a linked Cargo Receiver over its lifetime, then
+retires. Each asteroid rolls a **size** and a **hardness**:
+
+* Size sets the total yield, so a lucky large asteroid is worth noticeably more than a small one.
+* Hardness sets how long each batch takes to mine.
+* Miner tier sets how many batches it can deliver before wearing out and how much of a large
+  asteroid it can actually extract.
+
+Mission Control shows the asteroid's class, size and hardness once the miner has surveyed it, so the
+variable outcome is visible rather than a hidden roll.
 
 **Asteroid classes are datapack driven**, like atmospheres
-(`data/<ns>/cryosat/asteroid/*.json`): minimum rocket tier, weight, and what they yield. Yields
-reference item tags (for example `c:raw_materials/iron`), so modpacks can add other mods' materials
-without code. Defaults:
+(`data/<ns>/cryosat/asteroid/*.json`): minimum rocket tier, weight, size and hardness ranges, and
+what they yield. Yields reference item tags (for example `c:raw_materials/iron`) or item ids, so
+modpacks can add other mods' materials without code. Defaults:
 
 * Metallic: raw iron, raw copper, raw gold, plus Mekanism raw osmium, tin and lead.
-* Carbonaceous: carbon directly (Mekanism enriched carbon or our own carbon item), some coal, some
+* Carbonaceous: Mekanism Enriched Carbon (`mekanism:enriched_carbon`) directly, some coal, some
   diamond at higher tiers.
 * Later classes: uranium, fluorite, and the rare materials from the resource brainstorm.
 
@@ -76,24 +90,56 @@ decommission. The globe view comes later.
 **Orbital registry.** World saved data holding every orbital asset: owner, type, tier, health,
 linked receiver, timers. Everything in orbit lives here, not in loaded chunks.
 
-## Superconductors: what they are for
+## Milestone 2: Superconductors
+
+Comes right after asteroid mining, starting with the Superconducting Separator.
 
 Mekanism cables are already lossless and the top tier carries an enormous amount of power, so
-superconducting *cables* would add nothing. Superconductors in CryoSat are **magnets**, and their
-defining trait is that they **only work while kept cold**:
+superconducting *cables* would add nothing. Superconductors in CryoSat are **magnets and coils**,
+and their defining trait is that they **only work while kept cold**.
 
-* **Superconducting Separator** (Cargo Receiver upgrade): magnetically sorts incoming cargo for
-  better yields and a chance at rarer materials, but needs a steady feed of liquid nitrogen. That
-  gives the Liquefaction Plant a permanent job after the early launches, and matches the idea that
-  cryo improves how well miners work rather than what they find.
-* A higher tier magnet cooled by liquid helium could later boost Elite and Ultimate miners further.
-* Other places magnets could matter later: an electromagnetic launch assist that cuts fuel use, or
-  the receiver for a Dyson swarm's power beam.
+### Shared rules
 
-If the cooling feed stops, the magnet quenches: the bonus stops (and maybe a short cooldown), never
-anything destructive.
+* **Two grades.** High temperature superconductors are cooled with liquid nitrogen (77 K) and come
+  first. Low temperature superconductors need liquid helium (4 K) and are stronger, for the endgame.
+  Where helium comes from is still open.
+* **Coolant is consumed.** Every superconducting block takes its coolant through a tube and slowly
+  boils it off, faster when working harder. The boil off returns as nitrogen gas, which can be piped
+  back into the Liquefaction Plant, so a well built base runs a closed loop and only pays the power
+  to reliquefy.
+* **Quench.** If the coolant runs out, the block warms past its limit and its effect switches off
+  until it is cold again, with a short cooldown. Never destructive.
+* **One component.** All of them are built from a crafted Superconducting Coil (HTS or LTS grade),
+  so the progression reads as "make coils, then put them to work".
 
-## Milestone 2: Satellite imagery
+### Applications
+
+In planned order:
+
+1. **Superconducting Separator** (Cargo Receiver upgrade). Magnetically sorts incoming cargo for
+   bigger yields and a chance at rarer materials. Improves how well miners work, never what an
+   asteroid contains.
+2. **Fusion Field Coils** (Mekanism Generators fusion reactor). A real tokamak confines its plasma
+   with superconducting magnets, and a stronger field means better confinement. Coils placed
+   around the reactor multiply its energy output by a flat factor (for example +25 percent per coil
+   ring, capped) while they stay cold; coolant use scales with the reactor's output. The multiplier
+   lives on the reactor, not on a cable: a multiplying cable could be chained or looped into infinite
+   power. Technically this needs a mixin into Generators' fusion reactor, loaded only when Generators
+   is installed.
+3. **SQUID survey sensor** (Survey Satellite upgrade, Milestone 3). Real SQUID magnetometers detect
+   tiny magnetic fields and are used in mineral exploration. This is the upgrade that lets satellite
+   imagery see underground structures (ancient cities, strongholds), instead of a generic radar.
+4. **Electromagnetic Launch Rail** (Launch Pad addon). A coil gun track that pushes the rocket off
+   the pad, cutting fuel per launch or letting a lower tier rocket carry a bigger payload.
+5. **Superconducting Magnetic Energy Storage** (multiblock). Stores energy in a persistent current:
+   enormous input and output rate for its size, but it needs constant cooling and slowly bleeds its
+   charge while quenched. A buffer for fusion and Dyson power rather than a replacement for the
+   Induction Matrix.
+6. **Ultimate tier fuel.** A superconducting cyclotron that makes antimatter cheaper than
+   Mekanism's Supercritical Phase Shifter, if the Ultimate rocket ends up antimatter powered.
+7. **Dyson swarm receiver.** The ground station that catches the swarm's power beam.
+
+## Milestone 3: Satellite imagery
 
 A **Survey Satellite** plus an imaging terminal (part of Mission Control or its own block). Pick a
 structure type (village, woodland mansion, ocean monument, desert or jungle temple, pillager
@@ -102,7 +148,7 @@ coordinates or a map item with the location marked, like an explorer map.
 
 Balance ideas: each request takes time and power, range is limited (a few thousand blocks around
 the terminal), and only surface structures are visible. Underground ones (ancient cities,
-strongholds) need a ground penetrating radar upgrade, or stay out of reach.
+strongholds) need the SQUID survey sensor from Milestone 2.
 
 This uses the same lookup as `/locate` and explorer maps, so it is cheap to build and immediately
 useful in survival.
@@ -121,9 +167,7 @@ useful in survival.
 
 ## Open questions
 
-1. Basic tier solid propellant: what should it be made from? (Proposal: Mekanism sulfur dust plus
-   charcoal plus gunpowder, made in a Mekanism machine, so it is early but not free.)
-2. Miner delivery rhythm: a batch every few in game hours for a fixed number of batches, or a
-   continuous trickle while healthy?
-3. Carbon: give out Mekanism's enriched carbon item directly, or add our own raw carbon item?
-4. Should Milestone 1 already include the Superconducting Separator, or come right after?
+1. Where liquid helium comes from (a gas found by the Atmospheric Compressor somewhere, a datapack
+   asteroid class, or a Mekanism byproduct), and whether its plant recipe needs the full 4 K.
+2. Ultimate rocket fuel: antimatter, nuclear, or something else.
+3. Exact numbers for asteroid size, hardness and batch timing, settled by playtesting.
