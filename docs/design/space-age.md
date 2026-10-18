@@ -23,6 +23,7 @@ Power from space (a Dyson swarm) is wanted but low priority.
 | Topic | Decision |
 | --- | --- |
 | First payload | Asteroid Miner |
+| Destinations | Abstract, datapack driven: asteroid belt first, gas giants and stars later. Never dimensions you visit |
 | Rockets | Crafted parts placed into an assembly GUI. The assembled rocket shows as a 3D model on the pad, coloured by tier (Mekanism basic, advanced, elite, ultimate) |
 | Cargo | A Cargo Receiver block on the ground for now. Later: a Space Hub station (see "Later") |
 | Orbits | Abstract. No low or high orbit distinction, no coverage maths |
@@ -48,7 +49,7 @@ glance:
 | Basic | Solid propellant (see below) | Small miners. Early game, no cryo needed |
 | Advanced | Liquid oxygen plus Mekanism ethene | Bigger miners, more cargo |
 | Elite | Liquid oxygen plus liquid hydrogen | Large miners, rare asteroid classes |
-| Ultimate | To be decided (antimatter or nuclear) | Endgame classes, Dyson swarm segments |
+| Ultimate | Cryogenic solid grain: frozen oxygen plus metallic hydrogen (see below) | Endgame classes, stars, Dyson swarm segments |
 
 This makes the first launch possible before the Liquefaction Plant, and the plant becomes the gate
 to better launches rather than to space itself.
@@ -58,6 +59,25 @@ sulfur dust (`c:dusts/sulfur`), Mekanism Enriched Carbon, and slime balls (`c:sl
 rubbery binder that makes it a solid, mixed by crafting into a Propellant Mix and pressed into a
 Solid Propellant Grain in a Mekanism machine. Everything in it is available in the early game,
 none of it is free.
+
+**Ultimate propellant** closes the loop back to cryo and space: a fictional cryogenic solid grain of
+oxygen frozen solid (below 54 K) around metallic hydrogen, a late material only found deep in gas
+giants. It is cast in the Liquefaction Plant and has to stay cold on the pad: an Ultimate rocket
+left without coolant warms up and stops being launchable until it is chilled again (never
+explodes). Metallic hydrogen is a real theoretical super propellant, which keeps the fiction
+plausible.
+
+**Missions are rocket plus payload plus destination.** Destinations are datapack files
+(`data/<ns>/cryosat/destination/*.json`) with a minimum rocket tier, a travel time and the payloads
+that work there. Milestone 1 ships only the asteroid belt, but the data model is built so later
+destinations plug in without new systems:
+
+| Destination | Minimum tier | Payload | Gives |
+| --- | --- | --- | --- |
+| Asteroid belt | Basic | Asteroid Miner | Ores, carbon (Milestone 1) |
+| Gas giant | Elite | Atmospheric Scoop | Helium; metallic hydrogen from deep dives |
+| Exoplanets | Elite or Ultimate | Scoop or miner | Datapack defined gases and materials, room for modpacks |
+| Star | Ultimate | Dyson segment | Dyson swarm power |
 
 **Asteroid Miner (payload).** Once launched it locks onto one asteroid rolled from the classes its
 tier can reach, and sends a few batches of cargo to a linked Cargo Receiver over its lifetime, then
@@ -102,7 +122,8 @@ and their defining trait is that they **only work while kept cold**.
 
 * **Two grades.** High temperature superconductors are cooled with liquid nitrogen (77 K) and come
   first. Low temperature superconductors need liquid helium (4 K) and are stronger, for the endgame.
-  Where helium comes from is still open.
+  Helium comes from gas giants (see "Gas giants" below), so the stronger grade is gated
+  behind Elite rockets.
 * **Coolant is consumed.** Every superconducting block takes its coolant through a tube and slowly
   boils it off, faster when working harder. The boil off returns as nitrogen gas, which can be piped
   back into the Liquefaction Plant, so a well built base runs a closed loop and only pays the power
@@ -153,6 +174,22 @@ strongholds) need the SQUID survey sensor from Milestone 2.
 This uses the same lookup as `/locate` and explorer maps, so it is cheap to build and immediately
 useful in survival.
 
+## Gas giants: helium and metallic hydrogen
+
+Scheduled after Milestone 3. Real helium comes from natural gas wells, but drilling gas pockets would
+be a ground side detour; scooping it from a gas giant's atmosphere is more in theme.
+
+* **Atmospheric Scoop** (payload, Elite rocket and up): skims a gas giant and returns pressurised
+  gas canisters to the Cargo Receiver, which empties them into tanks like a chemical output.
+  Gas giant and exoplanet atmospheres reuse the atmosphere format the Atmospheric Compressor
+  already reads, so they are datapack defined too.
+* **Helium** is liquefied in the plant at 4 K, the hardest recipe it has, and feeds the low
+  temperature superconductors.
+* **Deep dives** with a better scoop return a little **metallic hydrogen**, the late material for
+  the Ultimate propellant.
+* Possible later bonus: helium 3 as an alternative fusion fuel, if it fits alongside Mekanism's
+  D T fuel.
+
 ## Later (recorded, not scheduled)
 
 * **Space Hub.** An orbital station where cargo arrives instead of a ground receiver, possibly its
@@ -167,7 +204,7 @@ useful in survival.
 
 ## Open questions
 
-1. Where liquid helium comes from (a gas found by the Atmospheric Compressor somewhere, a datapack
-   asteroid class, or a Mekanism byproduct), and whether its plant recipe needs the full 4 K.
-2. Ultimate rocket fuel: antimatter, nuclear, or something else.
+1. Stars: only Dyson segments, or also something to collect (stellar plasma for an endgame item)?
+2. Whether the antimatter cyclotron (superconductor application 6) is still wanted now that the
+   Ultimate fuel is not antimatter.
 3. Exact numbers for asteroid size, hardness and batch timing, settled by playtesting.
