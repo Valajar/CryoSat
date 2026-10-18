@@ -30,6 +30,9 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.resource.BlockResourceInfo;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
 import io.github.valajar.cryosat.space.mission.MissionControl;
+// Superconducting Separator (superconductor workstream A)
+import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
+import io.github.valajar.cryosat.superconductor.Cryostat;
 
 /**
  * Blocks and their items, registered through Mekanism's {@link BlockDeferredRegister} so block items get Mekanism's
@@ -100,6 +103,22 @@ public final class CryoBlocks {
           BLOCKS.registerDetails("launch_pad_fuel_port", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_PAD_FUEL_PORT, p -> p.mapColor(MapColor.METAL)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLaunchController>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLaunchController>>> LAUNCH_CONTROLLER =
           BLOCKS.registerDetails("launch_controller", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_CONTROLLER, p -> p.mapColor(MapColor.METAL)));
+
+    // Superconducting Separator (superconductor workstream A): the block item keeps the side config, ejector and both
+    // Cryostat tanks (liquid nitrogen, then nitrogen boil off, in the tile's order)
+    public static final BlockRegistryObject<BlockTile<TileEntitySuperconductingSeparator, BlockTypeTile<TileEntitySuperconductingSeparator>>, ItemBlockTooltip<BlockTile<TileEntitySuperconductingSeparator, BlockTypeTile<TileEntitySuperconductingSeparator>>>> SUPERCONDUCTING_SEPARATOR =
+          BLOCKS.register("superconducting_separator", () -> new BlockTile<>(CryoBlockTypes.SUPERCONDUCTING_SEPARATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties
+                      .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+                      .component(MekanismDataComponents.SIDE_CONFIG, TileEntitySuperconductingSeparator.DEFAULT_SIDE_CONFIG)
+                )
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                      .addBasic(Cryostat.COOLANT_CAPACITY, chemical -> chemical.is(CryoChemicals.LIQUID_NITROGEN))
+                      .addBasic(Cryostat.BOIL_OFF_CAPACITY)
+                      .build()
+                )
+          );
 
     private CryoBlocks() {
     }

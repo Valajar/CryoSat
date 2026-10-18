@@ -19,6 +19,8 @@ import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
+// Superconducting Separator (superconductor workstream A)
+import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
 
 /**
  * Block entity types, registered through Mekanism's {@link TileEntityTypeDeferredRegister}. {@code mekBuilder} attaches
@@ -100,6 +102,14 @@ public final class CryoBlockEntities {
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
+          .build();
+
+    // Superconducting Separator (superconductor workstream A)
+    public static final TileEntityTypeRegistryObject<TileEntitySuperconductingSeparator> SUPERCONDUCTING_SEPARATOR = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.SUPERCONDUCTING_SEPARATOR, TileEntitySuperconductingSeparator::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
           .build();
 
     private CryoBlockEntities() {

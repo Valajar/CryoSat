@@ -12,6 +12,8 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
+// Superconducting Separator (superconductor workstream A)
+import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
 
 /**
  * Menu types, registered through Mekanism's {@link ContainerTypeDeferredRegister}. A {@link MekanismTileContainer} holds
@@ -46,6 +48,9 @@ public final class CryoMenus {
     // Launch Pad (workstream B): Rocket Assembly, opened from the controller (fuel ports forward to it)
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLaunchController>> LAUNCH_CONTROLLER =
           MENUS.custom(CryoBlocks.LAUNCH_CONTROLLER, TileEntityLaunchController.class).offset(0, 50).build();
+    // Superconducting Separator (superconductor workstream A): a standard sized Mekanism screen
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySuperconductingSeparator>> SUPERCONDUCTING_SEPARATOR =
+          MENUS.register(CryoBlocks.SUPERCONDUCTING_SEPARATOR, TileEntitySuperconductingSeparator.class);
 
     private CryoMenus() {
     }

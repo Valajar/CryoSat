@@ -53,6 +53,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         MissionRecipes.build(output);
         // Launch Pad (workstream B)
         LaunchPadRecipes.build(output);
+        // Superconducting Coil and Separator (superconductor workstream A)
+        io.github.valajar.cryosat.datagen.separator.SeparatorRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

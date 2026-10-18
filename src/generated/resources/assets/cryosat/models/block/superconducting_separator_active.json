@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/superconducting_separator/bottom",
+    "east": "cryosat:block/superconducting_separator/left_active",
+    "north": "cryosat:block/superconducting_separator/front_active",
+    "particle": "cryosat:block/superconducting_separator/front",
+    "south": "cryosat:block/superconducting_separator/back",
+    "up": "cryosat:block/superconducting_separator/top_active",
+    "west": "cryosat:block/superconducting_separator/right_active"
+  }
+}

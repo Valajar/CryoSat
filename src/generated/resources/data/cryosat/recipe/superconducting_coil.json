@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "O": {
+      "tag": "c:ingots/osmium"
+    },
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "AOA",
+    "PCP"
+  ],
+  "result": {
+    "count": 2,
+    "id": "cryosat:superconducting_coil"
+  }
+}
