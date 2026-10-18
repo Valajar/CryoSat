@@ -60,7 +60,9 @@ interesting results are the ones that feel wrong.
 5. **Oxygen and hydrogen:** feed Mekanism Oxygen (90 K) or Mekanism Hydrogen (20 K) from an
    Electrolytic Separator instead of air. The **Needs** line shows the temperature the input needs;
    until the plant gets there the status stays **Cooling down** and the gas waits in the input
-   tank. Hydrogen is meant to be hard: note how big a plant and how many coolers you needed, how
+   tank. Each product goes to the output tank already holding it or the first empty one, so
+   leftovers from an air run do not block hydrogen as long as one tank is free; with none free
+   the status says **No free output tank, drain one**. Hydrogen is meant to be hard: note how big a plant and how many coolers you needed, how
    much power it took, and how you kept the hot side from overheating.
 
 ## 4. JEI (2 minutes)

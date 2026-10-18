@@ -44,7 +44,7 @@ public final class PlantLang {
         add.accept(CryoLang.PLANT_STATUS_COOLING_DOWN, "Cooling down");
         add.accept(CryoLang.PLANT_STATUS_NO_COOLERS, "No Cryocoolers");
         add.accept(CryoLang.PLANT_STATUS_OUTPUT_FULL, "Output full");
-        add.accept(CryoLang.PLANT_STATUS_OUTPUT_MISMATCH, "Output holds other chemical");
+        add.accept(CryoLang.PLANT_STATUS_OUTPUT_MISMATCH, "No free output tank, drain one");
         add.accept(CryoLang.PLANT_STATUS_OVERHEATED, "Hot side overheated!");
 
         add.accept(CryoLang.RECIPE_MAX_TEMPERATURE, "Max: %1$s");

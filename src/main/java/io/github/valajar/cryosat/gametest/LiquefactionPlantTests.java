@@ -191,4 +191,25 @@ public class LiquefactionPlantTests {
             });
         });
     }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void hydrogenAfterAirUsesAFreeTank(GameTestHelper helper) {
+        build(helper);
+        helper.runAfterDelay(20, () -> {
+            LiquefactionMultiblockData plant = plant(helper);
+            helper.assertTrue(plant.isFormed(), "plant did not form");
+            // Leftovers from a compressed air run in the first output tank
+            plant.outputTank1.setStack(new ChemicalStack(CryoChemicals.LIQUID_NITROGEN, 500));
+            IChemicalHandler valve = helper.getLevel().getCapability(Capabilities.CHEMICAL.block(), helper.absolutePos(VALVE), Direction.WEST);
+            helper.assertTrue(valve.insertChemical(new ChemicalStack(MekanismChemicals.HYDROGEN, 1_000), Action.EXECUTE).isEmpty(), "valve refused hydrogen");
+            plant.coldTemperature = 10;
+            helper.runAfterDelay(10, () -> {
+                helper.assertTrue(plant.outputTank1.getStack().is(CryoChemicals.LIQUID_NITROGEN) && plant.outputTank1.getStored() == 500,
+                      "nitrogen tank changed: " + plant.outputTank1.getStack());
+                helper.assertTrue(plant.outputTank2.getStack().is(CryoChemicals.LIQUID_HYDROGEN) && plant.outputTank2.getStored() > 0,
+                      "liquid hydrogen did not go to the free tank: " + plant.outputTank2.getStack() + ", status " + plant.status);
+                helper.succeed();
+            });
+        });
+    }
 }

@@ -201,15 +201,16 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         if (coldTemperature > recipe.maxTemperature()) {
             return coolers == 0 ? PlantStatus.NO_COOLERS : PlantStatus.COOLING_DOWN;
         }
+        int[] tanks = assignOutputTanks(recipe);
+        if (tanks == null) {
+            return PlantStatus.OUTPUT_MISMATCH;
+        }
         long amount = Math.min(inputTank.getStored(), RATE_PER_BLOCK * getInteriorVolume());
         for (int i = 0; i < recipe.outputs().size(); i++) {
-            IChemicalTank tank = outputTanks.get(i);
-            if (!tank.isEmpty() && !tank.isTypeEqual(recipe.outputs().get(i).getChemicalHolder())) {
-                return PlantStatus.OUTPUT_MISMATCH;
-            }
             double fraction = recipe.fraction(i);
             if (fraction > 0) {
-                amount = Math.min(amount, (long) Math.floor((tank.getNeeded() - outputRemainders[i]) / fraction));
+                int tank = tanks[i];
+                amount = Math.min(amount, (long) Math.floor((outputTanks.get(tank).getNeeded() - outputRemainders[tank]) / fraction));
             }
         }
         if (amount <= 0) {
@@ -217,16 +218,54 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         }
         inputTank.shrinkStack(amount, Action.EXECUTE);
         for (int i = 0; i < recipe.outputs().size(); i++) {
-            outputRemainders[i] += amount * recipe.fraction(i);
-            long whole = (long) outputRemainders[i];
+            int tank = tanks[i];
+            outputRemainders[tank] += amount * recipe.fraction(i);
+            long whole = (long) outputRemainders[tank];
             if (whole > 0) {
-                outputTanks.get(i).insert(recipe.outputs().get(i).copyWithAmount(whole), Action.EXECUTE, AutomationType.INTERNAL);
-                outputRemainders[i] -= whole;
+                outputTanks.get(tank).insert(recipe.outputs().get(i).copyWithAmount(whole), Action.EXECUTE, AutomationType.INTERNAL);
+                outputRemainders[tank] -= whole;
             }
         }
         coldTemperature += amount * recipe.latentHeat() / coldCapacity();
         lastProcessed = amount;
         return PlantStatus.RUNNING;
+    }
+
+    /**
+     * Picks an output tank for each recipe output: the tank already holding that chemical, otherwise the first empty one, so
+     * switching from one gas to another only needs a free tank rather than emptying a specific one.
+     *
+     * @return the tank index per recipe output, or {@code null} if some output has nowhere to go
+     */
+    private int[] assignOutputTanks(LiquefactionRecipe recipe) {
+        int[] tanks = new int[recipe.outputs().size()];
+        boolean[] taken = new boolean[OUTPUT_TANKS];
+        for (int i = 0; i < tanks.length; i++) {
+            tanks[i] = -1;
+            for (int t = 0; t < OUTPUT_TANKS; t++) {
+                if (!taken[t] && !outputTanks.get(t).isEmpty() && outputTanks.get(t).isTypeEqual(recipe.outputs().get(i).getChemicalHolder())) {
+                    tanks[i] = t;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < tanks.length; i++) {
+            if (tanks[i] >= 0) {
+                taken[tanks[i]] = true;
+            }
+        }
+        for (int i = 0; i < tanks.length; i++) {
+            for (int t = 0; t < OUTPUT_TANKS && tanks[i] < 0; t++) {
+                if (!taken[t] && outputTanks.get(t).isEmpty()) {
+                    tanks[i] = t;
+                    taken[t] = true;
+                }
+            }
+            if (tanks[i] < 0) {
+                return null;
+            }
+        }
+        return tanks;
     }
 
     /** Runs all Cryocoolers for this tick on the shared energy buffer. */

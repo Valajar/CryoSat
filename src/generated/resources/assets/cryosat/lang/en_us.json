@@ -157,7 +157,7 @@
   "status.cryosat.plant.idle": "Idle",
   "status.cryosat.plant.no_coolers": "No Cryocoolers",
   "status.cryosat.plant.output_full": "Output full",
-  "status.cryosat.plant.output_mismatch": "Output holds other chemical",
+  "status.cryosat.plant.output_mismatch": "No free output tank, drain one",
   "status.cryosat.plant.overheated": "Hot side overheated!",
   "status.cryosat.plant.running": "Liquefying",
   "status.cryosat.running": "Running",
