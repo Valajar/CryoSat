@@ -1,5 +1,9 @@
 package io.github.valajar.cryosat.registries;
 
+// Cargo Receiver (space workstream A)
+import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
+import io.github.valajar.cryosat.space.receiver.ReceiverLang;
+
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
@@ -64,6 +68,14 @@ public final class CryoBlockTypes {
           .withGui(() -> CryoMenus.LIQUEFACTION_PLANT, CryoLang.LIQUEFACTION_PLANT)
           .with(Attributes.ACTIVE, new AttributeStateFacing())
           .externalMultiblock()
+          .build();
+
+    // Cargo Receiver (space workstream A): no energy, no upgrades, no active state
+    public static final BlockTypeTile<TileEntityCargoReceiver> CARGO_RECEIVER = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.CARGO_RECEIVER, ReceiverLang.DESCRIPTION_CARGO_RECEIVER)
+          .withGui(() -> CryoMenus.CARGO_RECEIVER)
+          .with(new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR)
+          .withSideConfig(TransmissionType.ITEM)
           .build();
 
     private CryoBlockTypes() {

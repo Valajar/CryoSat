@@ -48,6 +48,8 @@ public class CryoLanguageProvider extends LanguageProvider {
 
         PlantLang.addTo(this);
         SpaceLangData.addTo(this);
+        // Cargo Receiver and Uplink Card (space workstream A)
+        io.github.valajar.cryosat.datagen.receiver.ReceiverLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

@@ -1,5 +1,8 @@
 package io.github.valajar.cryosat.registries;
 
+// Uplink Card (space workstream A)
+import io.github.valajar.cryosat.space.receiver.ItemUplinkCard;
+
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.space.PayloadType;
 import io.github.valajar.cryosat.space.RocketPartItem;
@@ -29,6 +32,9 @@ public final class CryoItems {
     // Basic tier propellant: sulfur, carbon and a slime binder, pressed into grains
     public static final ItemRegistryObject<Item> PROPELLANT_MIX = ITEMS.register("propellant_mix");
     public static final ItemRegistryObject<Item> SOLID_PROPELLANT_GRAIN = ITEMS.register("solid_propellant_grain");
+
+    // Uplink Card (space workstream A): stores the Cargo Receiver a mission delivers to
+    public static final ItemRegistryObject<ItemUplinkCard> UPLINK_CARD = ITEMS.registerItem("uplink_card", ItemUplinkCard::new);
 
     private static Map<RocketTier, ItemRegistryObject<RocketPartItem>> tiered(String name, Kind kind, PayloadType payload) {
         Map<RocketTier, ItemRegistryObject<RocketPartItem>> items = new EnumMap<>(RocketTier.class);

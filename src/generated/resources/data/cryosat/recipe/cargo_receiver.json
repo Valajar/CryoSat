@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/copper"
+    },
+    "B": {
+      "tag": "c:chests/wooden"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "AMA",
+    "SBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:cargo_receiver"
+  }
+}

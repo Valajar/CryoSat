@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/cargo_receiver/bottom",
+    "east": "cryosat:block/cargo_receiver/left",
+    "north": "cryosat:block/cargo_receiver/front",
+    "particle": "cryosat:block/cargo_receiver/front",
+    "south": "cryosat:block/cargo_receiver/back",
+    "up": "cryosat:block/cargo_receiver/top",
+    "west": "cryosat:block/cargo_receiver/right"
+  }
+}

@@ -5,6 +5,7 @@
     "cryosat:cryo_valve",
     "cryosat:cryocooler",
     "cryosat:heat_rejection_port",
-    "cryosat:liquefaction_controller"
+    "cryosat:liquefaction_controller",
+    "cryosat:cargo_receiver"
   ]
 }

@@ -35,6 +35,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new PlantBlockStateProvider(output, files));
         // Space items: item models (recipes are added by CryoRecipeProvider through SpaceRecipes)
         generator.addProvider(event.includeClient(), new CryoItemModelProvider(output, files));
+        // Cargo Receiver and Uplink Card (space workstream A)
+        generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.receiver.ReceiverModelProvider(output, files));
     }
 
     private CryoDataGen() {
