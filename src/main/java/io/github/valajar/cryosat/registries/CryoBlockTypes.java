@@ -16,6 +16,8 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismSounds;
+import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
+import io.github.valajar.cryosat.space.mission.MissionLang;
 
 /**
  * Mekanism block types: the attributes (GUI, energy, side config, upgrades, sound, facing, active state, security,
@@ -64,6 +66,13 @@ public final class CryoBlockTypes {
           .withGui(() -> CryoMenus.LIQUEFACTION_PLANT, CryoLang.LIQUEFACTION_PLANT)
           .with(Attributes.ACTIVE, new AttributeStateFacing())
           .externalMultiblock()
+          .build();
+
+    // Mission Control (workstream D): no energy, so a plain tile block type rather than a Machine
+    public static final BlockTypeTile<TileEntityMissionControl> MISSION_CONTROL = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.MISSION_CONTROL, MissionLang.DESCRIPTION)
+          .withGui(() -> CryoMenus.MISSION_CONTROL)
+          .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY)
           .build();
 
     private CryoBlockTypes() {

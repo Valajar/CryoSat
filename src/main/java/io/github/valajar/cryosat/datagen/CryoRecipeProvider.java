@@ -17,6 +17,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import io.github.valajar.cryosat.datagen.mission.MissionRecipes;
 
 /**
  * Recipes reference Mekanism items by id and common tags, because only Mekanism's API is on the compile classpath. Data
@@ -45,6 +46,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         PlantRecipes.build(output);
         // Space items: propellant chain and rocket parts
         SpaceRecipes.build(output);
+        // Mission Control (workstream D)
+        MissionRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

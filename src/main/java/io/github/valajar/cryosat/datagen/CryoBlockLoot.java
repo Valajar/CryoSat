@@ -47,6 +47,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.CRYOCOOLER.get());
         dropSelf(CryoBlocks.HEAT_REJECTION_PORT.get());
         dropSelf(CryoBlocks.LIQUEFACTION_CONTROLLER.get());
+        // Mission Control (workstream D): keeps security and the Uplink Card in its slot
+        dropMachine(CryoBlocks.MISSION_CONTROL.get());
     }
 
     private void dropMachine(Block block) {
