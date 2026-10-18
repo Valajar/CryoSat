@@ -99,10 +99,9 @@ public class AtmosphericCompressorTests {
 
     @GameTest(template = ARENA)
     public static void stallsWhenEnclosed(GameTestHelper helper) {
-        for (BlockPos pos : BlockPos.betweenClosed(BlockPos.ZERO, new BlockPos(2, 2, 2))) {
-            if (!pos.equals(CENTER)) {
-                helper.setBlock(pos, Blocks.STONE);
-            }
+        // Only the six faces count: covering them stalls the compressor even with air at the edges and corners
+        for (Direction direction : Direction.values()) {
+            helper.setBlock(CENTER.relative(direction), Blocks.STONE);
         }
         AtmosphericCompressorBlockEntity compressor = place(helper, CENTER);
         power(helper, CENTER);

@@ -9,14 +9,14 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Asteroid sizes. Asteroid class yields are written for a small asteroid; bigger ones multiply them. A rocket can roll
- * sizes up to one step above its tier, so better rockets find bigger asteroids more often.
+ * Asteroid sizes. Asteroid class yields are written for a small asteroid; bigger ones multiply them. Which sizes a rocket
+ * finds depends on its tier, see {@link RocketTier#sizeWeight}.
  */
 public enum AsteroidSize implements StringRepresentable {
-    SMALL("small", 1, 3, 50),
-    MEDIUM("medium", 2, 4, 30),
-    LARGE("large", 4, 6, 15),
-    HUGE("huge", 8, 8, 5);
+    SMALL("small", 1, 3),
+    MEDIUM("medium", 2, 4),
+    LARGE("large", 4, 6),
+    HUGE("huge", 8, 8);
 
     public static final StringRepresentable.EnumCodec<AsteroidSize> CODEC = StringRepresentable.fromEnum(AsteroidSize::values);
     public static final IntFunction<AsteroidSize> BY_ID = ByIdMap.continuous(AsteroidSize::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
@@ -25,13 +25,11 @@ public enum AsteroidSize implements StringRepresentable {
     private final String name;
     private final int multiplier;
     private final int batches;
-    private final int weight;
 
-    AsteroidSize(String name, int multiplier, int batches, int weight) {
+    AsteroidSize(String name, int multiplier, int batches) {
         this.name = name;
         this.multiplier = multiplier;
         this.batches = batches;
-        this.weight = weight;
     }
 
     /** Yield relative to a small asteroid. */
@@ -42,11 +40,6 @@ public enum AsteroidSize implements StringRepresentable {
     /** How many batches a miner splits the asteroid's yield into. */
     public int batches() {
         return batches;
-    }
-
-    /** Relative chance of rolling this size among the sizes a rocket can reach. */
-    public int weight() {
-        return weight;
     }
 
     @NotNull

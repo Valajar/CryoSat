@@ -12,6 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Chemical port of the plant. Sneak right click (or a Configurator) cycles between feeding the input tank and draining one of
- * the three output tanks; output modes also push into whatever is attached.
+ * the three output tanks; output modes also push into whatever is attached. Every valve also accepts power into the plant's
+ * shared energy buffer.
  */
 public class TileEntityCryoValve extends TileEntityCryoCasing {
     private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
@@ -44,9 +46,15 @@ public class TileEntityCryoValve extends TileEntityCryoCasing {
         return side -> getMultiblock().getValveTanks(mode);
     }
 
+    @NotNull
+    @Override
+    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+        return side -> getMultiblock().getEnergyContainers(side);
+    }
+
     @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
-        return type != ContainerType.CHEMICAL && super.persists(type);
+        return type != ContainerType.CHEMICAL && type != ContainerType.ENERGY && super.persists(type);
     }
 
     public ValveMode getMode() {

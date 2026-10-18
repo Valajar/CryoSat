@@ -18,10 +18,11 @@ interesting results are the ones that feel wrong.
 
 1. Place it outdoors on the ground. Power it from the back or bottom (cable from a creative energy
    cube). Put a pressurized tube on top leading into a chemical tank.
-2. Open it. Expect: **Status: Running**, **Output 10.0 mB/t**, **Energy 10 J/mB** (shown as 4 FE/mB
+2. Open it. Expect: **Status: Running**, **Output about 10 mB/t** near sea level, **Energy 10 J/mB** (shown as 4 FE/mB
    if your energy unit is FE). The tank fills with **Compressed Air**.
-3. Box it in with stone on all sides (leave the tube): status changes to **Needs open air around it**.
-   Remove a few blocks: it restarts, slower until about 8 of the 26 surrounding blocks are air.
+3. Cover all six faces (the tube on top counts as covered): status changes to **Needs open air
+   around it**. Only the six faces count, edges and corners do not. One open face gives half
+   output, two or more give full output.
 4. Move it high up (y 250 or so): output drops towards 40 percent of the sea level rate.
 5. Upgrades: add Speed upgrades through the **upgrade tab** (output should rise, 4 upgrades about
    3.16x), then Energy upgrades (energy per mB should fall). Also try **sneak right clicking the
@@ -45,7 +46,9 @@ interesting results are the ones that feel wrong.
 
 ## 3. Liquefaction Plant: cooling and liquefying (about 15 minutes)
 
-1. Power every Cryocooler with a cable (any side). Watch **Temp** fall and **Hot side** rise in the GUI.
+1. Power the plant with a cable into any Cryocooler or Cryo Valve (any side): all coolers share one
+   energy buffer, shown as the bar on the right of the GUI and in the energy tab. Watch **Temp** fall
+   and **Hot side** rise.
 2. Feed **Compressed Air** into a Cryo Valve (valves start in **Input** mode). Sneak right click
    other valves to cycle them to **Output 1 / 2 / 3** and pipe each into its own chemical tank.
 3. Once **Temp** reaches **77 K**, status becomes **Liquefying**: Output 1 fills with **Liquid
@@ -55,8 +58,10 @@ interesting results are the ones that feel wrong.
    Thermodynamic Conductors to the port (a short line into the air, or into a Thermoelectric
    Boiler from Generators): hot side should drop and cooling should resume.
 5. **Oxygen and hydrogen:** feed Mekanism Oxygen (90 K) or Mekanism Hydrogen (20 K) from an
-   Electrolytic Separator instead of air. Hydrogen is meant to be hard: note how big a plant and how
-   many coolers you needed, and how much power it took.
+   Electrolytic Separator instead of air. The **Needs** line shows the temperature the input needs;
+   until the plant gets there the status stays **Cooling down** and the gas waits in the input
+   tank. Hydrogen is meant to be hard: note how big a plant and how many coolers you needed, how
+   much power it took, and how you kept the hot side from overheating.
 
 ## 4. JEI (2 minutes)
 
@@ -100,8 +105,9 @@ client only) show a rocket on the block you look at, for screenshots.
    (Mission Control shows it) and arrives once there is room. A redstone signal pauses the receiver.
 7. **Advanced and Elite.** Advanced rockets burn Liquid Oxygen plus Mekanism Ethene, Elite rockets
    Liquid Oxygen plus Liquid Hydrogen (4000 mB each, 8000 mB hydrogen), piped into a fuel port.
-   Bigger rockets find bigger asteroids more often, and a miner smaller than its asteroid only
-   extracts part of it.
+   Asteroid size odds: Basic rockets 70% small, 30% medium; Advanced 25% small, 50% medium, 25%
+   large; Elite 15% medium, 55% large, 30% huge. A miner of the same tier as the rocket always
+   extracts the whole asteroid; a smaller miner only extracts part of a big one.
 
 ## What to report
 
@@ -121,7 +127,8 @@ Bugs (attach logs/latest.log for crashes or errors):
 ```
 
 Numbers worth commenting on, all easy to change: 10 J per mB of compressed air; cooler 200 heat/t
-max; plant interior 1000 heat per K per interior block; heat leak 0.02 per casing and 0.08 per glass
+max; 100 kJ of plant energy buffer per cooler; hot side 50000 heat per K per Heat Rejection Port;
+plant interior 1000 heat per K per interior block; heat leak 0.02 per casing and 0.08 per glass
 per Kelvin; overheat at 1200 K; liquefying up to 20 mB/t per interior block. Space: 16 grains per
 Basic launch, travel 2 minutes, a batch every 5 minutes at hardness 1, small asteroid yields above
 (data file `data/cryosat/cryosat/asteroid/chondrite.json`).

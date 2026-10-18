@@ -16,11 +16,13 @@ import org.jetbrains.annotations.NotNull;
  * Rocket tiers follow Mekanism's four tiers and borrow their colours, so a rocket's tier reads at a glance.
  */
 public enum RocketTier implements StringRepresentable {
-    BASIC(BaseTier.BASIC, 1, Fuel.solid(CryoSat.rl("solid_propellant_grain"), 16)),
-    ADVANCED(BaseTier.ADVANCED, 2, Fuel.liquid(CryoSat.rl("liquid_oxygen"), 4_000, ResourceLocation.fromNamespaceAndPath("mekanism", "ethene"), 4_000)),
-    ELITE(BaseTier.ELITE, 4, Fuel.liquid(CryoSat.rl("liquid_oxygen"), 4_000, CryoSat.rl("liquid_hydrogen"), 8_000)),
+    // Asteroid size odds in percent: small, medium, large, huge
+    BASIC(BaseTier.BASIC, 2, new int[]{70, 30, 0, 0}, Fuel.solid(CryoSat.rl("solid_propellant_grain"), 16)),
+    ADVANCED(BaseTier.ADVANCED, 4, new int[]{25, 50, 25, 0},
+          Fuel.liquid(CryoSat.rl("liquid_oxygen"), 4_000, ResourceLocation.fromNamespaceAndPath("mekanism", "ethene"), 4_000)),
+    ELITE(BaseTier.ELITE, 8, new int[]{0, 15, 55, 30}, Fuel.liquid(CryoSat.rl("liquid_oxygen"), 4_000, CryoSat.rl("liquid_hydrogen"), 8_000)),
     // Cryogenic solid grain (frozen oxygen plus metallic hydrogen) comes with the gas giants
-    ULTIMATE(BaseTier.ULTIMATE, 8, null);
+    ULTIMATE(BaseTier.ULTIMATE, 8, new int[]{0, 0, 40, 60}, null);
 
     public static final StringRepresentable.EnumCodec<RocketTier> CODEC = StringRepresentable.fromEnum(RocketTier::values);
     public static final IntFunction<RocketTier> BY_ID = ByIdMap.continuous(RocketTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
@@ -28,11 +30,13 @@ public enum RocketTier implements StringRepresentable {
 
     private final BaseTier baseTier;
     private final int minerCapacity;
+    private final int[] sizeWeights;
     private final Fuel fuel;
 
-    RocketTier(BaseTier baseTier, int minerCapacity, Fuel fuel) {
+    RocketTier(BaseTier baseTier, int minerCapacity, int[] sizeWeights, Fuel fuel) {
         this.baseTier = baseTier;
         this.minerCapacity = minerCapacity;
+        this.sizeWeights = sizeWeights;
         this.fuel = fuel;
     }
 
@@ -46,11 +50,17 @@ public enum RocketTier implements StringRepresentable {
     }
 
     /**
-     * How much of an asteroid an Asteroid Miner of this tier can extract, in multiples of a small asteroid. A miner on a
-     * bigger asteroid than its capacity extracts only part of it.
+     * How much of an asteroid an Asteroid Miner of this tier can extract, in multiples of a small asteroid: enough for the
+     * biggest asteroid a rocket of the same tier finds. A miner on a bigger asteroid than its capacity extracts only part of
+     * it.
      */
     public int minerCapacity() {
         return minerCapacity;
+    }
+
+    /** Relative chance that a rocket of this tier finds an asteroid of the given size. */
+    public int sizeWeight(AsteroidSize size) {
+        return sizeWeights[size.ordinal()];
     }
 
     /** What a rocket of this tier burns per launch, empty while the tier cannot launch yet. */

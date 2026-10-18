@@ -42,6 +42,7 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -63,8 +64,8 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
     public static final long ENERGY_PER_MB = 10;
     /** Energy per tick at {@link #BASE_RATE} without upgrades; the machine's base energy usage. */
     public static final long BASE_ENERGY_PER_TICK = (long) (BASE_RATE * ENERGY_PER_MB);
-    /** Air blocks in the surrounding 3x3x3 needed for full output. */
-    public static final int FULL_AIR_BLOCKS = 8;
+    /** Open (air) faces needed for full output; with fewer the output drops, with none the machine stops. */
+    public static final int FULL_AIR_FACES = 2;
     public static final double MIN_ALTITUDE_FACTOR = 0.4;
     private static final int AIR_CHECK_INTERVAL = 20;
 
@@ -92,7 +93,7 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
     private MachineStatus status = MachineStatus.IDLE;
     private double speedMultiplier = 1;
     private double pending;
-    private int airBlocks = -1;
+    private int openFaces = -1;
     /** mB per tick produced during the last tick, 0 when stalled. */
     private double currentRate;
     private long lastEnergyUsed;
@@ -155,8 +156,8 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         outputSlot.drainTank();
-        if (airBlocks < 0 || level.getGameTime() % AIR_CHECK_INTERVAL == 0) {
-            airBlocks = countAirBlocks();
+        if (openFaces < 0 || level.getGameTime() % AIR_CHECK_INTERVAL == 0) {
+            openFaces = countOpenFaces();
         }
         currentRate = 0;
         lastEnergyUsed = 0;
@@ -173,7 +174,7 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
         if (atmosphere == null) {
             return MachineStatus.NO_ATMOSPHERE;
         }
-        if (airBlocks == 0) {
+        if (openFaces == 0) {
             return MachineStatus.NO_AIR;
         }
         if (!outputTank.isEmpty() && !outputTank.isTypeEqual(atmosphere.chemical())) {
@@ -183,7 +184,7 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
             return MachineStatus.OUTPUT_FULL;
         }
         // Fraction of the full (upgraded) rate the surroundings allow; energy use scales with it
-        double environment = atmosphere.rate() * Math.min(1, airBlocks / (double) FULL_AIR_BLOCKS);
+        double environment = atmosphere.rate() * Math.min(1, openFaces / (double) FULL_AIR_FACES);
         if (atmosphere.altitudeScaling()) {
             environment *= altitudeFactor();
         }
@@ -216,10 +217,10 @@ public class AtmosphericCompressorBlockEntity extends TileEntityConfigurableMach
         return 1 - (1 - MIN_ALTITUDE_FACTOR) * t;
     }
 
-    private int countAirBlocks() {
+    private int countOpenFaces() {
         int count = 0;
-        for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-1, -1, -1), worldPosition.offset(1, 1, 1))) {
-            if (!pos.equals(worldPosition) && level.getBlockState(pos).isAir()) {
+        for (Direction direction : Direction.values()) {
+            if (level.getBlockState(worldPosition.relative(direction)).isAir()) {
                 count++;
             }
         }

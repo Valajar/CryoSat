@@ -7,11 +7,12 @@ import io.github.valajar.cryosat.multiblock.liquefaction.ValveMode;
 import io.github.valajar.cryosat.registries.CryoChemicals;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
-import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityLiquefactionController;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,8 +58,8 @@ public class LiquefactionPlantTests {
     }
 
     private static void powerCooler(GameTestHelper helper) {
-        TileEntityCryocooler cooler = helper.getBlockEntity(COOLER);
-        cooler.getEnergyContainer().setEnergy(cooler.getEnergyContainer().getMaxEnergy());
+        LiquefactionMultiblockData plant = plant(helper);
+        plant.energyContainer.setEnergy(plant.energyContainer.getMaxEnergy());
     }
 
     @GameTest(template = ARENA, timeoutTicks = 100)
@@ -147,6 +148,47 @@ public class LiquefactionPlantTests {
             ChemicalStack drained = handler.extractChemical(100, Action.EXECUTE);
             helper.assertTrue(drained.is(CryoChemicals.LIQUID_OXYGEN) && drained.getAmount() == 100, "drained " + drained);
             helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void valvePowersTheWholePlant(GameTestHelper helper) {
+        build(helper);
+        helper.runAfterDelay(20, () -> {
+            LiquefactionMultiblockData plant = plant(helper);
+            helper.assertTrue(plant.isFormed(), "plant did not form");
+            IStrictEnergyHandler valve = helper.getLevel().getCapability(Capabilities.STRICT_ENERGY.block(), helper.absolutePos(VALVE), Direction.WEST);
+            helper.assertTrue(valve != null, "valve exposes no energy input");
+            long accepted = 50_000 - valve.insertEnergy(50_000, Action.EXECUTE);
+            helper.assertTrue(accepted > 0, "valve refused energy");
+            double start = plant.coldTemperature;
+            helper.runAfterDelay(20, () -> {
+                helper.assertTrue(plant.coldTemperature < start - 0.5, "power through the valve did not run the cooler: " + start + " -> " + plant.coldTemperature);
+                helper.succeed();
+            });
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void hydrogenNeedsTwentyKelvin(GameTestHelper helper) {
+        build(helper);
+        helper.runAfterDelay(20, () -> {
+            LiquefactionMultiblockData plant = plant(helper);
+            helper.assertTrue(plant.isFormed(), "plant did not form");
+            IChemicalHandler valve = helper.getLevel().getCapability(Capabilities.CHEMICAL.block(), helper.absolutePos(VALVE), Direction.WEST);
+            ChemicalStack hydrogen = new ChemicalStack(MekanismChemicals.HYDROGEN, 1_000);
+            helper.assertTrue(valve.insertChemical(hydrogen, Action.EXECUTE).isEmpty(), "valve refused hydrogen");
+            plant.coldTemperature = 40;
+            helper.runAfterDelay(5, () -> {
+                helper.assertTrue(plant.targetTemperature == 20, "target temperature for hydrogen: " + plant.targetTemperature);
+                helper.assertTrue(plant.status == PlantStatus.COOLING_DOWN || plant.status == PlantStatus.NO_COOLERS, "status at 40 K: " + plant.status);
+                plant.coldTemperature = 10;
+                helper.runAfterDelay(10, () -> {
+                    helper.assertTrue(plant.outputTank1.getStack().is(CryoChemicals.LIQUID_HYDROGEN) && plant.outputTank1.getStored() > 0,
+                          "no liquid hydrogen at 10 K: " + plant.outputTank1.getStack());
+                    helper.succeed();
+                });
+            });
         });
     }
 }

@@ -6,6 +6,7 @@ import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoDataComponents;
 import io.github.valajar.cryosat.registries.CryoItems;
 import io.github.valajar.cryosat.space.AsteroidClass;
+import io.github.valajar.cryosat.space.AsteroidSize;
 import io.github.valajar.cryosat.space.CargoEntry;
 import io.github.valajar.cryosat.space.MissionProblem;
 import io.github.valajar.cryosat.space.OrbitalAsset;
@@ -27,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
@@ -60,12 +62,21 @@ public class CargoReceiverTests {
         return helper.getBlockEntity(pos);
     }
 
+    /** Launches a Basic miner that found a small asteroid, so its whole cargo fits into the 27 slots. */
     private static OrbitalAsset launch(GameTestHelper helper, BlockPos receiver) {
         MinecraftServer server = helper.getLevel().getServer();
+        OrbitalRegistry registry = OrbitalRegistry.get(server);
         GlobalPos target = GlobalPos.of(helper.getLevel().dimension(), helper.absolutePos(receiver));
-        Either<OrbitalAsset, MissionProblem> result = OrbitalRegistry.get(server).launch(server, UUID.randomUUID(), BASIC_MINER, AsteroidClass.ASTEROID_BELT, target);
-        helper.assertTrue(result.left().isPresent(), "launch failed: " + result);
-        return result.left().get();
+        for (int attempt = 0; attempt < 100; attempt++) {
+            Either<OrbitalAsset, MissionProblem> result = registry.launch(server, UUID.randomUUID(), BASIC_MINER, AsteroidClass.ASTEROID_BELT, target);
+            helper.assertTrue(result.left().isPresent(), "launch failed: " + result);
+            OrbitalAsset asset = result.left().get();
+            if (asset.asteroid != null && asset.asteroid.size() == AsteroidSize.SMALL) {
+                return asset;
+            }
+            registry.decommission(asset);
+        }
+        throw new GameTestAssertException("no small asteroid in 100 launches");
     }
 
     /** Skips travel and every batch. */

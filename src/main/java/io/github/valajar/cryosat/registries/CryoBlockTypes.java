@@ -43,8 +43,6 @@ public final class CryoBlockTypes {
           .build();
 
     // Liquefaction Plant
-    public static final long CRYOCOOLER_ENERGY_STORAGE = 40_000;
-
     public static final BlockTypeTile<TileEntityCryoCasing> CRYO_CASING = BlockTileBuilder
           .createBlock(() -> CryoBlockEntities.CRYO_CASING, CryoLang.DESCRIPTION_CRYO_CASING)
           .withGui(() -> CryoMenus.LIQUEFACTION_PLANT, CryoLang.LIQUEFACTION_PLANT)
@@ -59,7 +57,6 @@ public final class CryoBlockTypes {
     public static final BlockTypeTile<TileEntityCryocooler> CRYOCOOLER = BlockTileBuilder
           .createBlock(() -> CryoBlockEntities.CRYOCOOLER, CryoLang.DESCRIPTION_CRYOCOOLER)
           .withGui(() -> CryoMenus.LIQUEFACTION_PLANT, CryoLang.LIQUEFACTION_PLANT)
-          .withEnergyConfig(() -> CRYOCOOLER_ENERGY_STORAGE)
           .with(Attributes.ACTIVE)
           .externalMultiblock()
           .build();

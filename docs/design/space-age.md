@@ -99,6 +99,9 @@ modpacks can add other mods' materials without code. Defaults:
 * Chondrite (the Milestone 1 default), per small asteroid: 6 to 10 stacks of raw iron, 4 to 6
   stacks of Mekanism Enriched Carbon (`mekanism:enriched_carbon`), 2 stacks each of raw gold and raw
   osmium. Bigger sizes multiply this (medium 2x, large 4x, huge 8x), split into 3, 4, 6 or 8 batches.
+* Size odds per rocket tier: Basic 70% small, 30% medium; Advanced 25% small, 50% medium, 25% large;
+  Elite 15% medium, 55% large, 30% huge; Ultimate 40% large, 60% huge. Miner capacity matches the
+  biggest size its tier's rocket finds.
 * Later classes: metallic (copper, tin, lead), carbonaceous (coal, diamond), uranium, fluorite, and
   the rare materials from the resource brainstorm.
 

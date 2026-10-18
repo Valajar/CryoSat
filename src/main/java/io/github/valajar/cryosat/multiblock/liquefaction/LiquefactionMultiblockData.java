@@ -13,6 +13,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
@@ -25,6 +26,9 @@ import net.minecraft.world.level.Level;
 
 /**
  * Shared state of a formed Cryogenic Liquefaction Plant.
+ * <p>
+ * Power: the plant has one energy buffer, filled through any Cryocooler or Cryo Valve, that all its coolers draw on. Its size
+ * scales with the number of coolers.
  * <p>
  * Thermal model: the plant interior has a cold temperature that heat leaks into from outside, proportional to the temperature
  * difference and the plant's surface. Cryocoolers pump heat out of the interior at a Carnot style energy cost that grows as the
@@ -41,6 +45,8 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
     /** Heat leak per Kelvin of difference, per casing block and per glass block in the shell. */
     public static final double LEAK_PER_CASING = 0.02;
     public static final double LEAK_PER_GLASS = 0.08;
+    /** Energy buffer per Cryocooler (one cooler's worth is always present). */
+    public static final long ENERGY_PER_COOLER = 100_000;
     /** Maximum heat each Cryocooler removes per tick. */
     public static final double COOLER_HEAT = 200;
     /** Fraction of the ideal (Carnot) efficiency the coolers achieve. */
@@ -51,7 +57,7 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
     /** Above this hot side temperature the coolers shut down. */
     public static final double HOT_LIMIT = 1_200;
     /** Hot side heat capacity per Heat Rejection Port (one port's worth is always present). */
-    public static final double HOT_CAPACITY_PER_PORT = 10_000;
+    public static final double HOT_CAPACITY_PER_PORT = 50_000;
     public static final double HOT_INVERSE_CONDUCTION = 1;
     public static final double HOT_INVERSE_INSULATION = 10_000;
     /** Maximum chemical liquefied per tick per interior block. */
@@ -68,6 +74,8 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
     private final List<IChemicalTank> outputTanks;
     @ContainerSync
     public VariableHeatCapacitor hotSide;
+    @ContainerSync
+    public IEnergyContainer energyContainer;
 
     /** Interior temperature in Kelvin; negative until the plant has formed once. */
     @ContainerSync
@@ -86,13 +94,14 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
     public int heatPorts;
     @ContainerSync
     public PlantStatus status = PlantStatus.IDLE;
+    /** Temperature the current input needs, negative when there is nothing to liquefy. */
+    @ContainerSync
+    public double targetTemperature = -1;
 
     public int casingBlocks;
     public int glassBlocks;
     private double biomeAmbientTemp;
     private final double[] outputRemainders = new double[OUTPUT_TANKS];
-    private double coolingThisTick;
-    private long energyThisTick;
     private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, ValveMode>> outputTargets = new ArrayList<>();
 
     public LiquefactionMultiblockData(TileEntityCryoCasing tile) {
@@ -104,6 +113,9 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         chemicalTanks.add(outputTank2 = VariableCapacityChemicalTank.output(this, this::getTankCapacity, stack -> true, this));
         chemicalTanks.add(outputTank3 = VariableCapacityChemicalTank.output(this, this::getTankCapacity, stack -> true, this));
         outputTanks = List.of(outputTank1, outputTank2, outputTank3);
+        // Only the coolers take energy out; anyone can put it in while the plant is formed
+        energyContainers.add(energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity,
+              automationType -> automationType == AutomationType.INTERNAL, automationType -> isFormed(), this));
         heatCapacitors.add(hotSide = VariableHeatCapacitor.create(HOT_CAPACITY_PER_PORT, () -> HOT_INVERSE_CONDUCTION,
               () -> HOT_INVERSE_INSULATION, () -> biomeAmbientTemp, this));
     }
@@ -124,6 +136,10 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
 
     public long getTankCapacity() {
         return TANK_PER_BLOCK * getInteriorVolume();
+    }
+
+    public long getEnergyCapacity() {
+        return ENERGY_PER_COOLER * Math.max(1, coolers);
     }
 
     private double coldCapacity() {
@@ -151,15 +167,12 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
     @Override
     public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
-        lastCooling = coolingThisTick;
-        lastEnergyUsed = energyThisTick;
-        coolingThisTick = 0;
-        energyThisTick = 0;
-
         double leakCoefficient = LEAK_PER_CASING * casingBlocks + LEAK_PER_GLASS * glassBlocks;
         lastLeak = leakCoefficient * (biomeAmbientTemp - coldTemperature);
         coldTemperature = Math.max(MIN_TEMPERATURE, coldTemperature + lastLeak / coldCapacity());
 
+        runCoolers();
+        targetTemperature = getTargetTemperature();
         status = process();
 
         simulateHotSideEnvironment();
@@ -216,30 +229,36 @@ public class LiquefactionMultiblockData extends MultiblockData implements IValve
         return PlantStatus.RUNNING;
     }
 
-    /**
-     * Run one Cryocooler for this tick, drawing on its own energy buffer.
-     *
-     * @return whether it moved any heat
-     */
-    public boolean runCooler(IEnergyContainer energy) {
+    /** Runs all Cryocoolers for this tick on the shared energy buffer. */
+    private void runCoolers() {
+        lastCooling = 0;
+        lastEnergyUsed = 0;
         double hot = getHotTemperature();
-        if (hot >= HOT_LIMIT || coldTemperature <= MIN_TEMPERATURE) {
-            return false;
+        if (coolers == 0 || hot >= HOT_LIMIT || coldTemperature <= MIN_TEMPERATURE) {
+            return;
         }
         double energyPerHeat = Math.max(MIN_ENERGY_PER_HEAT, (hot - coldTemperature) / coldTemperature / CARNOT_EFFICIENCY);
-        double maxHeat = Math.min(COOLER_HEAT, (coldTemperature - MIN_TEMPERATURE) * coldCapacity());
-        long available = energy.getEnergy();
+        double maxHeat = Math.min(COOLER_HEAT * coolers, (coldTemperature - MIN_TEMPERATURE) * coldCapacity());
+        long available = energyContainer.extract(Long.MAX_VALUE, Action.SIMULATE, AutomationType.INTERNAL);
         double heat = Math.min(maxHeat, available / energyPerHeat);
         if (heat <= 0) {
-            return false;
+            return;
         }
         long used = Math.min(available, (long) Math.ceil(heat * energyPerHeat));
-        energy.extract(used, Action.EXECUTE, AutomationType.INTERNAL);
+        energyContainer.extract(used, Action.EXECUTE, AutomationType.INTERNAL);
         coldTemperature -= heat / coldCapacity();
         hotSide.handleHeat(heat + used);
-        coolingThisTick += heat;
-        energyThisTick += used;
-        return true;
+        lastCooling = heat;
+        lastEnergyUsed = used;
+    }
+
+    /** @return the temperature the chemical in the input tank needs, or a negative value if there is nothing to liquefy */
+    public double getTargetTemperature() {
+        if (inputTank.isEmpty() || getLevel() == null) {
+            return -1;
+        }
+        LiquefactionRecipe recipe = LiquefactionRecipe.find(getLevel(), inputTank.getTypeHolder());
+        return recipe == null ? -1 : recipe.maxTemperature();
     }
 
     /** Slow passive loss of hot side heat into the air around the plant. */

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.registries.CryoItems;
 import io.github.valajar.cryosat.space.AsteroidClass;
+import io.github.valajar.cryosat.space.AsteroidSize;
 import io.github.valajar.cryosat.space.CargoEntry;
 import io.github.valajar.cryosat.space.MissionProblem;
 import io.github.valajar.cryosat.space.OrbitalAsset;
@@ -22,6 +23,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -106,9 +108,11 @@ public class OrbitalTests {
         fastForward(helper, asset);
         helper.assertTrue(asset.state == OrbitalAsset.State.RETIRED, "miner did not retire: " + asset.state);
         helper.assertTrue(asset.batchesDelivered == asset.asteroid.batches(), "delivered " + asset.batchesDelivered + " of " + asset.asteroid.batches());
-        helper.assertTrue(asset.pending.isEmpty(), "cargo left over: " + asset.pending);
-
+        // A medium asteroid can hold more than one chest: whatever did not fit waits in orbit
         Map<Item, Integer> received = new HashMap<>();
+        for (CargoEntry entry : asset.pending) {
+            received.merge(entry.item().value(), entry.count(), Integer::sum);
+        }
         ChestBlockEntity chest = helper.getBlockEntity(BlockPos.ZERO);
         for (int slot = 0; slot < chest.getContainerSize(); slot++) {
             ItemStack stack = chest.getItem(slot);
@@ -121,7 +125,9 @@ public class OrbitalTests {
             helper.assertTrue(got == entry.count(), BuiltInRegistries.ITEM.getKey(entry.item().value()) + ": expected " + entry.count() + ", got " + got);
         }
         int iron = received.getOrDefault(Items.RAW_IRON, 0);
-        helper.assertTrue(iron >= 384 && iron <= 640, "raw iron outside the small asteroid range: " + iron);
+        double scale = asset.asteroid.size().multiplier() * asset.asteroid.extracted();
+        helper.assertTrue(iron >= 384 * scale && iron <= 640 * scale, "raw iron outside the chondrite range for a " + asset.asteroid.size().getSerializedName()
+                                                                      + " asteroid: " + iron);
         OrbitalRegistry.get(helper.getLevel().getServer()).decommission(asset);
         helper.succeed();
     }
@@ -131,10 +137,38 @@ public class OrbitalTests {
         OrbitalAsset asset = launch(helper, BlockPos.ZERO);
         fastForward(helper, asset);
         helper.assertFalse(asset.pending.isEmpty(), "cargo vanished without a receiver");
+        int waiting = asset.pending.stream().mapToInt(CargoEntry::count).sum();
         helper.setBlock(BlockPos.ZERO, Blocks.CHEST);
         OrbitalRegistry.get(helper.getLevel().getServer()).tick(helper.getLevel().getServer());
-        helper.assertTrue(asset.pending.isEmpty(), "cargo not delivered once the receiver appeared: " + asset.pending);
+        int left = asset.pending.stream().mapToInt(CargoEntry::count).sum();
+        helper.assertTrue(left < waiting, "cargo not delivered once the receiver appeared: " + asset.pending);
         OrbitalRegistry.get(helper.getLevel().getServer()).decommission(asset);
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void sizeOddsFollowTheTier(GameTestHelper helper) {
+        RandomSource random = RandomSource.create(42);
+        for (int i = 0; i < 2_000; i++) {
+            helper.assertTrue(OrbitalRegistry.rollSize(RocketTier.BASIC, random).ordinal() <= AsteroidSize.MEDIUM.ordinal(), "basic rocket found a large asteroid");
+            helper.assertTrue(OrbitalRegistry.rollSize(RocketTier.ELITE, random) != AsteroidSize.SMALL, "elite rocket found a small asteroid");
+        }
+        int medium = 0;
+        for (int i = 0; i < 2_000; i++) {
+            if (OrbitalRegistry.rollSize(RocketTier.ADVANCED, random) == AsteroidSize.MEDIUM) {
+                medium++;
+            }
+        }
+        helper.assertTrue(medium > 850 && medium < 1_150, "advanced rockets should find a medium asteroid about half the time: " + medium);
+        for (RocketTier tier : RocketTier.values()) {
+            AsteroidSize biggest = AsteroidSize.SMALL;
+            for (AsteroidSize size : AsteroidSize.values()) {
+                if (tier.sizeWeight(size) > 0) {
+                    biggest = size;
+                }
+            }
+            helper.assertTrue(tier.minerCapacity() >= biggest.multiplier(), tier + " miners cannot fully mine the biggest asteroid their rockets find");
+        }
         helper.succeed();
     }
 

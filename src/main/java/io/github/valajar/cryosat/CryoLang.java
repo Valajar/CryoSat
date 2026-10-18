@@ -28,6 +28,8 @@ public enum CryoLang implements ILangEntry {
     PLANT_HOT_SIDE("gui", "plant.hot_side"),
     PLANT_COOLERS("gui", "plant.coolers"),
     PLANT_COOLING("gui", "plant.cooling"),
+    PLANT_TARGET("gui", "plant.target"),
+    PLANT_TARGET_NONE("gui", "plant.target_none"),
     PLANT_ENERGY("gui", "plant.energy"),
     PLANT_LEAK("gui", "plant.leak"),
     PLANT_RATE("gui", "plant.rate"),

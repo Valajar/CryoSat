@@ -125,26 +125,27 @@ public class OrbitalRegistry extends SavedData {
                 break;
             }
         }
-        // Sizes up to one step above the rocket's tier
-        AsteroidSize[] sizes = AsteroidSize.values();
-        int maxSize = Math.min(sizes.length - 1, design.tier().ordinal() + 1);
-        int totalWeight = 0;
-        for (int i = 0; i <= maxSize; i++) {
-            totalWeight += sizes[i].weight();
-        }
-        AsteroidSize size = sizes[0];
-        int sizeRoll = random.nextInt(totalWeight);
-        for (int i = 0; i <= maxSize; i++) {
-            sizeRoll -= sizes[i].weight();
-            if (sizeRoll < 0) {
-                size = sizes[i];
-                break;
-            }
-        }
+        AsteroidSize size = rollSize(design.tier(), random);
         float extracted = Math.min(1, design.payloadTier().minerCapacity() / (float) size.multiplier());
         AsteroidClass asteroidClass = chosen.getValue();
         return new AsteroidRoll(chosen.getKey(), size, asteroidClass.rollHardness(random), extracted,
               asteroidClass.rollCargo(random, size.multiplier() * extracted));
+    }
+
+    /** Rolls an asteroid size with the odds of the rocket's tier. */
+    public static AsteroidSize rollSize(RocketTier tier, RandomSource random) {
+        int total = 0;
+        for (AsteroidSize size : AsteroidSize.values()) {
+            total += tier.sizeWeight(size);
+        }
+        int roll = random.nextInt(total);
+        for (AsteroidSize size : AsteroidSize.values()) {
+            roll -= tier.sizeWeight(size);
+            if (roll < 0) {
+                return size;
+            }
+        }
+        return AsteroidSize.SMALL;
     }
 
     // Player actions (Mission Control)

@@ -23,9 +23,14 @@ public final class CryoMenus {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<AtmosphericCompressorBlockEntity>> ATMOSPHERIC_COMPRESSOR =
           MENUS.register(CryoBlocks.ATMOSPHERIC_COMPRESSOR, AtmosphericCompressorBlockEntity.class);
 
+    /** Offset of the player inventory in the Liquefaction Plant screen, which is 34 wider and 22 taller than a standard one. */
+    public static final int PLANT_INVENTORY_X = 17;
+    public static final int PLANT_INVENTORY_Y = 22;
     /** Shared by every part of the Liquefaction Plant, so the GUI opens from any of them. */
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityCryoCasing>> LIQUEFACTION_PLANT =
-          MENUS.custom("liquefaction_plant", TileEntityCryoCasing.class).build();
+          MENUS.custom("liquefaction_plant", TileEntityCryoCasing.class)
+                .offset(PLANT_INVENTORY_X, PLANT_INVENTORY_Y)
+                .build();
 
     // Cargo Receiver (space workstream A): taller than a standard GUI to fit the mission screen under the cargo grid
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityCargoReceiver>> CARGO_RECEIVER =
