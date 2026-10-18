@@ -1,0 +1,5 @@
+{
+  "min_tier": "basic",
+  "travel_ticks": 2400,
+  "payloads": ["asteroid_miner"]
+}

@@ -77,7 +77,7 @@ destinations plug in without new systems:
 | Asteroid belt | Basic | Asteroid Miner | Ores, carbon (Milestone 1) |
 | Gas giant | Elite | Atmospheric Scoop | Helium; metallic hydrogen from deep dives |
 | Exoplanets | Elite or Ultimate | Scoop or miner | Datapack defined gases and materials, room for modpacks |
-| Star | Ultimate | Dyson segment | Dyson swarm power |
+| Star | Ultimate | Dyson segment, Stellar Scoop | Dyson swarm power; Stellar Plasma (use to be decided), the one thing only Ultimate rockets can get |
 
 **Asteroid Miner (payload).** Once launched it locks onto one asteroid rolled from the classes its
 tier can reach, and sends a few batches of cargo to a linked Cargo Receiver over its lifetime, then
@@ -96,10 +96,11 @@ variable outcome is visible rather than a hidden roll.
 what they yield. Yields reference item tags (for example `c:raw_materials/iron`) or item ids, so
 modpacks can add other mods' materials without code. Defaults:
 
-* Metallic: raw iron, raw copper, raw gold, plus Mekanism raw osmium, tin and lead.
-* Carbonaceous: Mekanism Enriched Carbon (`mekanism:enriched_carbon`) directly, some coal, some
-  diamond at higher tiers.
-* Later classes: uranium, fluorite, and the rare materials from the resource brainstorm.
+* Chondrite (the Milestone 1 default), per small asteroid: 6 to 10 stacks of raw iron, 4 to 6
+  stacks of Mekanism Enriched Carbon (`mekanism:enriched_carbon`), 2 stacks each of raw gold and raw
+  osmium. Bigger sizes multiply this (medium 2x, large 4x, huge 8x), split into 3, 4, 6 or 8 batches.
+* Later classes: metallic (copper, tin, lead), carbonaceous (coal, diamond), uranium, fluorite, and
+  the rare materials from the resource brainstorm.
 
 **Cargo Receiver.** A block that catches the batches and exposes them as an inventory for pipes.
 Linked to miners with an Uplink Card, the same gesture as Mekanism's configuration card.
@@ -156,9 +157,7 @@ In planned order:
    enormous input and output rate for its size, but it needs constant cooling and slowly bleeds its
    charge while quenched. A buffer for fusion and Dyson power rather than a replacement for the
    Induction Matrix.
-6. **Ultimate tier fuel.** A superconducting cyclotron that makes antimatter cheaper than
-   Mekanism's Supercritical Phase Shifter, if the Ultimate rocket ends up antimatter powered.
-7. **Dyson swarm receiver.** The ground station that catches the swarm's power beam.
+6. **Dyson swarm receiver.** The ground station that catches the swarm's power beam.
 
 ## Milestone 3: Satellite imagery
 
@@ -204,7 +203,5 @@ be a ground side detour; scooping it from a gas giant's atmosphere is more in th
 
 ## Open questions
 
-1. Stars: only Dyson segments, or also something to collect (stellar plasma for an endgame item)?
-2. Whether the antimatter cyclotron (superconductor application 6) is still wanted now that the
-   Ultimate fuel is not antimatter.
-3. Exact numbers for asteroid size, hardness and batch timing, settled by playtesting.
+1. What Stellar Plasma is used for.
+2. Asteroid numbers beyond the chondrite starting point, settled by playtesting.

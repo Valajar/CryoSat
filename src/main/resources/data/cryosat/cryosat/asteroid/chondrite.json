@@ -1,0 +1,13 @@
+{
+  "destination": "cryosat:asteroid_belt",
+  "min_tier": "basic",
+  "weight": 10,
+  "hardness_min": 0.8,
+  "hardness_max": 1.25,
+  "yields": [
+    {"item": "#c:raw_materials/iron", "min": 384, "max": 640},
+    {"item": "mekanism:enriched_carbon", "min": 256, "max": 384},
+    {"item": "#c:raw_materials/gold", "min": 128, "max": 128},
+    {"item": "#c:raw_materials/osmium", "min": 128, "max": 128}
+  ]
+}

@@ -51,6 +51,12 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
   same `registries/Cryo*` classes.
 * Atmospheres for the Atmospheric Compressor are datapack files in
   `data/<ns>/cryosat/atmosphere/`.
+* Space content lives in `space` (tiers, rocket designs, destinations, asteroid classes, the
+  `OrbitalRegistry` saved data). Orbital assets never live in chunks; blocks talk to the registry.
+  Destinations and asteroid classes are datapack files in `data/<ns>/cryosat/destination/` and
+  `.../asteroid/`. Design: `docs/design/space-age.md`; current build plan:
+  `docs/design/milestone1-plan.md`. Space features keep their lang keys in their own enum (like
+  `space.SpaceLang`) with English text in a `datagen/<feature>` helper.
 
 ## Textures and models
 

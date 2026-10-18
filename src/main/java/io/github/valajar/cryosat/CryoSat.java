@@ -7,9 +7,11 @@ import io.github.valajar.cryosat.registries.CryoBlockEntities;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoChemicals;
 import io.github.valajar.cryosat.registries.CryoCreativeTabs;
+import io.github.valajar.cryosat.registries.CryoDataComponents;
 import io.github.valajar.cryosat.registries.CryoItems;
 import io.github.valajar.cryosat.registries.CryoMenus;
 import io.github.valajar.cryosat.registries.CryoRecipes;
+import io.github.valajar.cryosat.space.SpaceEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -25,6 +27,7 @@ public class CryoSat {
 
     public CryoSat(IEventBus modEventBus, ModContainer modContainer) {
         CryoChemicals.CHEMICALS.register(modEventBus);
+        CryoDataComponents.COMPONENTS.register(modEventBus);
         // Mekanism's registers also register the capabilities and item attachments of what they hold
         CryoItems.ITEMS.register(modEventBus);
         CryoBlocks.BLOCKS.register(modEventBus);
@@ -35,6 +38,7 @@ public class CryoSat {
         CryoRecipes.SERIALIZERS.register(modEventBus);
         CryoMultiblocks.init();
         NeoForge.EVENT_BUS.addListener(CryoSat::addReloadListeners);
+        SpaceEvents.register(NeoForge.EVENT_BUS);
     }
 
     private static void addReloadListeners(AddReloadListenerEvent event) {

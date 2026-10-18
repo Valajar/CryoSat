@@ -3,6 +3,7 @@ package io.github.valajar.cryosat.datagen;
 import io.github.valajar.cryosat.CryoLang;
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.datagen.plant.PlantLang;
+import io.github.valajar.cryosat.datagen.space.SpaceLangData;
 import io.github.valajar.cryosat.machine.MachineStatus;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoChemicals;
@@ -46,6 +47,7 @@ public class CryoLanguageProvider extends LanguageProvider {
         add(CryoLang.ENERGY_PER_MB, "Energy: %1$s/mB");
 
         PlantLang.addTo(this);
+        SpaceLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */
