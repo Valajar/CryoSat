@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cryosat:item/advanced_asteroid_miner"
+  }
+}

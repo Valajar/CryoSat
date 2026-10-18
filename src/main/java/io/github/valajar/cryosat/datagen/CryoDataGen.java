@@ -33,6 +33,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeServer(), new CryoRecipeProvider(output, lookup));
         // Liquefaction Plant
         generator.addProvider(event.includeClient(), new PlantBlockStateProvider(output, files));
+        // Space items: item models (recipes are added by CryoRecipeProvider through SpaceRecipes)
+        generator.addProvider(event.includeClient(), new CryoItemModelProvider(output, files));
     }
 
     private CryoDataGen() {

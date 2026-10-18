@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.datagen.plant.PlantRecipes;
+import io.github.valajar.cryosat.datagen.space.SpaceRecipes;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPI;
@@ -42,6 +43,8 @@ public class CryoRecipeProvider extends RecipeProvider {
               .save(output);
 
         PlantRecipes.build(output);
+        // Space items: propellant chain and rocket parts
+        SpaceRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

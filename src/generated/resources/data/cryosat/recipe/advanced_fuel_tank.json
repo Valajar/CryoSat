@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "C": {
+      "tag": "c:circuits/advanced"
+    },
+    "P": {
+      "item": "cryosat:basic_fuel_tank"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "APA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:advanced_fuel_tank"
+  }
+}

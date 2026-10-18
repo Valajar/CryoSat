@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "RCR",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:guidance_computer"
+  }
+}

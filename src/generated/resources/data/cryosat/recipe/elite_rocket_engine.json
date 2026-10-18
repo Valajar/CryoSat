@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:alloys/elite"
+    },
+    "C": {
+      "tag": "c:circuits/elite"
+    },
+    "P": {
+      "item": "cryosat:advanced_rocket_engine"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "APA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:elite_rocket_engine"
+  }
+}

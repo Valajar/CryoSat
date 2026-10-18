@@ -74,3 +74,22 @@ ALL = {
     "HAZARD": HAZARD, "COBALT": COBALT, "FROST": FROST, "CRYO_GLOW": CRYO_GLOW, "GOLD": GOLD,
     "SOLAR": SOLAR, "ORDNANCE": ORDNANCE,
 }
+
+# --- Items (space items workstream) ---------------------------------------------------------
+# Mekanism item steel runs much lighter than machine faces. Measured from tier installers and the
+# electrolytic core: dark outline greys up to near white highlights.
+ITEM_STEEL = ramp("4a4a4a", "5e5e5e", "727272", "868686", "9f9f9f", "adadad", "b9b9b9", "cccccc", "dedede", "eeeeee")
+# Tier accents as Mekanism's items draw them (tier installers and control circuits), darkest to
+# lightest. Brighter than the valve ramps in TIER, because items are small and lit.
+ITEM_TIER = {
+    "basic": ramp("247847", "1ea05c", "0bc775", "07f799", "59fbba"),
+    "advanced": ramp("6c2527", "cf443f", "e8644d", "f98e68", "fbb697"),
+    "elite": ramp("257278", "269ba1", "2cb7bd", "31d0d7", "75fff9"),
+    "ultimate": ramp("452c52", "7e4086", "ab5aaf", "ec8de2", "f3b8e6"),
+}
+# Mekanism sulfur dust, for sulfur grains in powders.
+SULFUR = ramp("907024", "ba9a34", "d9b744", "ebc956", "f9e179")
+# Composite propellant: sulfur, carbon and a slime binder. A yellow grey powder that presses into a
+# khaki grain.
+PROPELLANT = ramp("3f3c30", "5d5843", "7d765a", "9c9370", "b8ae84", "d2c79b")
+ALL.update({"ITEM_STEEL": ITEM_STEEL, "SULFUR": SULFUR, "PROPELLANT": PROPELLANT})

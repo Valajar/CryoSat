@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    },
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "GMG",
+    "SPS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:basic_asteroid_miner"
+  }
+}
