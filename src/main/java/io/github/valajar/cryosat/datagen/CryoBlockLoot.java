@@ -47,6 +47,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.CRYOCOOLER.get());
         dropSelf(CryoBlocks.HEAT_REJECTION_PORT.get());
         dropSelf(CryoBlocks.LIQUEFACTION_CONTROLLER.get());
+        // Cargo Receiver (space workstream A): keeps its cargo, config and security like other Mekanism machines
+        dropMachine(CryoBlocks.CARGO_RECEIVER.get());
     }
 
     private void dropMachine(Block block) {

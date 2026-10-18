@@ -1,5 +1,9 @@
 package io.github.valajar.cryosat.registries;
 
+// Cargo Receiver (space workstream A)
+import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
+import mekanism.common.content.blocktype.BlockTypeTile;
+
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
@@ -58,6 +62,20 @@ public final class CryoBlocks {
           BLOCKS.registerDetails("heat_rejection_port", () -> new BlockBasicMultiblock<>(CryoBlockTypes.HEAT_REJECTION_PORT, p -> p.mapColor(MapColor.METAL)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLiquefactionController>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLiquefactionController>>> LIQUEFACTION_CONTROLLER =
           BLOCKS.registerDetails("liquefaction_controller", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LIQUEFACTION_CONTROLLER, p -> p.mapColor(MapColor.METAL)));
+
+    // Cargo Receiver (space workstream A): the block item keeps the side config, ejector and the 27 cargo slots
+    public static final BlockRegistryObject<BlockTile<TileEntityCargoReceiver, BlockTypeTile<TileEntityCargoReceiver>>, ItemBlockTooltip<BlockTile<TileEntityCargoReceiver, BlockTypeTile<TileEntityCargoReceiver>>>> CARGO_RECEIVER =
+          BLOCKS.register("cargo_receiver", () -> new BlockTile<>(CryoBlockTypes.CARGO_RECEIVER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties
+                      .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+                      .component(MekanismDataComponents.SIDE_CONFIG, TileEntityCargoReceiver.DEFAULT_SIDE_CONFIG)
+                )
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addOutput(TileEntityCargoReceiver.SLOTS)
+                      .build()
+                )
+          );
 
     private CryoBlocks() {
     }

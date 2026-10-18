@@ -1,5 +1,8 @@
 package io.github.valajar.cryosat.registries;
 
+// Cargo Receiver (space workstream A)
+import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
+
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoValve;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
@@ -58,6 +61,14 @@ public final class CryoBlockEntities {
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
+          .build();
+
+    // Cargo Receiver (space workstream A)
+    public static final TileEntityTypeRegistryObject<TileEntityCargoReceiver> CARGO_RECEIVER = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.CARGO_RECEIVER, TileEntityCargoReceiver::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
           .build();
 
     private CryoBlockEntities() {

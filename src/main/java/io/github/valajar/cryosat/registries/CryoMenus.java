@@ -1,5 +1,8 @@
 package io.github.valajar.cryosat.registries;
 
+// Cargo Receiver (space workstream A)
+import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
+
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryoCasing;
 
 import io.github.valajar.cryosat.CryoSat;
@@ -21,6 +24,12 @@ public final class CryoMenus {
     /** Shared by every part of the Liquefaction Plant, so the GUI opens from any of them. */
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityCryoCasing>> LIQUEFACTION_PLANT =
           MENUS.custom("liquefaction_plant", TileEntityCryoCasing.class).build();
+
+    // Cargo Receiver (space workstream A): taller than a standard GUI to fit the mission screen under the cargo grid
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityCargoReceiver>> CARGO_RECEIVER =
+          MENUS.custom(CryoBlocks.CARGO_RECEIVER, TileEntityCargoReceiver.class)
+                .offset(0, TileEntityCargoReceiver.GUI_EXTRA_HEIGHT)
+                .build();
 
     private CryoMenus() {
     }

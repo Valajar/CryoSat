@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "tag": "c:ingots/copper"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    " A ",
+    "SCS",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:uplink_card"
+  }
+}

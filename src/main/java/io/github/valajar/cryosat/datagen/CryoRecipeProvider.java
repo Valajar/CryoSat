@@ -42,6 +42,8 @@ public class CryoRecipeProvider extends RecipeProvider {
               .save(output);
 
         PlantRecipes.build(output);
+        // Cargo Receiver and Uplink Card (space workstream A)
+        io.github.valajar.cryosat.datagen.receiver.ReceiverRecipes.build(output);
     }
 
     private static Item mekanism(String path) {
