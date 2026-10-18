@@ -26,6 +26,9 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismSounds;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
 import io.github.valajar.cryosat.space.mission.MissionLang;
+// Superconducting Separator (superconductor workstream A)
+import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
+import io.github.valajar.cryosat.superconductor.separator.SeparatorLang;
 
 /**
  * Mekanism block types: the attributes (GUI, energy, side config, upgrades, sound, facing, active state, security,
@@ -102,6 +105,14 @@ public final class CryoBlockTypes {
           .withGui(() -> CryoMenus.LAUNCH_CONTROLLER, LaunchLang.ROCKET_ASSEMBLY)
           .with(Attributes.ACTIVE, Attributes.SECURITY, new AttributeStateFacing())
           .externalMultiblock()
+          .build();
+
+    // Superconducting Separator (superconductor workstream A): no energy and no upgrades, kept cold by its Cryostat
+    public static final BlockTypeTile<TileEntitySuperconductingSeparator> SUPERCONDUCTING_SEPARATOR = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.SUPERCONDUCTING_SEPARATOR, SeparatorLang.DESCRIPTION)
+          .withGui(() -> CryoMenus.SUPERCONDUCTING_SEPARATOR)
+          .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR)
+          .withSideConfig(TransmissionType.CHEMICAL)
           .build();
 
     private CryoBlockTypes() {

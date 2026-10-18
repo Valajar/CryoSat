@@ -59,6 +59,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         MissionLangData.addTo(this);
         // Launch Pad (workstream B)
         LaunchLangData.addTo(this);
+        // Superconducting Separator (superconductor workstream A)
+        io.github.valajar.cryosat.datagen.separator.SeparatorLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

@@ -40,6 +40,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.receiver.ReceiverModelProvider(output, files));
         // Launch Pad (workstream B)
         generator.addProvider(event.includeClient(), new LaunchPadBlockStateProvider(output, files));
+        // Superconducting Separator (superconductor workstream A)
+        generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.separator.SeparatorModelProvider(output, files));
     }
 
     private CryoDataGen() {

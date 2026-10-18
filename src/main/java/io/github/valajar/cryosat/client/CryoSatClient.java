@@ -32,6 +32,8 @@ public final class CryoSatClient {
         ClientRegistrationUtil.registerScreen(event, CryoMenus.MISSION_CONTROL, GuiMissionControl::new);
         // Launch Pad (workstream B)
         ClientRegistrationUtil.registerScreen(event, CryoMenus.LAUNCH_CONTROLLER, GuiRocketAssembly::new);
+        // Superconducting Separator (superconductor workstream A)
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.SUPERCONDUCTING_SEPARATOR, io.github.valajar.cryosat.client.gui.GuiSuperconductingSeparator::new);
     }
 
     // Uplink Card (space workstream A): the "linked" model override shows whether the card holds a target

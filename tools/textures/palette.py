@@ -93,3 +93,9 @@ SULFUR = ramp("907024", "ba9a34", "d9b744", "ebc956", "f9e179")
 # khaki grain.
 PROPELLANT = ramp("3f3c30", "5d5843", "7d765a", "9c9370", "b8ae84", "d2c79b")
 ALL.update({"ITEM_STEEL": ITEM_STEEL, "SULFUR": SULFUR, "PROPELLANT": PROPELLANT})
+
+# --- Superconductors (superconductor workstream A) -----------------------------------------------
+# Copper magnet windings, seen through the Superconducting Separator's window and on the coil item.
+# Close to vanilla's copper ingot, a little darker so it sits inside steel windows.
+COPPER = ramp("4f2414", "7a3a1f", "a2522c", "c46a3c", "e08a55", "f2b07c")
+ALL.update({"COPPER": COPPER})

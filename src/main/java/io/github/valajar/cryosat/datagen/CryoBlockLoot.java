@@ -55,6 +55,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.LAUNCH_PAD_PLATING.get());
         dropSelf(CryoBlocks.LAUNCH_PAD_FUEL_PORT.get());
         dropSelf(CryoBlocks.LAUNCH_CONTROLLER.get());
+        // Superconducting Separator (superconductor workstream A): keeps both tanks, config and security; it warms up again
+        dropMachine(CryoBlocks.SUPERCONDUCTING_SEPARATOR.get());
     }
 
     private void dropMachine(Block block) {

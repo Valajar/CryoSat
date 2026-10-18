@@ -26,6 +26,9 @@ public class CryoItemModelProvider extends ItemModelProvider {
         basicItem(CryoItems.GUIDANCE_COMPUTER.get());
         basicItem(CryoItems.PROPELLANT_MIX.get());
         basicItem(CryoItems.SOLID_PROPELLANT_GRAIN.get());
+
+        // Superconductors (superconductor workstream A): the coil
+        basicItem(CryoItems.SUPERCONDUCTING_COIL.get());
     }
 
     private void tiered(Map<?, ? extends ItemRegistryObject<?>> items) {
