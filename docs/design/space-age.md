@@ -209,18 +209,18 @@ The Cargo Receiver is the early game answer. The Space Hub replaces it as the pl
   Separator, attaches to a dock the same way, so nothing from the early game becomes useless.
 * Needs a way for players to travel up and back (an early crew capsule, later a shuttle).
 
-## Destinations and rocket roles (brainstorm, to choose from)
+## Destinations and rocket roles
 
-Destinations so far: asteroid belt (built), gas giant, exoplanets, star. Candidates to fill the
-gaps between them, each with a reason to go there:
+Decided: planned work (superconductors, satellite imagery, gas giants, Space Hub) comes first; these
+destinations are queued behind it. Planets keep their real Solar System names.
 
-| Destination | Tier | Payload | Gives | Why it is interesting |
+| Destination | Tier | Payload | Gives | Decision |
 | --- | --- | --- | --- | --- |
-| Moon | Basic | Regolith Miner | Quartz, redstone, glowstone; later helium 3 | A second early target so Basic rockets have a choice |
-| Near Earth comets | Advanced | Ice Harvester | Water ice, frozen nitrogen (straight to liquid nitrogen), ammonia | Cheap coolant from space, a shortcut around the Liquefaction Plant |
-| Metallic asteroid classes | Advanced | Asteroid Miner | Copper, tin, lead, uranium | Widens the belt instead of adding places |
-| Mars like planet | Advanced | Surface Lander | Redstone, iron, Mekanism salt and lithium (perchlorate brines) | Lithium feeds Mekanism's tritium chain for fusion |
-| Icy moons | Elite | Ice Harvester | Heavy water ice (deuterium), nitrogen ice | Deuterium for fusion fuel without electrolysis |
+| Moon | Basic | Regolith Miner | Redstone above all, plus quartz and glowstone; later helium 3 | **Yes**, the second early target. Mekanism has no renewable redstone, so the Moon fills that gap |
+| Mars | Advanced | Surface Lander | Lithium in bulk, Mekanism salt, redstone, iron | **Yes**. Lithium en masse is an alternative to the Thermal Evaporation Plant |
+| Icy moons | Elite | Ice Harvester | Heavy water ice (deuterium) | **Maybe**. Only worth it if it beats pumping heavy water with a filter upgrade by a wide margin |
+| Near Earth comets | Advanced | Ice Harvester | Water and nitrogen ice | **No**. The Liquefaction Plant already makes plenty of coolant, and Quantum Entangloporters carry it wherever it is needed |
+| Metallic asteroid classes | Advanced | Asteroid Miner | Copper, tin, lead, uranium | Widens the belt, cheap to add as data |
 | Gas giant | Elite | Atmospheric Scoop | Helium, metallic hydrogen | Already planned |
 | Exoplanets | Elite or Ultimate | Datapack defined | Modpack materials | Already planned |
 | Star | Ultimate | Stellar Scoop, Dyson segment | Stellar plasma, Dyson power | Already planned |
@@ -247,5 +247,5 @@ roles cost no new rocket models):
 ## Open questions
 
 1. What Stellar Plasma is used for.
-2. Which destinations and roles from the brainstorm to build, and in what order.
+2. Icy moons: what deuterium rate would clearly beat a heavy water pump, and is that worth a trip.
 2. Asteroid numbers beyond the chondrite starting point, settled by playtesting.
