@@ -1,5 +1,6 @@
 package io.github.valajar.cryosat.datagen;
 
+import io.github.valajar.cryosat.datagen.launch.LaunchPadRecipes;
 import io.github.valajar.cryosat.datagen.plant.PlantRecipes;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import java.util.concurrent.CompletableFuture;
@@ -42,6 +43,8 @@ public class CryoRecipeProvider extends RecipeProvider {
               .save(output);
 
         PlantRecipes.build(output);
+        // Launch Pad (workstream B)
+        LaunchPadRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

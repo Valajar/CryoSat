@@ -11,6 +11,10 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
 
 import io.github.valajar.cryosat.CryoLang;
+import io.github.valajar.cryosat.space.launch.LaunchLang;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchController;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadFuelPort;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadPlating;
 import io.github.valajar.cryosat.machine.compressor.AtmosphericCompressorBlockEntity;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
@@ -63,6 +67,22 @@ public final class CryoBlockTypes {
           .createBlock(() -> CryoBlockEntities.LIQUEFACTION_CONTROLLER, CryoLang.DESCRIPTION_LIQUEFACTION_CONTROLLER)
           .withGui(() -> CryoMenus.LIQUEFACTION_PLANT, CryoLang.LIQUEFACTION_PLANT)
           .with(Attributes.ACTIVE, new AttributeStateFacing())
+          .externalMultiblock()
+          .build();
+
+    // Launch Pad (workstream B)
+    public static final BlockTypeTile<TileEntityLaunchPadPlating> LAUNCH_PAD_PLATING = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.LAUNCH_PAD_PLATING, LaunchLang.DESCRIPTION_PLATING)
+          .externalMultiblock()
+          .build();
+    public static final BlockTypeTile<TileEntityLaunchPadFuelPort> LAUNCH_PAD_FUEL_PORT = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.LAUNCH_PAD_FUEL_PORT, LaunchLang.DESCRIPTION_FUEL_PORT)
+          .externalMultiblock()
+          .build();
+    public static final BlockTypeTile<TileEntityLaunchController> LAUNCH_CONTROLLER = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.LAUNCH_CONTROLLER, LaunchLang.DESCRIPTION_CONTROLLER)
+          .withGui(() -> CryoMenus.LAUNCH_CONTROLLER, LaunchLang.ROCKET_ASSEMBLY)
+          .with(Attributes.ACTIVE, Attributes.SECURITY, new AttributeStateFacing())
           .externalMultiblock()
           .build();
 

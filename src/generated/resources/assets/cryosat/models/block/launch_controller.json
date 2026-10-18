@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/launch_pad/plating_bottom",
+    "east": "cryosat:block/launch_pad/plating_side",
+    "north": "cryosat:block/launch_pad/controller_front",
+    "particle": "cryosat:block/launch_pad/plating_side",
+    "south": "cryosat:block/launch_pad/plating_side",
+    "up": "cryosat:block/launch_pad/controller_top",
+    "west": "cryosat:block/launch_pad/plating_side"
+  }
+}

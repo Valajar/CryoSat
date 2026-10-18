@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.launch.LaunchPadBlockStateProvider;
 import io.github.valajar.cryosat.datagen.plant.PlantBlockStateProvider;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeServer(), new CryoRecipeProvider(output, lookup));
         // Liquefaction Plant
         generator.addProvider(event.includeClient(), new PlantBlockStateProvider(output, files));
+        // Launch Pad (workstream B)
+        generator.addProvider(event.includeClient(), new LaunchPadBlockStateProvider(output, files));
     }
 
     private CryoDataGen() {

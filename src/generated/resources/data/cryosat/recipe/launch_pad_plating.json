@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SMS",
+    "SSS"
+  ],
+  "result": {
+    "count": 8,
+    "id": "cryosat:launch_pad_plating"
+  }
+}

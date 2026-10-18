@@ -6,6 +6,9 @@ import io.github.valajar.cryosat.tile.liquefaction.TileEntityCryocooler;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityHeatRejectionPort;
 import io.github.valajar.cryosat.tile.liquefaction.TileEntityLiquefactionController;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchController;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadFuelPort;
+import io.github.valajar.cryosat.space.launch.TileEntityLaunchPadPlating;
 import net.minecraft.world.level.material.MapColor;
 
 import io.github.valajar.cryosat.CryoSat;
@@ -58,6 +61,14 @@ public final class CryoBlocks {
           BLOCKS.registerDetails("heat_rejection_port", () -> new BlockBasicMultiblock<>(CryoBlockTypes.HEAT_REJECTION_PORT, p -> p.mapColor(MapColor.METAL)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLiquefactionController>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLiquefactionController>>> LIQUEFACTION_CONTROLLER =
           BLOCKS.registerDetails("liquefaction_controller", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LIQUEFACTION_CONTROLLER, p -> p.mapColor(MapColor.METAL)));
+
+    // Launch Pad (workstream B)
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLaunchPadPlating>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLaunchPadPlating>>> LAUNCH_PAD_PLATING =
+          BLOCKS.registerDetails("launch_pad_plating", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_PAD_PLATING, p -> p.mapColor(MapColor.METAL)));
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLaunchPadFuelPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLaunchPadFuelPort>>> LAUNCH_PAD_FUEL_PORT =
+          BLOCKS.registerDetails("launch_pad_fuel_port", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_PAD_FUEL_PORT, p -> p.mapColor(MapColor.METAL)));
+    public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLaunchController>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLaunchController>>> LAUNCH_CONTROLLER =
+          BLOCKS.registerDetails("launch_controller", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_CONTROLLER, p -> p.mapColor(MapColor.METAL)));
 
     private CryoBlocks() {
     }

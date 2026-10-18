@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cryosat:block/launch_pad_plating"
+    }
+  }
+}

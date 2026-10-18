@@ -47,6 +47,10 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.CRYOCOOLER.get());
         dropSelf(CryoBlocks.HEAT_REJECTION_PORT.get());
         dropSelf(CryoBlocks.LIQUEFACTION_CONTROLLER.get());
+        // Launch Pad (workstream B): the rocket, its parts and fuel live in the pad's multiblock cache
+        dropSelf(CryoBlocks.LAUNCH_PAD_PLATING.get());
+        dropSelf(CryoBlocks.LAUNCH_PAD_FUEL_PORT.get());
+        dropSelf(CryoBlocks.LAUNCH_CONTROLLER.get());
     }
 
     private void dropMachine(Block block) {
