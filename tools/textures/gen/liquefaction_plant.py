@@ -10,6 +10,8 @@ block shares the same casing base (see docs/design/phase1.md, "2. Cryogenic Liqu
                                 cold head pulses with coolant glow
     heat_rejection_port(_active) casing with a vertical heat exchanger grille. Active: 4 frame strip,
                                 a dull ember glow flickers behind the slats (the only warm colors)
+    casing_<piece>              connected texture pieces of the casing (horizontal, vertical, inner, center;
+                                see tools/textures/connected.py). The plain casing is the corner piece
     controller_front(_active)   casing with a screen. Idle screen is dark; active is a 6 frame strip:
                                 a read head runs down a cooldown curve, the gauge follows it
 
@@ -25,6 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from texlib import *  # noqa: E402,F403
+from connected import SUFFIX, build_pieces, quarter  # noqa: E402
 
 NAME = "liquefaction"
 C = (8.0, 8.0)  # centre of a face, in pixel coordinates (pixel x spans x..x+1)
@@ -81,6 +84,73 @@ def recess(t: Tex, box, floor=FRAME, lo: int = 0, hi: int = 2) -> None:
 # --- faces -----------------------------------------------------------------------------------------
 def casing() -> Tex:
     return casing_base("casing")
+
+
+# --- connected casing (see tools/textures/connected.py) --------------------------------------------
+# The casing as five quarter pieces, so a formed plant reads as one surface with the border only
+# around its outline and around valves, coolers, ports and the controller. Each pixel's feature
+# depends only on its own quarter: the 1 pixel dark border on an unconnected side, the bevel next to
+# it (lit on the top and left, shadowed on the bottom and right, lit wins where they cross, as in
+# casing_base), a 2x2 notch where two connected sides meet at an unconnected diagonal (it continues
+# the neighbours' seams around the corner), and the cobalt brackets on outer corners only.
+BRACKET_PX = {(cx + sx * k, cy) for cx, cy, sx, _ in BRACKETS for k in (1, 2)} | \
+             {(cx, cy + sy * k) for cx, cy, _, sy in BRACKETS for k in (1, 2)}
+BRACKET_CORNERS = {(cx, cy) for cx, cy, _, _ in BRACKETS}
+
+
+def casing_feature(piece: str, x: int, y: int) -> str:
+    right, bottom = quarter(x, y)
+    ex, ey = (15 if right else 0), (15 if bottom else 0)  # the tile edge this quarter touches
+    hb = piece in ("corner", "horizontal")  # border along the top or bottom
+    vb = piece in ("corner", "vertical")    # border along the left or right
+    if (hb and y == ey) or (vb and x == ex) or (piece == "inner" and (x, y) == (ex, ey)):
+        return "dark"
+    lit_row, lit_col = (y == 1 and not bottom), (x == 1 and not right)
+    dim_row, dim_col = (y == 14 and bottom), (x == 14 and right)
+    if (hb and lit_row) or (vb and lit_col):
+        return "lit"
+    if (hb and dim_row) or (vb and dim_col):
+        return "dim"
+    if piece == "inner" and abs(x - ex) <= 1 and abs(y - ey) <= 1:
+        # The notch continues the neighbours' bevels: on the edge column it is the side neighbour's
+        # row line, on the edge row the vertical neighbour's column line.
+        if x == ex:
+            return "dim" if bottom else "lit"
+        if y == ey:
+            return "dim" if right else "lit"
+        return "lit" if not bottom or not right else "dim"
+    if piece == "corner" and (x, y) in BRACKET_CORNERS:
+        return "bracket_corner"
+    if piece == "corner" and (x, y) in BRACKET_PX:
+        return "bracket"
+    return "plate"
+
+
+def casing_plate() -> Tex:
+    """The plate under casing_base's border: the same rng sequence up to the two fills."""
+    t = Tex(seed=f"{NAME}_casing")
+    t.fill((0, 0, 15, 15), CASING, 0, 0, jitter=2)
+    t.fill((1, 1, 14, 14), CASING, 3, 4, jitter=2)
+    return t
+
+
+def casing_pieces() -> dict:
+    plate = casing_plate()
+
+    def synth(feature: str, x: int, y: int):
+        h = hrand(x, y, f"ctm_{feature}")
+        if feature == "plate":
+            # Inside, reuse the plate the border was drawn over; the outer ring had none, so make it.
+            return plate.get(x, y) if 0 < x < 15 and 0 < y < 15 else hpick(CASING, 3, 4, x, y, "ctm_plate", 2)
+        if feature == "dark":
+            return hpick(CASING, 0, 0, x, y, "ctm_dark", 2)
+        if feature == "lit":
+            return shade(CASING[4 + h % 2], (h >> 8) % 4 - 2)
+        if feature == "dim":
+            return shade(CASING[2], (h >> 8) % 5 - 2)
+        raise ValueError(feature)
+
+    return build_pieces(casing().img, casing_feature, synth)
 
 
 def octagon(half: float, cut: float):
@@ -265,6 +335,12 @@ def main() -> None:
         controller_front().save(f"{d}/controller_front.png"),
         save_animation([controller_front(f, True) for f in range(FRAMES)], f"{d}/controller_front_active.png", frametime=4),
     ]
+    # Connected casing pieces; the corner piece is casing.png itself.
+    for name, img in casing_pieces().items():
+        if SUFFIX[name]:
+            path = ASSETS / "block" / d / f"casing{SUFFIX[name]}.png"
+            img.save(path)
+            out.append(path)
     for p in out:
         print(p.relative_to(REPO))
 

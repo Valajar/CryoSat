@@ -11,6 +11,7 @@ Every part shares the same two faces so the pad reads as one platform, tier neut
                          cryogenic oxidiser), dark bore
     fuel_port_side       pad edge with the same port, for tubes and pipes on the outside of the pad
     controller_top       deck plate with a recessed console grille
+    plating_top_<piece>  connected texture pieces of plating_top (see tools/textures/connected.py)
     controller_front     pad edge with a console screen. Idle: dark glass. Active (a rocket stands on
     (_active)            the pad): a small rocket glyph and a countdown bar filling up, 8 frames
 
@@ -22,6 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from texlib import *  # noqa: E402,F403
+from connected import SUFFIX, build_pieces, quarter  # noqa: E402
 
 NAME = "launch_pad"
 C = (8.0, 8.0)
@@ -67,6 +69,75 @@ def deck(seed: str) -> Tex:
 
 def plating_top() -> Tex:
     return deck("plating_top")
+
+
+# --- connected deck (see tools/textures/connected.py) ------------------------------------------
+# The plating top as five quarter pieces, so the 5x5 pad reads as one deck with the rim only around
+# its outline and around the controller and fuel ports. Where a side connects, its rim goes and the
+# tread lattice carries on across the joint (cells every 4 pixels, so a cell sits on pixels 14..15
+# and casts its shadow into the next block). The rim is lit on the top and left, dark on the bottom
+# and right, lit wins where they meet (as in deck); the glints sit on outer corners only.
+TREAD = (2, 6, 10)
+
+
+def tread_cell(gx: int, gy: int) -> dict:
+    """Pixels of one tread cell: the lit and dim halves of the bar and its shadow (as in deck)."""
+    flip = ((gx + gy) // 4) % 2
+    bar = ((gx, gy + 1), (gx + 1, gy)) if flip else ((gx, gy), (gx + 1, gy + 1))
+    out = {bar[0]: "tread_hi", bar[1]: "tread_lo"}
+    for x, y in bar:
+        if (x + 1, y + 1) not in bar:
+            out[(x + 1, y + 1)] = "tread_shadow"
+    return out
+
+
+def deck_feature(piece: str, x: int, y: int) -> str:
+    right, bottom = quarter(x, y)
+    ex, ey = (15 if right else 0), (15 if bottom else 0)
+    h = piece in ("horizontal", "inner", "center")  # the side neighbour connects
+    v = piece in ("vertical", "inner", "center")    # the neighbour above or below connects
+    hb, vb = not v, not h                           # rim along the top/bottom, along the left/right
+    if (hb and y == ey) or (vb and x == ex) or (piece == "inner" and (x, y) == (ex, ey)):
+        # Lit wins where rims cross, so only the bottom right corner is dark when both meet there.
+        if (hb and y == ey and not bottom) or (vb and x == ex and not right) or (piece == "inner" and not (right and bottom)):
+            return "rim_lit"
+        return "rim_dark"
+    if piece == "corner" and (x, y) in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        return "glint"
+    # Cells on this block's own lattice and on the neighbours' (offset by 16), where they exist.
+    xs = [g for g in TREAD] + ([14 if right else -2] if h else [])
+    ys = [g for g in TREAD] + ([14 if bottom else -2] if v else [])
+    for gx in xs:
+        for gy in ys:
+            if gx not in TREAD and gy not in TREAD and piece != "center":
+                continue
+            f = tread_cell(gx, gy).get((x, y))
+            if f:
+                return f
+    return "plate"
+
+
+def deck_pieces(seed: str = "plating_top") -> dict:
+    base = Tex(seed=f"{NAME}_{seed}")
+    base.fill((0, 0, 15, 15), PANEL, 3, 4, jitter=2)  # the plate under everything, same rng as deck
+
+    def synth(feature: str, x: int, y: int):
+        return {
+            "plate": lambda: base.get(x, y),
+            "rim_lit": lambda: hpick(PLATE, 3, 4, x, y, "rim"),
+            "rim_dark": lambda: hpick(FRAME, 2, 3, x, y, "rim"),
+            "tread_hi": lambda: hpick(PLATE, 3, 4, x, y, "tread", 1),
+            "tread_lo": lambda: hpick(PLATE, 1, 2, x, y, "tread", 1),
+            "tread_shadow": lambda: hpick(FRAME, 3, 4, x, y, "tread_shadow", 1),
+            "glint": lambda: GLINT[0],
+        }[feature]()
+
+    iso = deck(seed).img
+    # Every pixel of the plain deck must follow from the feature map, or the pieces would not line up.
+    for y in range(16):
+        for x in range(16):
+            assert iso.getpixel((x, y))[:3] == synth(deck_feature("corner", x, y), x, y), (x, y)
+    return build_pieces(iso, deck_feature, synth)
 
 
 # --- edge --------------------------------------------------------------------------------------
@@ -218,6 +289,12 @@ def main() -> None:
         controller_front().save(f"{d}/controller_front.png"),
         save_animation([controller_front(f, True) for f in range(FRAMES)], f"{d}/controller_front_active.png", frametime=5),
     ]
+    # Connected deck pieces; the corner piece is plating_top.png itself.
+    for name, img in deck_pieces().items():
+        if SUFFIX[name]:
+            path = ASSETS / "block" / d / f"plating_top{SUFFIX[name]}.png"
+            img.save(path)
+            out.append(path)
     for p in out:
         print(p.relative_to(REPO))
 

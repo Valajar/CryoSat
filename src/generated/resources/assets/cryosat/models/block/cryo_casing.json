@@ -1,6 +1,19 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/block",
+  "connects_to": [
+    "cryosat:cryo_casing",
+    "cryosat:cryo_valve",
+    "cryosat:cryocooler",
+    "cryosat:heat_rejection_port",
+    "cryosat:liquefaction_controller"
+  ],
+  "loader": "cryosat:connected",
   "textures": {
-    "all": "cryosat:block/liquefaction/casing"
+    "center": "cryosat:block/liquefaction/casing_center",
+    "corner": "cryosat:block/liquefaction/casing",
+    "horizontal": "cryosat:block/liquefaction/casing_horizontal",
+    "inner": "cryosat:block/liquefaction/casing_inner",
+    "particle": "cryosat:block/liquefaction/casing",
+    "vertical": "cryosat:block/liquefaction/casing_vertical"
   }
 }

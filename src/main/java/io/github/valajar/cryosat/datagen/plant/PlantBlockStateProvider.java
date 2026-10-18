@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen.plant;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.connected.ConnectedModelBuilder;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -30,7 +31,11 @@ public class PlantBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        ModelFile casing = models().cubeAll("cryo_casing", tex("casing"));
+        // Connected textures: the casing joins every plant part into one surface, bordered only around the plant's outline and
+        // around the feature blocks, which keep their own framed faces. Structural glass is not a connection, so the casing
+        // frames glass windows.
+        ModelFile casing = ConnectedModelBuilder.cube(models(), "cryo_casing", tex("casing"), CryoBlocks.CRYO_CASING.get(),
+              CryoBlocks.CRYO_VALVE.get(), CryoBlocks.CRYOCOOLER.get(), CryoBlocks.HEAT_REJECTION_PORT.get(), CryoBlocks.LIQUEFACTION_CONTROLLER.get());
         simpleBlockWithItem(CryoBlocks.CRYO_CASING.get(), casing);
         simpleBlockWithItem(CryoBlocks.CRYO_VALVE.get(), models().cubeAll("cryo_valve", tex("valve")));
         activeCube(CryoBlocks.CRYOCOOLER.get(), "cryocooler");
