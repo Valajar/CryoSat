@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen.space;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoItems;
 import io.github.valajar.cryosat.space.RocketPartItem;
 import io.github.valajar.cryosat.space.RocketTier;
@@ -63,7 +64,7 @@ public final class SpaceRecipes {
         upgrade(output, CryoItems.FUEL_TANKS, RocketTier.ADVANCED, common("alloys/advanced"), common("circuits/advanced"));
         upgrade(output, CryoItems.ASTEROID_MINERS, RocketTier.ADVANCED, common("alloys/advanced"), common("circuits/advanced"));
         upgrade(output, CryoItems.ROCKET_ENGINES, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
-        upgrade(output, CryoItems.FUEL_TANKS, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
+        eliteFuelTank(output);
         upgrade(output, CryoItems.ASTEROID_MINERS, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
     }
 
@@ -128,6 +129,22 @@ public final class SpaceRecipes {
               .define('A', alloy)
               .define('C', circuit)
               .define('P', previous)
+              .unlockedBy("has_previous_tier", has(previous))
+              .save(output);
+    }
+
+    /**
+     * The Elite tank holds liquid hydrogen, so it needs the insulation of a Cryo Casing on top of the usual tier upgrade,
+     * which ties Elite rockets to the Liquefaction Plant.
+     */
+    private static void eliteFuelTank(RecipeOutput output) {
+        Item previous = CryoItems.FUEL_TANKS.get(RocketTier.ADVANCED).get();
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoItems.FUEL_TANKS.get(RocketTier.ELITE).get())
+              .pattern("ACA").pattern("APA").pattern(" K ")
+              .define('A', common("alloys/elite"))
+              .define('C', common("circuits/elite"))
+              .define('P', previous)
+              .define('K', CryoBlocks.CRYO_CASING.get())
               .unlockedBy("has_previous_tier", has(previous))
               .save(output);
     }

@@ -8,13 +8,17 @@
     "C": {
       "tag": "c:circuits/elite"
     },
+    "K": {
+      "item": "cryosat:cryo_casing"
+    },
     "P": {
       "item": "cryosat:advanced_fuel_tank"
     }
   },
   "pattern": [
     "ACA",
-    "APA"
+    "APA",
+    " K "
   ],
   "result": {
     "count": 1,
