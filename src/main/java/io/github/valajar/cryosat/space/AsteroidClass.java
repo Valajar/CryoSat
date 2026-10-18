@@ -2,6 +2,7 @@ package io.github.valajar.cryosat.space;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.valajar.cryosat.CryoSat;
 import java.util.ArrayList;
@@ -28,8 +29,10 @@ import net.minecraft.world.item.Items;
  * @param hardnessMin lower bound of the rolled hardness; batch time scales with hardness
  * @param hardnessMax upper bound of the rolled hardness
  * @param yields      what a small asteroid of this class gives in total; bigger sizes multiply it
+ * @param bonusYields extras a Superconducting Separator can sort out of each batch, each with its own chance
  */
-public record AsteroidClass(ResourceLocation destination, RocketTier minTier, int weight, float hardnessMin, float hardnessMax, List<Yield> yields) {
+public record AsteroidClass(ResourceLocation destination, RocketTier minTier, int weight, float hardnessMin, float hardnessMax, List<Yield> yields,
+                            List<BonusYield> bonusYields) {
     public static final ResourceLocation ASTEROID_BELT = CryoSat.rl("asteroid_belt");
 
     public static final Codec<AsteroidClass> CODEC = RecordCodecBuilder.<AsteroidClass>create(instance -> instance.group(
@@ -38,7 +41,8 @@ public record AsteroidClass(ResourceLocation destination, RocketTier minTier, in
           ExtraCodecs.POSITIVE_INT.optionalFieldOf("weight", 10).forGetter(AsteroidClass::weight),
           Codec.floatRange(0.1f, 10).optionalFieldOf("hardness_min", 1f).forGetter(AsteroidClass::hardnessMin),
           Codec.floatRange(0.1f, 10).optionalFieldOf("hardness_max", 1f).forGetter(AsteroidClass::hardnessMax),
-          Yield.CODEC.listOf().fieldOf("yields").forGetter(AsteroidClass::yields)
+          Yield.CODEC.listOf().fieldOf("yields").forGetter(AsteroidClass::yields),
+          BonusYield.CODEC.listOf().optionalFieldOf("bonus_yields", List.of()).forGetter(AsteroidClass::bonusYields)
     ).apply(instance, AsteroidClass::new)).validate(asteroid -> asteroid.hardnessMin <= asteroid.hardnessMax ? DataResult.success(asteroid)
                                                                 : DataResult.error(() -> "hardness_min is above hardness_max"));
 
@@ -67,6 +71,32 @@ public record AsteroidClass(ResourceLocation destination, RocketTier minTier, in
         return cargo;
     }
 
+    /** Rolls the Separator extras for one batch. */
+    public List<CargoEntry> rollBonus(RandomSource random) {
+        List<CargoEntry> extras = new ArrayList<>();
+        for (BonusYield bonus : bonusYields) {
+            if (random.nextFloat() < bonus.chance()) {
+                bonus.yield().resolve().ifPresent(item -> {
+                    int count = bonus.yield().min() + random.nextInt(bonus.yield().max() - bonus.yield().min() + 1);
+                    if (count > 0) {
+                        CargoEntry.merge(extras, new CargoEntry(item, count));
+                    }
+                });
+            }
+        }
+        return extras;
+    }
+
+    /**
+     * A Separator extra: {@code yield} amounts are per batch, and it shows up in a batch with probability {@code chance}.
+     */
+    public record BonusYield(Yield yield, float chance) {
+        public static final Codec<BonusYield> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              Yield.MAP_CODEC.forGetter(BonusYield::yield),
+              Codec.floatRange(0, 1).fieldOf("chance").forGetter(BonusYield::chance)
+        ).apply(instance, BonusYield::new));
+    }
+
     /**
      * One material of an asteroid class.
      *
@@ -75,12 +105,13 @@ public record AsteroidClass(ResourceLocation destination, RocketTier minTier, in
      * @param max  most items a small asteroid gives
      */
     public record Yield(TagOrElementLocation item, int min, int max) {
-        public static final Codec<Yield> CODEC = RecordCodecBuilder.<Yield>create(instance -> instance.group(
+        public static final MapCodec<Yield> MAP_CODEC = RecordCodecBuilder.<Yield>mapCodec(instance -> instance.group(
               ExtraCodecs.TAG_OR_ELEMENT_ID.fieldOf("item").forGetter(Yield::item),
               ExtraCodecs.NON_NEGATIVE_INT.fieldOf("min").forGetter(Yield::min),
               ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(Yield::max)
         ).apply(instance, Yield::new)).validate(yield -> yield.min <= yield.max ? DataResult.success(yield)
                                                          : DataResult.error(() -> "min is above max for " + yield.item));
+        public static final Codec<Yield> CODEC = MAP_CODEC.codec();
 
         public Optional<Holder<Item>> resolve() {
             if (!item.tag()) {

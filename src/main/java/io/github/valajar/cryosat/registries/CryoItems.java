@@ -36,6 +36,9 @@ public final class CryoItems {
     // Uplink Card (space workstream A): stores the Cargo Receiver a mission delivers to
     public static final ItemRegistryObject<ItemUplinkCard> UPLINK_CARD = ITEMS.registerItem("uplink_card", ItemUplinkCard::new);
 
+    // Superconductors: the crafted coil every superconducting block is built from (high temperature grade, liquid nitrogen)
+    public static final ItemRegistryObject<Item> SUPERCONDUCTING_COIL = ITEMS.register("superconducting_coil");
+
     private static Map<RocketTier, ItemRegistryObject<RocketPartItem>> tiered(String name, Kind kind, PayloadType payload) {
         Map<RocketTier, ItemRegistryObject<RocketPartItem>> items = new EnumMap<>(RocketTier.class);
         for (RocketTier tier : RocketTier.values()) {

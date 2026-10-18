@@ -175,7 +175,7 @@ public class OrbitalRegistry extends SavedData {
         boolean changed = false;
         for (Iterator<OrbitalAsset> iterator = assets.values().iterator(); iterator.hasNext(); ) {
             OrbitalAsset asset = iterator.next();
-            changed |= advance(asset, now);
+            changed |= advance(server, asset, now);
             if (!asset.pending.isEmpty()) {
                 changed |= deliver(server, asset);
             }
@@ -185,7 +185,7 @@ public class OrbitalRegistry extends SavedData {
         }
     }
 
-    private static boolean advance(OrbitalAsset asset, long now) {
+    private static boolean advance(MinecraftServer server, OrbitalAsset asset, long now) {
         AsteroidRoll asteroid = asset.asteroid;
         if (asteroid == null || asset.state == OrbitalAsset.State.RETIRED || now < asset.nextEventAt) {
             return false;
@@ -195,7 +195,12 @@ public class OrbitalRegistry extends SavedData {
             asset.nextEventAt = now + asteroid.batchTicks();
             return true;
         }
-        for (CargoEntry entry : asteroid.batch(asset.batchesDelivered)) {
+        List<CargoEntry> batch = asteroid.batch(asset.batchesDelivered);
+        ICargoReceiver receiver = loadedReceiver(server, asset);
+        if (receiver != null) {
+            batch = receiver.processBatch(batch, asset, server.overworld().getRandom());
+        }
+        for (CargoEntry entry : batch) {
             CargoEntry.merge(asset.pending, entry);
         }
         asset.batchesDelivered++;
@@ -205,6 +210,20 @@ public class OrbitalRegistry extends SavedData {
             asset.nextEventAt = now + asteroid.batchTicks();
         }
         return true;
+    }
+
+    /** @return the asset's linked receiver if its chunk is loaded and it is an {@link ICargoReceiver} */
+    @Nullable
+    private static ICargoReceiver loadedReceiver(MinecraftServer server, OrbitalAsset asset) {
+        GlobalPos receiver = asset.receiver;
+        if (receiver == null) {
+            return null;
+        }
+        ServerLevel level = server.getLevel(receiver.dimension());
+        if (level == null || !level.isLoaded(receiver.pos())) {
+            return null;
+        }
+        return level.getBlockEntity(receiver.pos()) instanceof ICargoReceiver cargoReceiver ? cargoReceiver : null;
     }
 
     private static boolean deliver(MinecraftServer server, OrbitalAsset asset) {

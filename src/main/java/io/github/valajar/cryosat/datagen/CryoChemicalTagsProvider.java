@@ -19,6 +19,6 @@ public class CryoChemicalTagsProvider extends TagsProvider<Chemical> {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         // Marks chemicals that render as a gas rather than a liquid
-        tag(MekanismAPITags.Chemicals.GASEOUS).add(CryoChemicals.COMPRESSED_AIR.getKey());
+        tag(MekanismAPITags.Chemicals.GASEOUS).add(CryoChemicals.COMPRESSED_AIR.getKey(), CryoChemicals.NITROGEN.getKey());
     }
 }

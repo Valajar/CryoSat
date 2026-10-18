@@ -17,6 +17,9 @@ public final class CryoChemicals {
 
     public static final DeferredHolder<Chemical, Chemical> COMPRESSED_AIR = CHEMICALS.register("compressed_air",
           () -> new Chemical(ChemicalBuilder.builder().tint(0xC9D3DC)));
+    /** Boil off of liquid nitrogen coolant; liquefies back into liquid nitrogen in the plant. */
+    public static final DeferredHolder<Chemical, Chemical> NITROGEN = CHEMICALS.register("nitrogen",
+          () -> new Chemical(ChemicalBuilder.builder().tint(0xB9C6DA)));
     public static final DeferredHolder<Chemical, Chemical> LIQUID_NITROGEN = CHEMICALS.register("liquid_nitrogen",
           () -> new Chemical(ChemicalBuilder.builder().tint(0xD8E4F5)));
     public static final DeferredHolder<Chemical, Chemical> LIQUID_OXYGEN = CHEMICALS.register("liquid_oxygen",

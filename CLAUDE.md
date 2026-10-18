@@ -55,7 +55,8 @@ on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cr
   `OrbitalRegistry` saved data). Orbital assets never live in chunks; blocks talk to the registry.
   Destinations and asteroid classes are datapack files in `data/<ns>/cryosat/destination/` and
   `.../asteroid/`. Design: `docs/design/space-age.md`; current build plan:
-  `docs/design/milestone1-plan.md`. Space features keep their lang keys in their own enum (like
+  `docs/design/milestone1-plan.md` (done) and `docs/design/milestone2-plan.md`. Superconducting
+  blocks share `superconductor.Cryostat` for their liquid nitrogen cooling. Space features keep their lang keys in their own enum (like
   `space.SpaceLang`) with English text in a `datagen/<feature>` helper.
 
 ## Textures and models

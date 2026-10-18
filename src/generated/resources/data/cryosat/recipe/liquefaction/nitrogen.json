@@ -1,0 +1,15 @@
+{
+  "type": "cryosat:liquefaction",
+  "input": {
+    "amount": 100,
+    "chemical": "cryosat:nitrogen"
+  },
+  "latent_heat": 2.0,
+  "max_temperature": 77.0,
+  "outputs": [
+    {
+      "amount": 100,
+      "id": "cryosat:liquid_nitrogen"
+    }
+  ]
+}

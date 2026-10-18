@@ -32,6 +32,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.RandomSource;
+import net.minecraft.core.Direction;
+import mekanism.common.util.WorldUtils;
+import io.github.valajar.cryosat.space.ICargoProcessor;
+import io.github.valajar.cryosat.space.CargoEntry;
 
 /**
  * Catches cargo sent down by orbital assets linked to it with an Uplink Card. A plain Mekanism machine without energy:
@@ -115,6 +120,20 @@ public class TileEntityCargoReceiver extends TileEntityConfigurableMachine imple
     /**
      * Fills stacks of the same item first, then empty slots, like a hopper would.
      */
+    @Override
+    public List<CargoEntry> processBatch(List<CargoEntry> batch, OrbitalAsset from, RandomSource random) {
+        // The first adjacent processor that is working (a cold Superconducting Separator) handles the batch
+        for (Direction direction : Direction.values()) {
+            if (WorldUtils.getTileEntity(level, worldPosition.relative(direction)) instanceof ICargoProcessor processor) {
+                List<CargoEntry> processed = processor.processBatch(batch, from, random);
+                if (processed != null) {
+                    return processed;
+                }
+            }
+        }
+        return batch;
+    }
+
     @Override
     public ItemStack receiveCargo(ItemStack stack, OrbitalAsset from) {
         if (stack.isEmpty() || !canFunction()) {

@@ -1,5 +1,7 @@
 package io.github.valajar.cryosat.space;
 
+import java.util.List;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -15,4 +17,12 @@ public interface ICargoReceiver {
      * @return what did not fit
      */
     ItemStack receiveCargo(ItemStack stack, OrbitalAsset from);
+
+    /**
+     * Called once per batch when a miner produces it, while this receiver is loaded, before the batch is delivered. Receivers
+     * pass it to adjacent {@link ICargoProcessor}s.
+     */
+    default List<CargoEntry> processBatch(List<CargoEntry> batch, OrbitalAsset from, RandomSource random) {
+        return batch;
+    }
 }

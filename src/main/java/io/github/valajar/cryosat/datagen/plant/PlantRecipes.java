@@ -74,6 +74,7 @@ public final class PlantRecipes {
         liquefaction(output, "compressed_air", CryoChemicals.COMPRESSED_AIR, 100, 77, 2,
               CryoChemicals.LIQUID_NITROGEN.get().getStack(78), CryoChemicals.LIQUID_OXYGEN.get().getStack(21), CryoChemicals.LIQUID_ARGON.get().getStack(1));
         liquefaction(output, "oxygen", mekanismChemical("oxygen"), 100, 90, 2, CryoChemicals.LIQUID_OXYGEN.get().getStack(100));
+        liquefaction(output, "nitrogen", CryoChemicals.NITROGEN, 100, 77, 2, CryoChemicals.LIQUID_NITROGEN.get().getStack(100));
         liquefaction(output, "hydrogen", mekanismChemical("hydrogen"), 100, 20, 1, CryoChemicals.LIQUID_HYDROGEN.get().getStack(100));
     }
 

@@ -5,6 +5,7 @@ import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.datagen.launch.LaunchLangData;
 import io.github.valajar.cryosat.datagen.plant.PlantLang;
 import io.github.valajar.cryosat.datagen.space.SpaceLangData;
+import io.github.valajar.cryosat.datagen.superconductor.SuperconductorLangData;
 import io.github.valajar.cryosat.machine.MachineStatus;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import io.github.valajar.cryosat.registries.CryoChemicals;
@@ -32,6 +33,7 @@ public class CryoLanguageProvider extends LanguageProvider {
               + "high altitude.");
 
         chemical(CryoChemicals.COMPRESSED_AIR, "Compressed Air");
+        chemical(CryoChemicals.NITROGEN, "Nitrogen");
         chemical(CryoChemicals.LIQUID_NITROGEN, "Liquid Nitrogen");
         chemical(CryoChemicals.LIQUID_OXYGEN, "Liquid Oxygen");
         chemical(CryoChemicals.LIQUID_ARGON, "Liquid Argon");
@@ -50,6 +52,7 @@ public class CryoLanguageProvider extends LanguageProvider {
 
         PlantLang.addTo(this);
         SpaceLangData.addTo(this);
+        SuperconductorLangData.addTo(this);
         // Cargo Receiver and Uplink Card (space workstream A)
         io.github.valajar.cryosat.datagen.receiver.ReceiverLangData.addTo(this);
         // Mission Control (workstream D)

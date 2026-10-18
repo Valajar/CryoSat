@@ -1,5 +1,6 @@
 {
   "values": [
-    "cryosat:compressed_air"
+    "cryosat:compressed_air",
+    "cryosat:nitrogen"
   ]
 }

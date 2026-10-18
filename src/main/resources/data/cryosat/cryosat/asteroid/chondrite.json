@@ -9,5 +9,9 @@
     {"item": "mekanism:enriched_carbon", "min": 256, "max": 384},
     {"item": "#c:raw_materials/gold", "min": 128, "max": 128},
     {"item": "#c:raw_materials/osmium", "min": 128, "max": 128}
+  ],
+  "bonus_yields": [
+    {"item": "#c:gems/diamond", "min": 2, "max": 6, "chance": 0.3},
+    {"item": "#c:gems/fluorite", "min": 8, "max": 24, "chance": 0.4}
   ]
 }

@@ -25,11 +25,11 @@ Power from space (a Dyson swarm) is wanted but low priority.
 | First payload | Asteroid Miner |
 | Destinations | Abstract, datapack driven: asteroid belt first, gas giants and stars later. Never dimensions you visit |
 | Rockets | Crafted parts placed into an assembly GUI. The assembled rocket shows as a 3D model on the pad, coloured by tier (Mekanism basic, advanced, elite, ultimate) |
-| Cargo | A Cargo Receiver block on the ground for now. Later: a Space Hub station (see "Later") |
+| Cargo | A Cargo Receiver block on the ground: the early game answer. Later: the Space Hub, a station dimension (see "Space Hub") |
 | Orbits | Abstract. No low or high orbit distinction, no coverage maths |
 | Risk | No launch failures, no debris, for now |
 | Ownership | Per player, no PvP. WarSats are PvE and spectacle when they come |
-| Dimensions | None for the core loop. The Space Hub may become one later |
+| Dimensions | None for the core loop. The Space Hub becomes one later |
 | Superconductors | Not cables. Magnets and coils that only work while kept cold. Milestone 2, right after asteroid mining |
 
 ## Milestone 1: Asteroid mining
@@ -141,16 +141,21 @@ and their defining trait is that they **only work while kept cold**.
 
 In planned order:
 
-1. **Superconducting Separator** (Cargo Receiver upgrade). Magnetically sorts incoming cargo for
-   bigger yields and a chance at rarer materials. Improves how well miners work, never what an
-   asteroid contains.
+1. **Superconducting Separator**, a block placed next to a Cargo Receiver (and later next to a Space
+   Hub dock). While cold it magnetically sorts each batch as it arrives: **+50 percent** on everything
+   in the batch, plus a chance at rarer extras listed per asteroid class (chondrite: diamonds,
+   Mekanism fluorite). Coolant: a small steady trickle of liquid nitrogen while cold, plus a fixed
+   amount per batch (never per item, so big asteroids do not make it unaffordable). It only works on
+   batches that arrive while it is loaded and cold; cargo already waiting in orbit gets no bonus.
 2. **Fusion Field Coils** (Mekanism Generators fusion reactor). A real tokamak confines its plasma
-   with superconducting magnets, and a stronger field means better confinement. Coils placed
-   around the reactor multiply its energy output by a flat factor (for example +25 percent per coil
-   ring, capped) while they stay cold; coolant use scales with the reactor's output. The multiplier
-   lives on the reactor, not on a cable: a multiplying cable could be chained or looped into infinite
-   power. Technically this needs a mixin into Generators' fusion reactor, loaded only when Generators
-   is installed.
+   with superconducting magnets, and a stronger field means better confinement. The coils are their
+   own multiblock: a flat square ring of Field Coil blocks around the reactor's middle layer, one or
+   two blocks away from it, with a coil controller and a coolant port in the ring. Stacking up to
+   three rings raises the field. While cold, the ring adds a flat share of the reactor's current
+   output (for example +25 percent per ring) straight into the reactor's own energy buffer, which
+   Mekanism exposes publicly, so no mixin is needed and nothing inside Mekanism is patched. Coolant
+   use scales with the bonus. The multiplier lives on the reactor, not on a cable: a multiplying
+   cable could be chained or looped into infinite power. Only active when Generators is installed.
 3. **SQUID survey sensor** (Survey Satellite upgrade, Milestone 3). Real SQUID magnetometers detect
    tiny magnetic fields and are used in mineral exploration. This is the upgrade that lets satellite
    imagery see underground structures (ancient cities, strongholds), instead of a generic radar.
@@ -192,11 +197,46 @@ be a ground side detour; scooping it from a gas giant's atmosphere is more in th
 * Possible later bonus: helium 3 as an alternative fusion fuel, if it fits alongside Mekanism's
   D T fuel.
 
+## Space Hub (planned after the early game)
+
+The Cargo Receiver is the early game answer. The Space Hub replaces it as the place cargo arrives:
+
+* **A station dimension** with a custom sky: Earth as a large rotating 3D model below the station,
+  an atmosphere glow on its rim, and the station's orientation to Earth adjustable by the player.
+* **Cheaper launches from orbit**, and **reusable rockets**: rockets return to the Hub intact instead
+  of being spent.
+* **Docks** take over from Cargo Receivers. Anything built for receivers, like the Superconducting
+  Separator, attaches to a dock the same way, so nothing from the early game becomes useless.
+* Needs a way for players to travel up and back (an early crew capsule, later a shuttle).
+
+## Destinations and rocket roles (brainstorm, to choose from)
+
+Destinations so far: asteroid belt (built), gas giant, exoplanets, star. Candidates to fill the
+gaps between them, each with a reason to go there:
+
+| Destination | Tier | Payload | Gives | Why it is interesting |
+| --- | --- | --- | --- | --- |
+| Moon | Basic | Regolith Miner | Quartz, redstone, glowstone; later helium 3 | A second early target so Basic rockets have a choice |
+| Near Earth comets | Advanced | Ice Harvester | Water ice, frozen nitrogen (straight to liquid nitrogen), ammonia | Cheap coolant from space, a shortcut around the Liquefaction Plant |
+| Metallic asteroid classes | Advanced | Asteroid Miner | Copper, tin, lead, uranium | Widens the belt instead of adding places |
+| Mars like planet | Advanced | Surface Lander | Redstone, iron, Mekanism salt and lithium (perchlorate brines) | Lithium feeds Mekanism's tritium chain for fusion |
+| Icy moons | Elite | Ice Harvester | Heavy water ice (deuterium), nitrogen ice | Deuterium for fusion fuel without electrolysis |
+| Gas giant | Elite | Atmospheric Scoop | Helium, metallic hydrogen | Already planned |
+| Exoplanets | Elite or Ultimate | Datapack defined | Modpack materials | Already planned |
+| Star | Ultimate | Stellar Scoop, Dyson segment | Stellar plasma, Dyson power | Already planned |
+
+Rocket roles, as payload types rather than new rockets (a rocket is tier plus payload, so new
+roles cost no new rocket models):
+
+* **Miner** (asteroids, Moon): batches of solids, built.
+* **Harvester or Scoop** (comets, icy moons, gas giants, stars): canisters of chemicals, delivered
+  into a receiver's tanks.
+* **Lander** (planets): one large delivery after a long trip instead of batches.
+* **Satellite** (Earth orbit): survey imagery, later WarSats; never returns cargo.
+* **Crew capsule and shuttle** (Space Hub era): carry players and return reusable rockets.
+
 ## Later (recorded, not scheduled)
 
-* **Space Hub.** An orbital station where cargo arrives instead of a ground receiver, possibly its
-  own dimension with a custom sky that players can visit and expand. Needs a way for players to get
-  there and back.
 * **Dyson swarm.** Launch segments over time; power scales with how much of the swarm is built and
   can exceed fusion when large. Received on the ground by a beam receiver.
 * **Orbital Display globe.** The custom globe screen from `phase1.md`, colour coded by category.
@@ -207,4 +247,5 @@ be a ground side detour; scooping it from a gas giant's atmosphere is more in th
 ## Open questions
 
 1. What Stellar Plasma is used for.
+2. Which destinations and roles from the brainstorm to build, and in what order.
 2. Asteroid numbers beyond the chondrite starting point, settled by playtesting.
