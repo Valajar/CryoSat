@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanismgenerators"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:circuits/elite"
+    },
+    "F": {
+      "item": "cryosat:field_coil"
+    },
+    "K": {
+      "item": "cryosat:cryo_casing"
+    },
+    "L": {
+      "item": "mekanismgenerators:laser_focus_matrix"
+    },
+    "S": {
+      "item": "cryosat:superconducting_coil"
+    }
+  },
+  "pattern": [
+    "ELE",
+    "SFS",
+    "EKE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:field_coil_controller"
+  }
+}

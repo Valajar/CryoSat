@@ -61,6 +61,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         LaunchLangData.addTo(this);
         // Superconducting Separator (superconductor workstream A)
         io.github.valajar.cryosat.datagen.separator.SeparatorLangData.addTo(this);
+        // Fusion Field Coils (superconductor workstream C)
+        io.github.valajar.cryosat.datagen.fusion.FusionCoilLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

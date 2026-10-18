@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "cryosat:block/field_coil"
+    },
+    "active=true": {
+      "model": "cryosat:block/field_coil_active"
+    }
+  }
+}

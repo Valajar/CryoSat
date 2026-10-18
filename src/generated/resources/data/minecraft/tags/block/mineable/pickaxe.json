@@ -11,6 +11,8 @@
     "cryosat:launch_pad_plating",
     "cryosat:launch_pad_fuel_port",
     "cryosat:launch_controller",
-    "cryosat:superconducting_separator"
+    "cryosat:superconducting_separator",
+    "cryosat:field_coil",
+    "cryosat:field_coil_controller"
   ]
 }

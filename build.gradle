@@ -129,9 +129,11 @@ configurations {
 
 dependencies {
     // Compile against the full Mekanism jar: CryoSat builds on Mekanism's machine, GUI and multiblock internals.
-    // Generators is only needed at runtime for testing (fission/fusion, heat generators).
     compileOnly "mekanism:Mekanism:${mekanism_version}"
     localRuntime "mekanism:Mekanism:${mekanism_version}"
+    // Generators is optional for players. The Fusion Field Coils compile against it; every class that touches it is only
+    // loaded when mekanismgenerators is present (see superconductor/fusion/FusionReactorAccess).
+    compileOnly "mekanism:Mekanism:${mekanism_version}:generators"
     localRuntime "mekanism:Mekanism:${mekanism_version}:generators"
     // JEI: compile against its API, run with the full mod. Optional at runtime for players.
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"

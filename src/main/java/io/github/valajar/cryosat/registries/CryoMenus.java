@@ -1,5 +1,9 @@
 package io.github.valajar.cryosat.registries;
 
+// Fusion Field Coils (superconductor workstream C)
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
+
+
 // Cargo Receiver (space workstream A)
 import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
 
@@ -51,6 +55,12 @@ public final class CryoMenus {
     // Superconducting Separator (superconductor workstream A): a standard sized Mekanism screen
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySuperconductingSeparator>> SUPERCONDUCTING_SEPARATOR =
           MENUS.register(CryoBlocks.SUPERCONDUCTING_SEPARATOR, TileEntitySuperconductingSeparator.class);
+
+    // Fusion Field Coils (superconductor workstream C): taller than a standard GUI for the ring status screen
+    /** Extra height of the Field Coil Controller screen over a standard one; the player inventory moves down by it. */
+    public static final int FIELD_COIL_EXTRA_HEIGHT = 36;
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFieldCoilController>> FIELD_COIL_CONTROLLER =
+          MENUS.custom(CryoBlocks.FIELD_COIL_CONTROLLER, TileEntityFieldCoilController.class).offset(0, FIELD_COIL_EXTRA_HEIGHT).build();
 
     private CryoMenus() {
     }

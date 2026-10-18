@@ -29,6 +29,10 @@ import io.github.valajar.cryosat.space.mission.MissionLang;
 // Superconducting Separator (superconductor workstream A)
 import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
 import io.github.valajar.cryosat.superconductor.separator.SeparatorLang;
+import io.github.valajar.cryosat.superconductor.fusion.FusionCoilLang;
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
+import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
 
 /**
  * Mekanism block types: the attributes (GUI, energy, side config, upgrades, sound, facing, active state, security,
@@ -112,6 +116,19 @@ public final class CryoBlockTypes {
           .createBlock(() -> CryoBlockEntities.SUPERCONDUCTING_SEPARATOR, SeparatorLang.DESCRIPTION)
           .withGui(() -> CryoMenus.SUPERCONDUCTING_SEPARATOR)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR)
+          .withSideConfig(TransmissionType.CHEMICAL)
+          .build();
+
+    // Fusion Field Coils (superconductor workstream C): a plain ring block that frosts over while the ring is cold, and the
+    // ring's controller with the cryostat, chemical side config, redstone control and security, but no energy or upgrades
+    public static final BlockType FIELD_COIL = BlockTypeBuilder
+          .createBlock(FusionCoilLang.DESCRIPTION_FIELD_COIL)
+          .with(Attributes.ACTIVE)
+          .build();
+    public static final BlockTypeTile<TileEntityFieldCoilController> FIELD_COIL_CONTROLLER = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.FIELD_COIL_CONTROLLER, FusionCoilLang.DESCRIPTION_CONTROLLER)
+          .withGui(() -> CryoMenus.FIELD_COIL_CONTROLLER)
+          .with(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.SECURITY, Attributes.REDSTONE)
           .withSideConfig(TransmissionType.CHEMICAL)
           .build();
 

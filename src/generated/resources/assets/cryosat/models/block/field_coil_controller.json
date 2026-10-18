@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/field_coil_controller/top",
+    "east": "cryosat:block/field_coil/side",
+    "north": "cryosat:block/field_coil_controller/front",
+    "particle": "cryosat:block/field_coil_controller/front",
+    "south": "cryosat:block/field_coil/side",
+    "up": "cryosat:block/field_coil_controller/top",
+    "west": "cryosat:block/field_coil/side"
+  }
+}

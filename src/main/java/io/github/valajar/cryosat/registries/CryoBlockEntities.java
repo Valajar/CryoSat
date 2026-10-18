@@ -21,6 +21,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
 // Superconducting Separator (superconductor workstream A)
 import io.github.valajar.cryosat.superconductor.separator.TileEntitySuperconductingSeparator;
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
 
 /**
  * Block entity types, registered through Mekanism's {@link TileEntityTypeDeferredRegister}. {@code mekBuilder} attaches
@@ -107,6 +108,14 @@ public final class CryoBlockEntities {
     // Superconducting Separator (superconductor workstream A)
     public static final TileEntityTypeRegistryObject<TileEntitySuperconductingSeparator> SUPERCONDUCTING_SEPARATOR = BLOCK_ENTITIES
           .mekBuilder(CryoBlocks.SUPERCONDUCTING_SEPARATOR, TileEntitySuperconductingSeparator::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+
+    // Fusion Field Coils (superconductor workstream C)
+    public static final TileEntityTypeRegistryObject<TileEntityFieldCoilController> FIELD_COIL_CONTROLLER = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.FIELD_COIL_CONTROLLER, TileEntityFieldCoilController::new)
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
