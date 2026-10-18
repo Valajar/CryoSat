@@ -1,5 +1,9 @@
 # Milestone 2 build plan: superconductors
 
+Status: built and merged. Separator and connected casing seen in a headless client; the coil ring
+only in game tests (a real reactor, ignited by setting its state). Playtest: section 7 of
+`docs/testing-guide.md`.
+
 How Milestone 2 of `space-age.md` is split for parallel agents. The foundation is done and merged;
 workstreams build against it and must not change its public contracts without saying so.
 

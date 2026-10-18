@@ -199,7 +199,7 @@
   "superconductor.cryosat.coolant_use": "Coolant: %1$s mB/t",
   "superconductor.cryosat.cooldown_left": "Ready in %1$s s",
   "superconductor.cryosat.state.cooling_down": "Cooling down",
-  "superconductor.cryosat.state.no_coolant": "Quenched: needs liquid nitrogen",
+  "superconductor.cryosat.state.no_coolant": "Quenched: no coolant",
   "superconductor.cryosat.state.superconducting": "Superconducting",
   "tooltip.cryosat.rocket_part": "Rocket part: %1$s",
   "tooltip.cryosat.uplink_card.no_target": "No target",

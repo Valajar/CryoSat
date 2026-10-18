@@ -13,7 +13,7 @@ public final class SuperconductorLangData {
         provider.addItem(CryoItems.SUPERCONDUCTING_COIL, "Superconducting Coil");
 
         BiConsumer<SuperconductorLang, String> add = (lang, text) -> provider.add(lang.getTranslationKey(), text);
-        add.accept(SuperconductorLang.STATE_NO_COOLANT, "Quenched: needs liquid nitrogen");
+        add.accept(SuperconductorLang.STATE_NO_COOLANT, "Quenched: no coolant");
         add.accept(SuperconductorLang.STATE_COOLING_DOWN, "Cooling down");
         add.accept(SuperconductorLang.STATE_SUPERCONDUCTING, "Superconducting");
         add.accept(SuperconductorLang.COOLDOWN_LEFT, "Ready in %1$s s");

@@ -111,6 +111,29 @@ client only) show a rocket on the block you look at, for screenshots.
    large; Elite 15% medium, 55% large, 30% huge. A miner of the same tier as the rocket always
    extracts the whole asteroid; a smaller miner only extracts part of a big one.
 
+## 7. Superconductors (about 20 minutes)
+
+Every superconducting block runs on Liquid Nitrogen: a small trickle keeps it cold, it boils off into
+Nitrogen gas (90 percent comes back; pipe it into the Liquefaction Plant, which turns it back into
+Liquid Nitrogen at 77 K), and if it runs dry it quenches and needs 30 seconds after a refill.
+
+1. **Superconducting Separator.** Place it next to a Cargo Receiver that a miner is linked to. Pipe
+   Liquid Nitrogen into any side except the top; Nitrogen comes out of the top on its own. The
+   screen shows **Cooling down**, then **Superconducting**. Launch a Basic miner and skip through it:
+   each batch arrives with 50 percent more of everything, and sometimes diamonds or fluorite. Each
+   batch costs 250 mB on top of the 1 mB/t trickle. Let it run dry: batches arrive without the bonus.
+   A redstone signal pauses it without warming it up.
+2. **Fusion Field Coils** (needs Mekanism Generators). Build a Mekanism fusion reactor, then a flat
+   square ring of Field Coils around its middle layer, one or two blocks away from it, with one Field
+   Coil Controller in the ring (9x9 or 11x11). Optional extra rings directly above and below, up to
+   three. The controller's screen says what is wrong if the ring is broken. Pipe Liquid Nitrogen in
+   (bottom or back), take Nitrogen out (top or front). Once cold and the reactor burns, each ring
+   adds 25 percent of the reactor's production to its energy buffer; compare the reactor's output
+   with the ring on and quenched. Water cooled reactors (steam) are not boosted.
+3. **Connected casing.** Build a 5x5x5 plant: the walls should read as one surface with a border
+   only around the outline, around valves, coolers, ports, the controller and glass. The Launch
+   Pad deck should look like one continuous platform.
+
 ## What to report
 
 Copy this and fill in what applies:
@@ -125,6 +148,7 @@ Overheating: happened? how long without heat rejection? conductors fixed it?
 Anything confusing in the GUIs or tooltips:
 Balance feel (too fast / too slow / too expensive / too cheap):
 Space: pad formed? launch looked right? deliveries arrived? Mission Control readable?
+Superconductors: Separator bonus seen? coil ring formed? reactor output boosted? coolant use sensible?
 Bugs (attach logs/latest.log for crashes or errors):
 ```
 
