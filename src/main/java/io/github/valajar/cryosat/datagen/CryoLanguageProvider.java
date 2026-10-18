@@ -15,6 +15,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import io.github.valajar.cryosat.datagen.mission.MissionLangData;
 
 public class CryoLanguageProvider extends LanguageProvider {
     public CryoLanguageProvider(PackOutput output) {
@@ -50,6 +51,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         SpaceLangData.addTo(this);
         // Cargo Receiver and Uplink Card (space workstream A)
         io.github.valajar.cryosat.datagen.receiver.ReceiverLangData.addTo(this);
+        // Mission Control (workstream D)
+        MissionLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

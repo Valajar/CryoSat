@@ -49,6 +49,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.LIQUEFACTION_CONTROLLER.get());
         // Cargo Receiver (space workstream A): keeps its cargo, config and security like other Mekanism machines
         dropMachine(CryoBlocks.CARGO_RECEIVER.get());
+        // Mission Control (workstream D): keeps security and the Uplink Card in its slot
+        dropMachine(CryoBlocks.MISSION_CONTROL.get());
     }
 
     private void dropMachine(Block block) {

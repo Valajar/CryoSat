@@ -15,6 +15,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
+import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
 
 /**
  * Block entity types, registered through Mekanism's {@link TileEntityTypeDeferredRegister}. {@code mekBuilder} attaches
@@ -69,6 +70,13 @@ public final class CryoBlockEntities {
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+
+    // Mission Control (workstream D)
+    public static final TileEntityTypeRegistryObject<TileEntityMissionControl> MISSION_CONTROL = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.MISSION_CONTROL, TileEntityMissionControl::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
           .build();
 
     private CryoBlockEntities() {

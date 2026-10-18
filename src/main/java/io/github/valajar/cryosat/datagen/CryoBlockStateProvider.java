@@ -19,6 +19,8 @@ public class CryoBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         machine(CryoBlocks.ATMOSPHERIC_COMPRESSOR.get(), "atmospheric_compressor");
+        // Mission Control (workstream D)
+        machine(CryoBlocks.MISSION_CONTROL.get(), "mission_control");
     }
 
     /**

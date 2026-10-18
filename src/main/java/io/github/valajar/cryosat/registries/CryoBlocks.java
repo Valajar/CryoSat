@@ -25,6 +25,8 @@ import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.resource.BlockResourceInfo;
+import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
+import io.github.valajar.cryosat.space.mission.MissionControl;
 
 /**
  * Blocks and their items, registered through Mekanism's {@link BlockDeferredRegister} so block items get Mekanism's
@@ -73,6 +75,17 @@ public final class CryoBlocks {
           ).forItemHolder(holder -> holder
                 .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addOutput(TileEntityCargoReceiver.SLOTS)
+                      .build()
+                )
+          );
+
+    // Mission Control (workstream D): the block item keeps the Uplink Card in the slot, like Mekanism machines keep their slots
+    public static final BlockRegistryObject<BlockTile<TileEntityMissionControl, BlockTypeTile<TileEntityMissionControl>>, ItemBlockTooltip<BlockTile<TileEntityMissionControl, BlockTypeTile<TileEntityMissionControl>>>> MISSION_CONTROL =
+          BLOCKS.register("mission_control", () -> new BlockTile<>(CryoBlockTypes.MISSION_CONTROL, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties)
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addInput(MissionControl::isUplinkCard)
                       .build()
                 )
           );

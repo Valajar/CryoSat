@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/mission_control/bottom",
+    "east": "cryosat:block/mission_control/left",
+    "north": "cryosat:block/mission_control/front",
+    "particle": "cryosat:block/mission_control/front",
+    "south": "cryosat:block/mission_control/back",
+    "up": "cryosat:block/mission_control/top",
+    "west": "cryosat:block/mission_control/right"
+  }
+}

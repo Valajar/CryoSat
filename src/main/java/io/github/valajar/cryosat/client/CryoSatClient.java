@@ -8,6 +8,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.client.gui.GuiAtmosphericCompressor;
+import io.github.valajar.cryosat.client.gui.GuiMissionControl;
 import io.github.valajar.cryosat.registries.CryoMenus;
 import mekanism.client.ClientRegistrationUtil;
 import net.neoforged.api.distmarker.Dist;
@@ -23,6 +24,8 @@ public final class CryoSatClient {
         ClientRegistrationUtil.registerScreen(event, CryoMenus.LIQUEFACTION_PLANT, GuiLiquefactionPlant::new);
         // Cargo Receiver (space workstream A)
         ClientRegistrationUtil.registerScreen(event, CryoMenus.CARGO_RECEIVER, GuiCargoReceiver::new);
+        // Mission Control (workstream D)
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.MISSION_CONTROL, GuiMissionControl::new);
     }
 
     // Uplink Card (space workstream A): the "linked" model override shows whether the card holds a target

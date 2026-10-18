@@ -10,6 +10,7 @@ import io.github.valajar.cryosat.machine.compressor.AtmosphericCompressorBlockEn
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import io.github.valajar.cryosat.space.mission.TileEntityMissionControl;
 
 /**
  * Menu types, registered through Mekanism's {@link ContainerTypeDeferredRegister}. A {@link MekanismTileContainer} holds
@@ -30,6 +31,12 @@ public final class CryoMenus {
           MENUS.custom(CryoBlocks.CARGO_RECEIVER, TileEntityCargoReceiver.class)
                 .offset(0, TileEntityCargoReceiver.GUI_EXTRA_HEIGHT)
                 .build();
+    // Mission Control (workstream D): a wide, tall screen, so the player inventory moves right and down
+    /** Offset of the player inventory in the Mission Control screen, which is 230 by 243 instead of 176 by 166. */
+    public static final int MISSION_CONTROL_INVENTORY_X = 27;
+    public static final int MISSION_CONTROL_INVENTORY_Y = 77;
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMissionControl>> MISSION_CONTROL =
+          MENUS.custom(CryoBlocks.MISSION_CONTROL, TileEntityMissionControl.class).offset(MISSION_CONTROL_INVENTORY_X, MISSION_CONTROL_INVENTORY_Y).build();
 
     private CryoMenus() {
     }
