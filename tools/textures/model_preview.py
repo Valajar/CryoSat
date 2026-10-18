@@ -1,15 +1,16 @@
 """Isometric preview of a Java block model (the JSON Blockbench exports), for checking 3D models
 without a game client.
 
-    python3 tools/textures/model_preview.py MODEL.json OUT.png [--tex KEY=PNG ...] [--scale N]
+    python3 tools/textures/model_preview.py MODEL.json OUT.png [--tex KEY=PNG ...] [--tint INDEX=RRGGBB ...] [--scale N]
 
 Draws the model from the south east and from the north west, side by side, with Minecraft style
 face shading. Texture references like "cryosat:block/models/foo" resolve against this repo's assets
 and against .mekanism-refs (see fetch_mekanism_refs.sh). Use --tex to override a texture variable,
-for example --tex valve=build/valve_elite.png to preview one tier.
+for example --tex valve=build/valve_elite.png to preview one tier. Use --tint to multiply faces with
+that tintindex by a colour, the way the game applies a tint (for example --tint 0=4bf8ff for elite).
 
 Supported: elements with from/to, per face uv, face rotation, element rotation (any axis, any
-angle). Not supported: parent model elements (only textures are inherited), rescale, tint.
+angle), tint (with --tint). Not supported: parent model elements (only textures are inherited), rescale.
 """
 
 from __future__ import annotations
@@ -126,7 +127,7 @@ def rotate_point(p, rot):
 NORMALS = {"up": (0, 1, 0), "down": (0, -1, 0), "north": (0, 0, -1), "south": (0, 0, 1), "east": (1, 0, 0), "west": (-1, 0, 0)}
 
 
-def render(model: dict, overrides: dict, scale: int, flip: bool) -> Image.Image:
+def render(model: dict, overrides: dict, scale: int, flip: bool, tints: dict | None = None) -> Image.Image:
     cache: dict = {}
     polys = []
     view = (1, 1, 1)
@@ -148,6 +149,7 @@ def render(model: dict, overrides: dict, scale: int, flip: bool) -> Image.Image:
             nu = max(1, round(abs(u1 - u0) * k))
             nv = max(1, round(abs(v1 - v0) * k))
             frot = face.get("rotation", 0)
+            tint = (tints or {}).get(face.get("tintindex", -1))
             for i in range(nu):
                 for j in range(nv):
                     s, r = (i + 0.5) / nu, (j + 0.5) / nv
@@ -158,6 +160,8 @@ def render(model: dict, overrides: dict, scale: int, flip: bool) -> Image.Image:
                     col = tex.getpixel((tx, ty))
                     if col[3] < 128:
                         continue
+                    if tint:
+                        col = tuple(c * m // 255 for c, m in zip(col[:3], tint)) + (col[3],)
                     pts = []
                     for a, b in ((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)):
                         p = tuple(corner[m] + uvec[m] * a / nu + vvec[m] * b / nv for m in range(3))
@@ -192,11 +196,13 @@ def main() -> None:
     ap.add_argument("model", type=Path)
     ap.add_argument("out", type=Path)
     ap.add_argument("--tex", action="append", default=[], help="KEY=path.png or KEY=namespace:path")
+    ap.add_argument("--tint", action="append", default=[], help="INDEX=RRGGBB, multiplies faces with that tintindex")
     ap.add_argument("--scale", type=int, default=10)
     a = ap.parse_args()
     overrides = dict(x.split("=", 1) for x in a.tex)
+    tints = {int(k): tuple(int(v[i:i + 2], 16) for i in (0, 2, 4)) for k, v in (x.split("=", 1) for x in a.tint)}
     model = load_model(a.model)
-    se, nw = render(model, overrides, a.scale, False), render(model, overrides, a.scale, True)
+    se, nw = render(model, overrides, a.scale, False, tints), render(model, overrides, a.scale, True, tints)
     out = Image.new("RGBA", (se.width + nw.width, max(se.height, nw.height) + 20), BG)
     out.paste(se, (0, 20))
     out.paste(nw, (se.width, 20))
