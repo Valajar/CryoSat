@@ -1,12 +1,22 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "minecraft:block/block",
+  "connects_to": [
+    "cryosat:launch_pad_plating",
+    "cryosat:launch_pad_fuel_port",
+    "cryosat:launch_controller"
+  ],
+  "loader": "cryosat:connected",
   "textures": {
+    "center": "cryosat:block/launch_pad/plating_top_center",
+    "corner": "cryosat:block/launch_pad/plating_top",
     "down": "cryosat:block/launch_pad/plating_bottom",
     "east": "cryosat:block/launch_pad/plating_side",
+    "horizontal": "cryosat:block/launch_pad/plating_top_horizontal",
+    "inner": "cryosat:block/launch_pad/plating_top_inner",
     "north": "cryosat:block/launch_pad/plating_side",
     "particle": "cryosat:block/launch_pad/plating_side",
     "south": "cryosat:block/launch_pad/plating_side",
-    "up": "cryosat:block/launch_pad/plating_top",
+    "vertical": "cryosat:block/launch_pad/plating_top_vertical",
     "west": "cryosat:block/launch_pad/plating_side"
   }
 }

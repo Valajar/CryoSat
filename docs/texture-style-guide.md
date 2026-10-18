@@ -15,6 +15,8 @@ This guide is written for whoever generates textures, human or agent. Read it fu
 | `tools/textures/texlib.py` | Drawing primitives (`Tex` class): shells, plates, windows, vents, frost, foil, tier pips |
 | `tools/textures/preview.py` | Upscaled preview sheets, optionally next to Mekanism references and as 3x3 tilings |
 | `tools/textures/model_preview.py` | Isometric render (SE and NW views) of a Blockbench JSON model with its textures |
+| `tools/textures/connected.py` | Connected textures (`cryosat:connected` models): builds the quarter pieces from a feature map, and the same neighbour rule as the Java model |
+| `tools/textures/connected_preview.py` | Renders whole multiblocks with connected textures applied (Liquefaction Plant, Launch Pad), to compare connection choices |
 | `tools/textures/fetch_mekanism_refs.sh` | Sparse clone of Mekanism's textures and models into `.mekanism-refs/` (gitignored) |
 | `tools/textures/examples/` | Reference generator scripts. Copy their structure |
 

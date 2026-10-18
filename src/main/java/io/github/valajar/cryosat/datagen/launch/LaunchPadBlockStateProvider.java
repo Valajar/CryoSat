@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.datagen.launch;
 
 import io.github.valajar.cryosat.CryoSat;
+import io.github.valajar.cryosat.datagen.connected.ConnectedModelBuilder;
 import io.github.valajar.cryosat.registries.CryoBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -32,8 +33,16 @@ public class LaunchPadBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         ResourceLocation side = tex("plating_side");
         ResourceLocation bottom = tex("plating_bottom");
-        simpleBlockWithItem(CryoBlocks.LAUNCH_PAD_PLATING.get(), models().cube("launch_pad_plating", bottom, tex("plating_top"), side, side, side, side)
-              .texture("particle", side));
+        // Connected textures on the deck: the pad reads as one floor with the rim only around its outline and around the
+        // controller and fuel ports. The sides already tile seamlessly and stay plain faces.
+        simpleBlockWithItem(CryoBlocks.LAUNCH_PAD_PLATING.get(), ConnectedModelBuilder.cube(models(), "launch_pad_plating", tex("plating_top"),
+                    CryoBlocks.LAUNCH_PAD_PLATING.get(), CryoBlocks.LAUNCH_PAD_FUEL_PORT.get(), CryoBlocks.LAUNCH_CONTROLLER.get())
+              .texture("particle", side)
+              .texture("down", bottom)
+              .texture("north", side)
+              .texture("south", side)
+              .texture("east", side)
+              .texture("west", side));
         ResourceLocation portSide = tex("fuel_port_side");
         simpleBlockWithItem(CryoBlocks.LAUNCH_PAD_FUEL_PORT.get(), models().cube("launch_pad_fuel_port", bottom, tex("fuel_port_top"), portSide, portSide,
               portSide, portSide).texture("particle", portSide));
