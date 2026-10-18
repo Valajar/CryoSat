@@ -1,5 +1,12 @@
 package io.github.valajar.cryosat.registries;
 
+// Fusion Field Coils (superconductor workstream C)
+import io.github.valajar.cryosat.superconductor.fusion.FusionCoilLang;
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
+import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.content.blocktype.BlockType.BlockTypeBuilder;
+
+
 // Cargo Receiver (space workstream A)
 import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
 import io.github.valajar.cryosat.space.receiver.ReceiverLang;
@@ -102,6 +109,19 @@ public final class CryoBlockTypes {
           .withGui(() -> CryoMenus.LAUNCH_CONTROLLER, LaunchLang.ROCKET_ASSEMBLY)
           .with(Attributes.ACTIVE, Attributes.SECURITY, new AttributeStateFacing())
           .externalMultiblock()
+          .build();
+
+    // Fusion Field Coils (superconductor workstream C): a plain ring block that frosts over while the ring is cold, and the
+    // ring's controller with the cryostat, chemical side config, redstone control and security, but no energy or upgrades
+    public static final BlockType FIELD_COIL = BlockTypeBuilder
+          .createBlock(FusionCoilLang.DESCRIPTION_FIELD_COIL)
+          .with(Attributes.ACTIVE)
+          .build();
+    public static final BlockTypeTile<TileEntityFieldCoilController> FIELD_COIL_CONTROLLER = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.FIELD_COIL_CONTROLLER, FusionCoilLang.DESCRIPTION_CONTROLLER)
+          .withGui(() -> CryoMenus.FIELD_COIL_CONTROLLER)
+          .with(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.SECURITY, Attributes.REDSTONE)
+          .withSideConfig(TransmissionType.CHEMICAL)
           .build();
 
     private CryoBlockTypes() {

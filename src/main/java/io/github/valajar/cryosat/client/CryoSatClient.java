@@ -1,5 +1,8 @@
 package io.github.valajar.cryosat.client;
 
+// Fusion Field Coils (superconductor workstream C)
+import io.github.valajar.cryosat.client.gui.GuiFieldCoilController;
+
 // Cargo Receiver and Uplink Card (space workstream A)
 import io.github.valajar.cryosat.client.gui.GuiCargoReceiver;
 import io.github.valajar.cryosat.registries.CryoDataComponents;
@@ -32,6 +35,8 @@ public final class CryoSatClient {
         ClientRegistrationUtil.registerScreen(event, CryoMenus.MISSION_CONTROL, GuiMissionControl::new);
         // Launch Pad (workstream B)
         ClientRegistrationUtil.registerScreen(event, CryoMenus.LAUNCH_CONTROLLER, GuiRocketAssembly::new);
+        // Fusion Field Coils (superconductor workstream C)
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.FIELD_COIL_CONTROLLER, GuiFieldCoilController::new);
     }
 
     // Uplink Card (space workstream A): the "linked" model override shows whether the card holds a target

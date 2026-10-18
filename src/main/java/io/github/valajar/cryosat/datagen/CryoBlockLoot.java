@@ -55,6 +55,9 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropSelf(CryoBlocks.LAUNCH_PAD_PLATING.get());
         dropSelf(CryoBlocks.LAUNCH_PAD_FUEL_PORT.get());
         dropSelf(CryoBlocks.LAUNCH_CONTROLLER.get());
+        // Fusion Field Coils (superconductor workstream C): the controller keeps its coolant, config and security
+        dropSelf(CryoBlocks.FIELD_COIL.get());
+        dropMachine(CryoBlocks.FIELD_COIL_CONTROLLER.get());
     }
 
     private void dropMachine(Block block) {

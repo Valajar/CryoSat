@@ -1,5 +1,12 @@
 package io.github.valajar.cryosat.registries;
 
+// Fusion Field Coils (superconductor workstream C)
+import io.github.valajar.cryosat.superconductor.Cryostat;
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
+import mekanism.common.block.prefab.BlockBase;
+import mekanism.common.content.blocktype.BlockType;
+
+
 // Cargo Receiver (space workstream A)
 import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -100,6 +107,23 @@ public final class CryoBlocks {
           BLOCKS.registerDetails("launch_pad_fuel_port", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_PAD_FUEL_PORT, p -> p.mapColor(MapColor.METAL)));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityLaunchController>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityLaunchController>>> LAUNCH_CONTROLLER =
           BLOCKS.registerDetails("launch_controller", () -> new BlockBasicMultiblock<>(CryoBlockTypes.LAUNCH_CONTROLLER, p -> p.mapColor(MapColor.METAL)));
+
+    // Fusion Field Coils (superconductor workstream C): the controller item keeps its coolant, side config and security
+    public static final BlockRegistryObject<BlockBase<BlockType>, ItemBlockTooltip<BlockBase<BlockType>>> FIELD_COIL =
+          BLOCKS.registerDetails("field_coil", () -> new BlockBase<>(CryoBlockTypes.FIELD_COIL, p -> p.strength(3.5F, 9).mapColor(MapColor.METAL)));
+    public static final BlockRegistryObject<BlockTile<TileEntityFieldCoilController, BlockTypeTile<TileEntityFieldCoilController>>, ItemBlockTooltip<BlockTile<TileEntityFieldCoilController, BlockTypeTile<TileEntityFieldCoilController>>>> FIELD_COIL_CONTROLLER =
+          BLOCKS.register("field_coil_controller", () -> new BlockTile<>(CryoBlockTypes.FIELD_COIL_CONTROLLER, properties -> properties.mapColor(MapColor.METAL)),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties
+                      .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+                      .component(MekanismDataComponents.SIDE_CONFIG, TileEntityFieldCoilController.DEFAULT_SIDE_CONFIG)
+                )
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                      .addBasic(Cryostat.COOLANT_CAPACITY, stack -> stack.is(CryoChemicals.LIQUID_NITROGEN))
+                      .addBasic(Cryostat.BOIL_OFF_CAPACITY)
+                      .build()
+                )
+          );
 
     private CryoBlocks() {
     }

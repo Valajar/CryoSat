@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanismgenerators"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "mekanism:steel_casing"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "I": {
+      "tag": "c:ingots/steel"
+    },
+    "S": {
+      "item": "cryosat:superconducting_coil"
+    }
+  },
+  "pattern": [
+    "IHI",
+    "SCS",
+    "IHI"
+  ],
+  "result": {
+    "count": 8,
+    "id": "cryosat:field_coil"
+  }
+}

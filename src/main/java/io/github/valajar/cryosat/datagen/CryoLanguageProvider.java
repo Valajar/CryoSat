@@ -59,6 +59,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         MissionLangData.addTo(this);
         // Launch Pad (workstream B)
         LaunchLangData.addTo(this);
+        // Fusion Field Coils (superconductor workstream C)
+        io.github.valajar.cryosat.datagen.fusion.FusionCoilLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

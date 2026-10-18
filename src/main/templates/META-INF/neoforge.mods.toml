@@ -105,3 +105,11 @@ Cryogenics and orbital infrastructure for Mekanism.
     versionRange="[19,)"
     ordering="AFTER"
     side="CLIENT"
+
+# Fusion Field Coils boost the Mekanism Generators fusion reactor; without Generators they only report that it is missing
+[[dependencies.${mod_id}]]
+    modId="mekanismgenerators"
+    type="optional"
+    versionRange="[10.7.19,10.8)"
+    ordering="AFTER"
+    side="BOTH"

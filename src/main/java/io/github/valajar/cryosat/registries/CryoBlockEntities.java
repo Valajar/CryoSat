@@ -1,5 +1,9 @@
 package io.github.valajar.cryosat.registries;
 
+// Fusion Field Coils (superconductor workstream C)
+import io.github.valajar.cryosat.superconductor.fusion.TileEntityFieldCoilController;
+
+
 // Cargo Receiver (space workstream A)
 import io.github.valajar.cryosat.space.receiver.TileEntityCargoReceiver;
 
@@ -100,6 +104,14 @@ public final class CryoBlockEntities {
           .clientTicker(TileEntityMekanism::tickClient)
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
+          .build();
+
+    // Fusion Field Coils (superconductor workstream C)
+    public static final TileEntityTypeRegistryObject<TileEntityFieldCoilController> FIELD_COIL_CONTROLLER = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.FIELD_COIL_CONTROLLER, TileEntityFieldCoilController::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
           .build();
 
     private CryoBlockEntities() {

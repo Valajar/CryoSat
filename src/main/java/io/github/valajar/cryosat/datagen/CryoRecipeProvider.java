@@ -53,6 +53,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         MissionRecipes.build(output);
         // Launch Pad (workstream B)
         LaunchPadRecipes.build(output);
+        // Fusion Field Coils (superconductor workstream C)
+        io.github.valajar.cryosat.datagen.fusion.FusionCoilRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

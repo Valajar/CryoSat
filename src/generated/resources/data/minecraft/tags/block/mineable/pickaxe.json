@@ -10,6 +10,8 @@
     "cryosat:mission_control",
     "cryosat:launch_pad_plating",
     "cryosat:launch_pad_fuel_port",
-    "cryosat:launch_controller"
+    "cryosat:launch_controller",
+    "cryosat:field_coil",
+    "cryosat:field_coil_controller"
   ]
 }

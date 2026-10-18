@@ -27,7 +27,7 @@ public class Cryostat {
 
     public final IChemicalTank coolantTank;
     public final IChemicalTank boilOffTank;
-    private final long trickle;
+    private long trickle;
     private CryostatState state = CryostatState.NO_COOLANT;
     private int cooldown = COOLDOWN_TICKS;
     private double boilOffRemainder;
@@ -41,6 +41,19 @@ public class Cryostat {
         this.trickle = trickle;
         coolantTank = BasicChemicalTank.input(COOLANT_CAPACITY, chemical -> chemical == CryoChemicals.LIQUID_NITROGEN.get(), listener);
         boilOffTank = BasicChemicalTank.output(BOIL_OFF_CAPACITY, listener);
+    }
+
+    /**
+     * Changes the steady trickle, for blocks whose size can change (a Fusion Field Coil ring adds a trickle per loop).
+     *
+     * @param trickle liquid nitrogen in mB per tick that keeps the block cold while it is idle
+     */
+    public void setTrickle(long trickle) {
+        this.trickle = trickle;
+    }
+
+    public long getTrickle() {
+        return trickle;
     }
 
     /**
