@@ -169,17 +169,13 @@ In planned order:
 
 ## Milestone 3: Satellite imagery
 
-A **Survey Satellite** plus an imaging terminal (part of Mission Control or its own block). Pick a
-structure type (village, woodland mansion, ocean monument, desert or jungle temple, pillager
-outpost, trail ruins, modded structures by tag), wait for the imaging pass, and receive the
-coordinates or a map item with the location marked, like an explorer map.
-
-Balance ideas: each request takes time and power, range is limited (a few thousand blocks around
-the terminal), and only surface structures are visible. Underground ones (ancient cities,
-strongholds) need the SQUID survey sensor from Milestone 2.
-
-This uses the same lookup as `/locate` and explorer maps, so it is cheap to build and immediately
-useful in survival.
+A constellation of **Survey Satellites** in Earth orbit plus an **Imaging Terminal** on the ground.
+Every satellite adds coverage (more for better tiers, approaching but never reaching 100 percent),
+which makes results more precise, reach further and run in parallel. Results are logged in the
+terminal, which remembers what was found so the next request finds a new, unlooted structure, and
+are loaded onto a **Survey Locator**, a tech compass that points to the target and marks it in the
+world. Underground structures need a SQUID Array next to the terminal. No orbits over the Nether or
+the End.
 
 Build plan and the decisions underneath it: `milestone3-plan.md`.
 
@@ -243,7 +239,8 @@ roles cost no new rocket models):
   can exceed fusion when large. Received on the ground by a beam receiver.
 * **Orbital Display globe.** The custom globe screen from `phase1.md`, colour coded by category.
   Worth it once there are several kinds of satellites.
-* **WarSats.** Orbital strikes as PvE and spectacle, with server config for block damage.
+* **WarSats.** Orbital strikes as PvE and spectacle, with server config for block damage. Planned
+  with the Space Station update.
 * **Risk.** Launch failures, debris. Explicitly out for now.
 
 ## Open questions

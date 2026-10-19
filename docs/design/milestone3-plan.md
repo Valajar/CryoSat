@@ -1,191 +1,169 @@
 # Milestone 3 build plan: satellite imagery
 
-Status: plan, waiting for the user's go ahead. Builds on `space-age.md` (Milestone 3) and the
-finished Milestones 1 and 2.
-
-The feature itself is small: launch a Survey Satellite, ask a ground terminal for a structure type,
-wait for the imaging pass, get a marked map. Most of this plan is about the decisions underneath it,
-because satellites are the first payload that is not a miner, and WarSats, the orbital globe, the
-Dyson swarm and the Space Hub all build on the same ground.
+Status: plan, revised after the user's first review; waiting for answers to the questions at the
+end. Builds on `space-age.md` and the finished Milestones 1 and 2.
 
 ## Gameplay
 
-1. Build a Survey Satellite payload and launch it to **Earth orbit**, a new destination (Basic
-   rocket and up, short travel).
-2. Place an **Imaging Terminal** (ground block, powered). It lists the survey targets your satellites
-   can image, with the range of your best satellite.
-3. Pick a target (village, ocean monument, woodland mansion and so on), put a blank map in, press
-   Request. The request queues on one of your satellites, takes a few minutes, and costs energy.
-4. When the pass completes the terminal prints an **explorer style map** marking the nearest match
-   within range, and logs its coordinates in a history list. No match in range is a result too ("none
-   within 4000 blocks"), so the request is never silently lost.
-5. Underground structures (ancient cities, strongholds, trial chambers) need a **SQUID Array** next
-   to the terminal: a superconducting block cooled with liquid nitrogen, like the Separator.
+1. Launch **Survey Satellites** to **Earth orbit** (Basic rocket and up). Every satellite you own
+   joins your **constellation**; nothing to link or configure.
+2. The constellation's **coverage** grows with every satellite, more for better tiers, and never
+   reaches 100 percent. Coverage decides how **precise** a result is, how **far** the search reaches,
+   and how many requests run **at once** (one per satellite).
+3. At an **Imaging Terminal** (powered ground block), pick a structure type and request a survey. After
+   the imaging pass the terminal logs the result: an estimated location with an uncertainty radius
+   that shrinks as coverage grows.
+4. **The log remembers what was found.** A new request for the same type finds the next nearest
+   unclaimed structure instead of the one you already looted. Old entries stay in the log until
+   dismissed.
+5. Put a **Survey Locator** (a tech compass) into the terminal to load log entries onto it. Held in
+   hand, it points to the selected target, shows the distance and the search radius, and marks the
+   spot in the world with a waypoint beam. Sneak use cycles between stored targets.
+6. Underground structures (ancient cities, strongholds and so on) need a **SQUID Array** next to the
+   terminal: a superconducting ground module cooled with liquid nitrogen, like the Separator.
 
-| Satellite tier | Range around the terminal | Requests at once | Time per request |
-| --- | --- | --- | --- |
-| Basic | 2000 blocks | 1 | 4 minutes |
-| Advanced | 4000 | 2 | 3 minutes |
-| Elite | 8000 | 3 | 2 minutes |
-| Ultimate | 16000 | 4 | 1 minute |
+There is no orbit over the Nether (a bedrock ceiling, and hell) or the End (already an asteroid field
+with nothing to orbit). Satellites do not wear out in this milestone.
 
-Satellites do not wear out in this milestone (risk stays out, per the design decisions). Players
-decommission them in Mission Control.
+## Coverage model
+
+Each Survey Satellite adds coverage value by tier: Basic 1, Advanced 2, Elite 4, Ultimate 8 (open
+question 1). With total value `V`:
+
+```
+coverage  = 1 - e^(-V / 8)                      asymptotic, never 100 percent
+precision = 512 blocks * (1 - coverage)         uncertainty radius of a result
+range     = 1000 + 15000 * coverage blocks      how far around the terminal it searches
+parallel  = number of satellites                requests in progress at once
+```
+
+| Constellation | Value | Coverage | Uncertainty | Range |
+| --- | --- | --- | --- | --- |
+| 1 Basic | 1 | 12% | 452 blocks | 2800 |
+| 4 Basic | 4 | 39% | 311 | 6900 |
+| 3 Elite | 12 | 78% | 114 | 12700 |
+| 6 Elite | 24 | 95% | 25 | 15300 |
+| 4 Ultimate | 32 | 98% | 9 | 15700 |
+
+The reported location is the true one shifted by a random offset inside the uncertainty radius,
+fixed per result, so the Locator leads into the right area and the last stretch is exploring.
+Launching more or better satellites later does not sharpen old results; a new request does.
 
 ## Strategic decisions
 
-Each decision says what it is, why, and what it keeps open for later.
+Each says what, why, and what it keeps open.
 
 ### 1. Orbital assets get a typed payload state
 
-**Now:** `OrbitalAsset` mixes the generic part (id, owner, name, design, destination, receiver,
-state, timers) with miner fields (`asteroid`, `batchesDelivered`, `pending`). A satellite needs none
-of the miner fields and has its own (task queue, orbit, coverage).
+`OrbitalAsset` today mixes the generic part (id, owner, name, design, destination, receiver, state,
+timers) with miner fields. It splits into the generic core plus a `PayloadState`, a sealed interface
+with one record per payload kind (`MinerState`, `SatelliteState`; later scoops, Dyson segments,
+WarSats), saved through a codec that dispatches on `PayloadType`. Ticking moves into the state, so
+the registry stops growing a branch per payload. The registry gets a `data_version`; today's saves
+load as `MinerState`, so existing miners survive. Doing this at the second payload is cheap; at the
+fifth it is a rewrite.
 
-**Decision:** split it. `OrbitalAsset` keeps the generic part plus a `PayloadState payload`, a sealed
-interface with one record per payload kind, saved through a codec that dispatches on
-`PayloadType` (`MinerState`, `SurveyState`; later `ScoopState`, `WarSatState`, `DysonSegmentState`).
-Ticking moves into the state (`tick(context)`), so `OrbitalRegistry` stops growing a branch per
-payload.
+### 2. Coverage is a constellation property, computed not stored
 
-**Why now:** every later payload would otherwise add nullable fields to one class and branches to
-the registry. Doing it at the second payload is cheap; at the fifth it is a rewrite.
+Coverage is derived on demand from the owner's active satellites over a dimension, never saved.
+Adding, losing or decommissioning a satellite changes it immediately with nothing to migrate, and a
+future change to the formula or tier values (or a datapack override) applies to existing worlds.
+The same shape fits later constellations: a Dyson swarm's output is "segments built", computed the
+same way.
 
-**Save compatibility:** the registry gets a `data_version`. Version 1 saves (today's) are read with
-the old codec and turned into `MinerState`, so existing worlds keep their miners.
+### 3. Orbits only over dimensions that allow them
 
-### 2. A generic task queue on assets
+Destinations gain a `launch_from` list of dimensions. `cryosat:earth_orbit` allows only the
+Overworld; Nether and End never get orbits. Modpacks with other planet mods can add orbits over their
+dimensions with a datapack file. Satellites remember the dimension they orbit.
 
-**Decision:** an imaging request is an `OrbitalTask`: who asked, from which terminal (a `GlobalPos`),
-what (a task specific payload, here the survey target id), when it completes, and its result.
-Tasks live in the asset's state and are saved with it. Results are delivered to the requesting block
-the same way cargo is: while its chunk is loaded, otherwise kept and retried, never lost.
+### 4. Requests are tasks on the asset, results are delivered like cargo
 
-**Why:** WarSat strikes are the same shape (target position, charge time, result at a terminal), and
-so are future Dyson beam requests. One queue and one delivery path serve all of them.
-
-### 3. Orbits are per dimension, Earth orbit first
-
-**Decision:** a satellite orbits the dimension it was launched from (`orbitDimension` on the asset),
-and the Imaging Terminal only uses satellites over its own dimension. The new destination
-`cryosat:earth_orbit` is valid from the Overworld. Nether or End orbits are a datapack question
-later (a destination can list the dimensions it is reachable from).
-
-**Why:** structure lookups are per level, and it keeps "satellite imagery of the Nether" a deliberate
-future addition instead of an accident.
-
-### 4. Cosmetic orbit parameters stored from day one
-
-**Decision:** every asset launched to an orbit gets an `Orbit` record rolled at launch: altitude
-band, inclination, phase, period. Nothing in Milestone 3 uses it for gameplay (orbits stay abstract,
-per the design decisions).
-
-**Why:** the Orbital Display globe (orbit lines around an Earth model, colour coded by role) needs
-stable orbits for assets that already exist. Storing them now costs a few bytes and avoids a
-migration when the globe lands. Orbital strikes can later use the phase for "next pass over target"
-spectacle without making it mechanics.
+A survey request is an `OrbitalTask` (requester, requesting terminal, target type, completion time,
+result) held by the satellite working on it. When it completes, the result goes to the terminal while
+its chunk is loaded, otherwise it waits and is retried, never lost: the same rule as cargo. The queue
+is generic so later orbital work (Dyson beam requests, Space Station operations) reuses it.
 
 ### 5. Survey targets are datapack driven
 
-**Decision:** `data/<ns>/cryosat/survey_target/*.json`:
+`data/<ns>/cryosat/survey_target/*.json` with the structures (a tag or id, what `/locate` takes),
+whether it needs a deep scan (SQUID Array), a display name and an icon item. CryoSat ships the
+vanilla set; modded structures are a file each.
 
-```json
-{
-  "structures": "#minecraft:village",
-  "min_tier": "basic",
-  "deep_scan": false,
-  "icon": "minecraft:village_plains",
-  "name": "Village"
-}
-```
+### 6. Vanilla's structure search, and vanilla's "already found" mark
 
-`structures` is a structure tag or id (what `/locate` and explorer maps take), `deep_scan` marks
-underground targets that need the SQUID Array, `icon` is a vanilla map decoration type for the map
-marker. CryoSat ships the vanilla set; modpacks add modded structures with a file each.
+Results come from the lookup behind `/locate` and explorer maps, run once when a pass completes,
+bounded by the constellation's range and limited to a few per tick server wide. With "skip known
+structures" on, vanilla marks each found structure as claimed (one claim per structure), which is how
+two explorer maps never lead to the same place. That gives the log's "find the next unclaimed one"
+for free. The catch: the mark is world wide and shared with explorer maps (open question 3).
 
-**Why:** the same reason as atmospheres and asteroid classes: modded structures without code, and
-balance changes without a release.
+### 7. A locator item instead of maps
 
-### 6. Use vanilla's structure search, bounded and spread out
+The Survey Locator stores a small list of targets (dimension, position, uncertainty radius, type)
+as an item data component. The needle uses vanilla's compass logic aimed at a stored position, the
+action bar shows distance and radius while held, and a client side waypoint beam renders at the
+target when within render distance. Data on the item, not the player, so locators can be handed to
+other players or kept for different targets. Map mod waypoint integration (JourneyMap, Xaero) can be
+added later as optional compat on top of the same data.
 
-**Decision:** results come from `ServerLevel.findNearestMapStructure`, the lookup behind explorer
-maps and `/locate`, with the search radius taken from the satellite tier (blocks to chunks). It
-runs once, when the imaging pass completes, never while the player waits on a screen, and at most a
-few per tick across the server (completed tasks queue up and are resolved in order). The result
-(position, structure id) is stored on the task, so reopening a GUI or printing another copy never
-searches again.
+### 8. Ground modules by adjacency
 
-**Why:** reuses the exact behaviour players know from explorer maps, supports every modded
-structure that registers properly, and keeps worst case cost bounded on servers.
+Anything that needs coolant stays on the ground next to the block that receives results: the SQUID
+Array next to the terminal, as the Separator sits next to the Cargo Receiver. A shared
+`IGroundModule` lookup (the receiving block asks its six neighbours) replaces the receiver's private
+loop, and Space Station docks will accept the same modules.
 
-### 7. Results are vanilla maps plus a coordinate log
+### 9. Networking follows the Mekanism container pattern
 
-**Decision:** the terminal fills a blank map into a vanilla explorer style map
-(`MapItem.create` plus a target decoration, like the cartographer's maps), and keeps a scrollable
-history of results with coordinates and distance. No custom map item.
+The terminal syncs its target list, queue, coverage figures and log through Mekanism container sync,
+and sends actions through one payload checked against the open container and ownership, like Mission
+Control. A client side picture of orbital assets for the globe view is a separate, later sync.
 
-**Why:** vanilla maps work with map mods, item frames, copying in a cartography table, and need no
-custom rendering. Coordinates cover players who just want the numbers.
+### Not in this milestone
 
-### 8. Ground station modules by adjacency
-
-**Decision:** the SQUID Array is a block placed next to the Imaging Terminal, with its own `Cryostat`
-(trickle plus a fixed amount per deep scan), exactly like the Separator next to a Cargo Receiver.
-Both follow one rule: *orbital assets stay simple; ground blocks next to the receiving block add
-processing*. A shared `IGroundModule` lookup (the terminal or receiver asks its six neighbours)
-replaces the receiver's private loop.
-
-**Why:** coolant cannot be refilled in orbit, so anything superconducting belongs on the ground. The
-same pattern will carry WarSat targeting computers, a Dyson beam receiver's converters, and Space
-Hub docks, which accept the same modules.
-
-### 9. One request path for players and automation
-
-**Decision:** the terminal accepts requests from its GUI and from a redstone pulse (repeat the last
-request), and it keeps a small queue. Computer integration is left for later but the request is a
-plain record, so a ComputerCraft peripheral can be added without touching the task system.
-
-### 10. Networking follows the Mekanism container pattern
-
-**Decision:** like Mission Control, the terminal syncs its lists through Mekanism container sync
-(target list, queue, history), and sends actions through one small payload checked against the
-player's open container and ownership. No global client cache of orbital data in this milestone.
-
-**Why:** the globe view will need a client side picture of orbital assets; that is a separate,
-read only sync added with the globe, and should not be shaped by a terminal list.
+**WarSats** move to the Space Station update: they need targeting, damage rules and server
+configuration that fit better once players have a station to operate them from. The task queue and
+orbit data built here are what they will need.
 
 ## Build steps
 
-### Foundation (one agent or me, before the parallel work)
+### Foundation (me, before the parallel work)
 
-* Decisions 1 to 4: `PayloadState` with `MinerState` (moved miner logic, behaviour unchanged) and
-  `SurveyState`; `data_version` and the version 1 migration; `OrbitalTask` and result delivery;
-  `orbitDimension`; `Orbit` rolled at launch; `cryosat:earth_orbit` destination;
-  `PayloadType.SURVEY_SATELLITE` and the four tiered Survey Satellite items.
-* Mission Control and the Cargo Receiver adapted to the split, with no visible change.
-* `IGroundModule` lookup, with the Separator moved onto it.
-* Game tests: an old format save loads into `MinerState`; all existing tests still pass unchanged;
-  a satellite launches to Earth orbit and accepts a task.
+* Decisions 1 to 4: payload state split with migration, `data_version`, `launch_from` on
+  destinations, `cryosat:earth_orbit`, cosmetic orbit parameters rolled at launch (for the future
+  globe), `OrbitalTask` and result delivery, `PayloadType.SURVEY_SATELLITE`, the four Survey
+  Satellite items, the coverage calculation.
+* Mission Control and the Cargo Receiver adapted with no visible change; `IGroundModule` with the
+  Separator moved onto it.
+* Game tests: an old save loads into `MinerState`, every existing test passes unchanged, coverage
+  maths, a satellite reaches Earth orbit and accepts a task, no launch from the Nether.
 
 ### Parallel workstreams
 
-* **A. Imaging Terminal**: block, GUI (target list, request queue, history), map filling, energy
-  cost, redstone repeat, result delivery, structure search with the tier radius and the per tick
-  limit. Game tests with a real village or structure placed by a test template if practical,
-  otherwise against a test structure tag.
-* **B. Survey targets data**: the datapack type and loader, the vanilla target set with names,
-  icons and tiers, lang, and JEI display of what each satellite tier can find (optional).
-* **C. SQUID Array**: the ground module block with a `Cryostat`, its GUI, texture, recipe, and the
-  deep scan gate.
-* **D. Satellite visuals**: item textures for the four satellites; the rocket model's payload
-  section showing a satellite fairing when it carries one (the nose already takes the payload tier
-  colour).
+* **A. Imaging Terminal**: block, GUI (targets, coverage, queue, log with dismiss), requests, energy
+  cost, structure search with range and the per tick limit, uncertainty offset, loading results onto
+  a Locator, redstone repeat. Game tests: search finds a placed structure, the second request skips
+  it, results wait while the terminal is unloaded.
+* **B. Survey Locator**: item with stored targets, compass needle, action bar readout, sneak cycling,
+  client waypoint beam, textures.
+* **C. Survey targets and SQUID Array**: the datapack type, vanilla target set and lang, and the
+  SQUID Array ground module with a `Cryostat` gating deep scans.
+* **D. Satellite visuals**: Survey Satellite item textures; a satellite fairing on the rocket model
+  when it carries one.
 
-## Open questions for the user
+## Open questions
 
-1. Tier table: are the ranges, request counts and times above in the right ballpark?
-2. Energy per request at the terminal: suggestion 50 kJ basic, scaling with range.
-3. Which structures count as underground by default: ancient city, stronghold, trial chambers,
-   mineshafts? Buried treasure seems too cheap to locate and could stay out entirely.
-4. Should Mission Control show satellites the same way as miners (state, tasks waiting), or should
-   satellites only appear in the Imaging Terminal?
+1. **Coverage numbers:** tier values 1, 2, 4, 8 and the curve above (8 value for 63 percent)? Should
+   coverage drive all three of precision, range and parallel requests, or only some?
+2. **What precision means in play:** a search circle the Locator leads you into (as above), or exact
+   coordinates once coverage passes a threshold, say 95 percent?
+3. **"Already found" scope:** use vanilla's world wide claim (simple; also hides our finds from
+   cartographer maps and the other way round), or a per player log (each player can find the same
+   structure; more work, our own search loop)?
+4. **The Locator:** compass needle plus distance readout plus waypoint beam, or a subset? Should it
+   run on Mekanism energy like other tech tools?
+5. **Underground targets:** still behind the SQUID Array, and which ones: ancient city, stronghold,
+   trial chambers, mineshaft?
+6. **Sharing:** is a constellation per player, or shared with a team (for example everyone on the
+   same Mekanism security frequency)?
