@@ -134,6 +134,29 @@ Liquid Nitrogen at 77 K), and if it runs dry it quenches and needs 30 seconds af
    only around the outline, around valves, coolers, ports, the controller and glass. The Launch
    Pad deck should look like one continuous platform.
 
+## 8. Satellite imagery (about 20 minutes)
+
+1. **Launch satellites.** Assemble a rocket with a Survey Satellite payload and pick **Earth Orbit**
+   as the destination (only possible from the Overworld). After about a minute (or
+   `/cryosat orbit skip`) Mission Control shows it as **Orbiting**. Launch a few, of different tiers.
+2. **Imaging Terminal.** Place and power it. The top right panel shows your constellation:
+   satellites, free satellites, coverage, uncertainty (or **exact** from 95 percent) and range. More
+   and better satellites (Basic 1, Advanced 2, Elite 4, Ultimate 8) raise coverage, which never
+   reaches 100 percent.
+3. **Request a pass.** Pick a surface target (village, mansion, monument and so on) and press
+   **Request pass** (costs energy; one pass per satellite at a time). After 1 to 4 minutes, depending
+   on the satellite tier (or skip), the result appears in the log: a position and a search radius,
+   or "nothing new within range". Request the same type again: you should get a different structure.
+   A redstone pulse repeats the last request.
+4. **Survey Locator.** Put it in the terminal's slot, select a log entry and press **Load**. In hand,
+   the needle points at the target, a blue beam marks it in the world and, with uncertainty, a faint
+   ring marks the search area. Sneak use cycles between stored targets.
+5. **Underground targets.** Ancient cities, strongholds, trial chambers and mineshafts stay greyed
+   out until a **SQUID Array** next to the terminal is cold (Liquid Nitrogen in, 30 second cool down).
+   Each deep scan costs 500 mB.
+6. **Teams.** On a server, have another player trust you at Mekanism's Security Desk: their
+   satellites should count towards your coverage.
+
 ## What to report
 
 Copy this and fill in what applies:
@@ -149,6 +172,7 @@ Anything confusing in the GUIs or tooltips:
 Balance feel (too fast / too slow / too expensive / too cheap):
 Space: pad formed? launch looked right? deliveries arrived? Mission Control readable?
 Superconductors: Separator bonus seen? coil ring formed? reactor output boosted? coolant use sensible?
+Satellites: coverage numbers sensible? results accurate? second request found a new structure? locator and beam readable?
 Bugs (attach logs/latest.log for crashes or errors):
 ```
 

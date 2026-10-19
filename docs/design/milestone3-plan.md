@@ -1,6 +1,7 @@
 # Milestone 3 build plan: satellite imagery
 
-Status: agreed, in progress. Builds on `space-age.md` and the finished Milestones 1 and 2. Guiding
+Status: built and merged; the terminal screen seen in a headless client, the rest in game tests. Playtest: section 8 of
+`docs/testing-guide.md`. Builds on `space-age.md` and the finished Milestones 1 and 2. Guiding
 rule from the user: do not overengineer.
 
 ## Gameplay
