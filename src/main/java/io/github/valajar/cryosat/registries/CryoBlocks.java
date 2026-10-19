@@ -140,6 +140,21 @@ public final class CryoBlocks {
                 )
           );
 
+    // Imaging Terminal (satellite workstream A): the block item keeps the energy side config, the Survey Locator and energy slots
+    public static final BlockRegistryObject<BlockTile<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal, Machine<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal>>, ItemBlockTooltip<BlockTile<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal, Machine<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal>>>> IMAGING_TERMINAL =
+          BLOCKS.register("imaging_terminal", () -> new BlockTile<>(CryoBlockTypes.IMAGING_TERMINAL, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties
+                      .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+                      .component(MekanismDataComponents.SIDE_CONFIG, io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal.DEFAULT_SIDE_CONFIG)
+                )
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addInput(io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal::isLocator)
+                      .addEnergy()
+                      .build()
+                )
+          );
+
     private CryoBlocks() {
     }
 }

@@ -121,6 +121,14 @@ public final class CryoBlockEntities {
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
 
+    // Imaging Terminal (satellite workstream A)
+    public static final TileEntityTypeRegistryObject<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal> IMAGING_TERMINAL = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.IMAGING_TERMINAL, io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+
     private CryoBlockEntities() {
     }
 }

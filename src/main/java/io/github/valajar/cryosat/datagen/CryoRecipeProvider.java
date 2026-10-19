@@ -57,6 +57,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         io.github.valajar.cryosat.datagen.separator.SeparatorRecipes.build(output);
         // Fusion Field Coils (superconductor workstream C)
         io.github.valajar.cryosat.datagen.fusion.FusionCoilRecipes.build(output);
+        // Imaging Terminal (satellite workstream A)
+        io.github.valajar.cryosat.datagen.survey.SurveyRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

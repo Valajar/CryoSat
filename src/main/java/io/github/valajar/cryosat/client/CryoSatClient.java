@@ -39,6 +39,8 @@ public final class CryoSatClient {
         ClientRegistrationUtil.registerScreen(event, CryoMenus.SUPERCONDUCTING_SEPARATOR, io.github.valajar.cryosat.client.gui.GuiSuperconductingSeparator::new);
         // Fusion Field Coils (superconductor workstream C)
         ClientRegistrationUtil.registerScreen(event, CryoMenus.FIELD_COIL_CONTROLLER, GuiFieldCoilController::new);
+        // Imaging Terminal (satellite workstream A)
+        ClientRegistrationUtil.registerScreen(event, CryoMenus.IMAGING_TERMINAL, io.github.valajar.cryosat.client.gui.GuiImagingTerminal::new);
     }
 
     // Uplink Card (space workstream A): the "linked" model override shows whether the card holds a target

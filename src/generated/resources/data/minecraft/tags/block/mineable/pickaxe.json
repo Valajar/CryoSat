@@ -13,6 +13,7 @@
     "cryosat:launch_controller",
     "cryosat:superconducting_separator",
     "cryosat:field_coil",
-    "cryosat:field_coil_controller"
+    "cryosat:field_coil_controller",
+    "cryosat:imaging_terminal"
   ]
 }
