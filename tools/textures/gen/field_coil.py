@@ -5,13 +5,16 @@ sideways (the ring reads as one continuous band) and stack cleanly (each loop ke
 
     field_coil/side(_active)     cryostat jacket: a steel rim on top, the superconducting tape winding
                                  (silver lines on dark gaps) held by two clamp straps, a Cryo Cobalt
-                                 trim along the bottom. Active: a rime crust grows along the top edge
+                                 trim along the bottom. Active: a rime crust grows along the top edge,
+                                 and a cryo glow pulse runs sideways along the winding and the trim
+                                 (8 frames). Its period is the block width, so on a ring the pulse
+                                 flows from block to block all the way round
     field_coil/top(_active)      bolted cryostat cover with cobalt corner marks; symmetric, because a
                                  ring block can face either way. Active: frost in two corners
     field_coil_controller/front(_active)
                                  control panel: framed window over the winding, a cobalt trim and the
                                  checkered strip of Mekanism machines. Active: the window shows coolant
-                                 glow and the panel frosts at the top
+                                 glow, the panel frosts at the top and the trim carries the ring's pulse
     field_coil_controller/top(_active)
                                  the chemical port tubes connect to: steel flange, cobalt ring, dark
                                  bore. Active: a frost patch on the flange
@@ -31,6 +34,7 @@ NAME = "field_coil"
 C = (8.0, 8.0)
 WIND = (4, 11)          # winding rows
 CLAMPS = (2, 10)        # left column of each 2 pixel clamp strap; period 8 so the side tiles sideways
+FRAMES = 8              # glow pulse animation frames; the pulse moves 2 pixels per frame
 
 
 def hrand(x: int, y: int, salt: str) -> int:
@@ -68,7 +72,27 @@ def corner_frost(t: Tex, corner: str, size: int, salt: str) -> None:
 
 
 # --- coil side --------------------------------------------------------------------------------------
-def coil_side(active: bool = False) -> Tex:
+def pulse(x: int, frame: int) -> float:
+    """Brightness of the travelling glow at column x: a narrow peak that wraps every 16 pixels."""
+    import math
+    phase = (x - frame * 16 / FRAMES) / 16 * 2 * math.pi
+    return max(0.0, math.cos(phase)) ** 6
+
+
+def glow_rows(t: Tex, frame: int, tape_rows, trim_rows, cols=range(16)) -> None:
+    """A soft glow where the pulse passes: tape lines and the cobalt trim light up, the gaps stay dark.
+    Palette colours only."""
+    for x in cols:
+        w = pulse(x, frame)
+        if w < 0.2:
+            continue
+        for y in tape_rows:
+            t.px(x, y, CRYO_GLOW[2] if w > 0.8 else CRYO_GLOW[1] if w > 0.45 else COBALT[4])
+        for y in trim_rows:
+            t.px(x, y, CRYO_GLOW[1] if w > 0.6 else COBALT[4])
+
+
+def coil_side(active: bool = False, frame: int = 0) -> Tex:
     t = Tex(seed=f"{NAME}_side")
     for x in range(16):
         # Seams top and bottom only: neighbours along the ring join without a line
@@ -106,6 +130,12 @@ def coil_side(active: bool = False) -> Tex:
         t.px(x, 12, hpick(COBALT, 2, 3, x, 12, "trim", 1))
         t.px(x, 13, hpick(COBALT, 1, 1, x, 13, "trim", 1))
     if active:
+        glow_rows(t, frame, [y for y in range(WIND[0], WIND[1] + 1) if (y - WIND[0]) % 2 == 0], (12,))
+        # Clamp straps stay steel: restore them over the glow
+        for cx in CLAMPS:
+            for y in range(WIND[0] - 1, WIND[1] + 2):
+                t.px(cx, y, hpick(PLATE, 0, 1, cx, y, "clamp", 1))
+                t.px(cx + 1, y, hpick(FRAME, 3, 4, cx + 1, y, "clamp", 1))
         rime(t, "side")
     return t
 
@@ -142,7 +172,7 @@ def coil_top(active: bool = False) -> Tex:
 
 
 # --- controller -------------------------------------------------------------------------------------
-def controller_front(active: bool = False) -> Tex:
+def controller_front(active: bool = False, frame: int = 0) -> Tex:
     t = Tex(seed=f"{NAME}_controller_front")
     t.machine_shell()
     t.plate((2, 2, 13, 9))
@@ -159,6 +189,7 @@ def controller_front(active: bool = False) -> Tex:
         t.px(x, 11, hpick(COBALT, 1, 1, x, 11, "trim", 1))
     t.checker_strip(13)
     if active:
+        glow_rows(t, frame, (), (10,), cols=range(2, 14))
         rime(t, "front", depth=2, coverage=0.6, cols=range(1, 15))
     return t
 
@@ -208,10 +239,12 @@ def main() -> None:
     out = []
     for active in (False, True):
         s = "_active" if active else ""
-        out.append(coil_side(active).save(f"field_coil/side{s}.png"))
         out.append(coil_top(active).save(f"field_coil/top{s}.png"))
-        out.append(controller_front(active).save(f"field_coil_controller/front{s}.png"))
         out.append(controller_top(active).save(f"field_coil_controller/top{s}.png"))
+    out.append(coil_side().save("field_coil/side.png"))
+    out.append(controller_front().save("field_coil_controller/front.png"))
+    out.append(save_animation([coil_side(True, f) for f in range(FRAMES)], "field_coil/side_active.png", frametime=2))
+    out.append(save_animation([controller_front(True, f) for f in range(FRAMES)], "field_coil_controller/front_active.png", frametime=2))
     for p in out:
         print(p)
 
