@@ -53,6 +53,10 @@ public final class SpaceRecipes {
             ids.add(CryoItems.FUEL_TANKS.get(tier).getId());
             ids.add(CryoItems.ASTEROID_MINERS.get(tier).getId());
         }
+        // Survey Satellites (satellite workstream D)
+        for (RocketTier tier : CRAFTABLE) {
+            ids.add(CryoItems.SURVEY_SATELLITES.get(tier).getId());
+        }
         return ids;
     }
 
@@ -66,6 +70,28 @@ public final class SpaceRecipes {
         upgrade(output, CryoItems.ROCKET_ENGINES, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
         eliteFuelTank(output);
         upgrade(output, CryoItems.ASTEROID_MINERS, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
+        // Survey Satellites (satellite workstream D)
+        basicSurveySatellite(output);
+        upgrade(output, CryoItems.SURVEY_SATELLITES, RocketTier.ADVANCED, common("alloys/advanced"), common("circuits/advanced"));
+        upgrade(output, CryoItems.SURVEY_SATELLITES, RocketTier.ELITE, common("alloys/elite"), common("circuits/elite"));
+    }
+
+    /**
+     * A steel bus with a glass camera underneath and daylight detectors for solar wings: Mekanism's Solar Panel belongs to
+     * Generators, which CryoSat does not depend on.
+     */
+    private static void basicSurveySatellite(RecipeOutput output) {
+        TagKey<Item> steel = common("ingots/steel");
+        TagKey<Item> circuit = common("circuits/basic");
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, CryoItems.SURVEY_SATELLITES.get(RocketTier.BASIC))
+              .pattern("SRS").pattern("DCD").pattern("SGS")
+              .define('S', steel)
+              .define('R', Tags.Items.DUSTS_REDSTONE)
+              .define('D', Items.DAYLIGHT_DETECTOR)
+              .define('C', circuit)
+              .define('G', Tags.Items.GLASS_BLOCKS)
+              .unlockedBy("has_basic_circuit", has(circuit))
+              .save(output);
     }
 
     private static void propellant(RecipeOutput output) {

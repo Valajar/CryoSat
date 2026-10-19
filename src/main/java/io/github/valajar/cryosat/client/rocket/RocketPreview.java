@@ -34,7 +34,8 @@ import org.jetbrains.annotations.Nullable;
  * DEBUG ONLY, for screenshots and for tuning the model and exhaust without a Launch Pad. A client side command, creative
  * mode only, that shows a rocket where the player looks. It exists only on this client and changes nothing in the world:
  * <ul>
- *     <li>{@code /cryosat rocket preview <tier> [<payload tier>]} shows a rocket on the block the player looks at</li>
+ *     <li>{@code /cryosat rocket preview <tier> [<payload tier>] [asteroid_miner|survey_satellite]} shows a rocket on the block
+ *     the player looks at, carrying an asteroid miner unless a payload is named</li>
  *     <li>{@code /cryosat rocket preview launch} plays a launch: ignition, climb and exhaust, then the rocket is gone</li>
  *     <li>{@code /cryosat rocket preview clear} removes it</li>
  * </ul>
@@ -54,10 +55,14 @@ public final class RocketPreview {
         LiteralArgumentBuilder<CommandSourceStack> previewNode = Commands.literal("preview");
         for (RocketTier tier : RocketTier.values()) {
             LiteralArgumentBuilder<CommandSourceStack> tierNode = Commands.literal(tier.getSerializedName())
-                  .executes(ctx -> show(ctx.getSource(), tier, tier));
+                  .executes(ctx -> show(ctx.getSource(), tier, PayloadType.ASTEROID_MINER, tier));
+            payloadNodes(tierNode, tier, tier);
             for (RocketTier payloadTier : RocketTier.values()) {
                 if (tier.atLeast(payloadTier)) {
-                    tierNode.then(Commands.literal(payloadTier.getSerializedName()).executes(ctx -> show(ctx.getSource(), tier, payloadTier)));
+                    LiteralArgumentBuilder<CommandSourceStack> payloadTierNode = Commands.literal(payloadTier.getSerializedName())
+                          .executes(ctx -> show(ctx.getSource(), tier, PayloadType.ASTEROID_MINER, payloadTier));
+                    payloadNodes(payloadTierNode, tier, payloadTier);
+                    tierNode.then(payloadTierNode);
                 }
             }
             previewNode.then(tierNode);
@@ -71,7 +76,14 @@ public final class RocketPreview {
         event.getDispatcher().register(Commands.literal(CryoSat.MODID).then(Commands.literal("rocket").then(previewNode)));
     }
 
-    private static int show(CommandSourceStack source, RocketTier tier, RocketTier payloadTier) {
+    /** The optional last argument: which payload the rocket carries, the asteroid miner when left out. */
+    private static void payloadNodes(LiteralArgumentBuilder<CommandSourceStack> parent, RocketTier tier, RocketTier payloadTier) {
+        for (PayloadType payload : PayloadType.values()) {
+            parent.then(Commands.literal(payload.getSerializedName()).executes(ctx -> show(ctx.getSource(), tier, payload, payloadTier)));
+        }
+    }
+
+    private static int show(CommandSourceStack source, RocketTier tier, PayloadType payload, RocketTier payloadTier) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         if (player == null || minecraft.level == null || !player.isCreative()) {
@@ -82,9 +94,10 @@ public final class RocketPreview {
         BlockPos pos = hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK
                        ? blockHit.getBlockPos().relative(blockHit.getDirection())
                        : BlockPos.containing(player.getEyePosition().add(player.getLookAngle().scale(5)));
-        preview = new Preview(minecraft.level, Vec3.atBottomCenterOf(pos), new RocketDesign(tier, PayloadType.ASTEROID_MINER, payloadTier));
+        preview = new Preview(minecraft.level, Vec3.atBottomCenterOf(pos), new RocketDesign(tier, payload, payloadTier));
         source.sendSuccess(() -> Component.literal(PREFIX + "Showing a " + tier.getSerializedName() + " rocket with a " + payloadTier.getSerializedName()
-                                                   + " payload at " + pos.toShortString() + ". Use /cryosat rocket preview launch to watch it launch."), false);
+                                                   + " " + payload.getSerializedName() + " at " + pos.toShortString()
+                                                   + ". Use /cryosat rocket preview launch to watch it launch."), false);
         return 1;
     }
 

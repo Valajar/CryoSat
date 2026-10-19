@@ -7,6 +7,7 @@ Every tier of a part shares one silhouette; only the accent changes.
     <tier>_rocket_engine     combustion chamber over a bell nozzle, tier band around the chamber
     <tier>_fuel_tank         domed pressure tank with a valve, tier band around the middle
     <tier>_asteroid_miner    lander body wrapped in MLI gold, tier collar above a spiral drill
+    <tier>_survey_satellite  MLI gold bus between two solar wings, dish on top, tier collar above a camera
     guidance_computer        steel box with an amber trajectory screen, pins along the bottom
     propellant_mix           yellow grey powder pile, sulfur and carbon specks in it
     solid_propellant_grain   pressed khaki cylinder with a star shaped core
@@ -148,6 +149,68 @@ def asteroid_miner(tier: str) -> Tex:
     return t
 
 
+# Survey satellites (satellite workstream D)
+def solar_wing(t: Tex, x0: int, x1: int, y0: int, y1: int) -> None:
+    """A solar panel wing seen face on: a thin steel frame round two rows of blue black cells split by a
+    dark grid line, lit toward the top left with a specular pixel per cell row."""
+    mid = (y0 + y1) // 2
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if y == y0 or x == x0:
+                steel(t, x, y, 7)
+            elif y == y1 or x == x1:
+                steel(t, x, y, 2)
+            elif y == mid:
+                t.px(x, y, shade(SOLAR[0], t.rng.randint(-1, 1)))
+            else:
+                light = 3 if x == x0 + 1 and y in (y0 + 1, mid + 1) else 2
+                t.px(x, y, shade(SOLAR[light], t.rng.randint(-2, 2)))
+    t.px(x0 + 1, y0 + 1, SOLAR[4])
+    t.px(x0 + 1, mid + 1, SOLAR[4])
+
+
+def survey_satellite(tier: str) -> Tex:
+    t = Tex(seed=f"{tier}_survey_satellite", transparent=True)
+    ramp = ITEM_TIER[tier]
+    # Dish on a short mast
+    for x in range(6, 10):
+        steel(t, x, 1, 8 if x < 8 else 5)
+    steel(t, 5, 0, 7)
+    steel(t, 10, 0, 4)
+    steel(t, 7, 2, 6)
+    steel(t, 8, 2, 3)
+    t.px(7, 0, GLINT[2])
+    # Bus: steel frame with MLI gold foil inside
+    for y in range(3, 11):
+        for x in range(5, 11):
+            if y == 3 or x == 5:
+                steel(t, x, y, 8 if (x, y) != (5, 10) else 5)
+            elif y == 10 or x == 10:
+                steel(t, x, y, 2)
+    t.gold_foil((6, 4, 9, 9), cell=2)
+    t.px(6, 4, GOLD[5])
+    # Solar wings on struts either side of the bus
+    solar_wing(t, 0, 3, 3, 9)
+    solar_wing(t, 12, 15, 3, 9)
+    steel(t, 4, 6, 7)
+    steel(t, 4, 7, 3)
+    steel(t, 11, 6, 5)
+    steel(t, 11, 7, 1)
+    # Tier collar, then the camera looking down
+    tier_row(t, 11, 5, 10, ramp, shift=1)
+    tier_row(t, 12, 5, 10, ramp, shift=-1)
+    cyl_row(t, 13, 6, 9, shift=-1)
+    # Lens: dark glass with a glint
+    for x in range(6, 10):
+        t.px(x, 14, shade(VOID[2] if x < 9 else VOID[0], t.rng.randint(-1, 1)))
+    t.px(7, 14, COBALT[3])
+    steel(t, 6, 14, 4)
+    steel(t, 9, 14, 1)
+    for x in (7, 8):
+        steel(t, x, 15, 2 if x == 8 else 4)
+    return t
+
+
 def guidance_computer() -> Tex:
     t = Tex(seed="guidance_computer", transparent=True)
     # Antenna
@@ -275,6 +338,7 @@ def main() -> None:
         rocket_engine(tier).save(f"{tier}_rocket_engine.png", root=ITEMS)
         fuel_tank(tier).save(f"{tier}_fuel_tank.png", root=ITEMS)
         asteroid_miner(tier).save(f"{tier}_asteroid_miner.png", root=ITEMS)
+        survey_satellite(tier).save(f"{tier}_survey_satellite.png", root=ITEMS)
     guidance_computer().save("guidance_computer.png", root=ITEMS)
     propellant_mix().save("propellant_mix.png", root=ITEMS)
     solid_propellant_grain().save("solid_propellant_grain.png", root=ITEMS)

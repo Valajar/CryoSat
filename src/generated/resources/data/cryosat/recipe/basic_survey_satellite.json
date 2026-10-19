@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "D": {
+      "item": "minecraft:daylight_detector"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SRS",
+    "DCD",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:basic_survey_satellite"
+  }
+}

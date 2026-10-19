@@ -18,7 +18,8 @@ import net.neoforged.neoforge.client.model.data.ModelData;
  * world. The rocket fits a column {@link #RADIUS} blocks either side of its axis and {@link #HEIGHT} blocks tall.
  * <p>
  * The model is Mekanism steel with tier coloured accents: the nozzle lip, the fin edges and the tank band take the rocket
- * tier's colour, the nose tip the payload tier's. The colour is a tint on those faces only (see {@link RocketModels}).
+ * tier's colour, the nose tip the payload tier's. The colour is a tint on those faces only (see {@link RocketModels}). The top
+ * segment shows the payload: a gold foil panel for an asteroid miner, a light steel fairing for a satellite.
  */
 public final class RocketRenderer {
     /** Height of the rocket model in blocks, from the nozzle to the tip. */
@@ -37,8 +38,8 @@ public final class RocketRenderer {
         poseStack.pushPose();
         // Models are built around the block centre (8, 8)
         poseStack.translate(-0.5, 0, -0.5);
-        for (Segment segment : Segment.values()) {
-            int color = segment == Segment.PAYLOAD ? design.payloadTier().color() : design.tier().color();
+        for (Segment segment : RocketModels.stack(design.payload())) {
+            int color = segment.payload() ? design.payloadTier().color() : design.tier().color();
             // Only faces with a tint index take the colour; the steel stays as textured
             renderer.renderModel(poseStack.last(), consumer, null, segment.baked(), red(color), green(color), blue(color), light, overlay,
                   ModelData.EMPTY, RenderType.cutout());

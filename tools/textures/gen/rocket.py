@@ -5,7 +5,12 @@ three stacked segment models, each 2 blocks tall and drawn by RocketRenderer one
 
     engine    nozzle bell, darker aft body with engine bay vents and a hazard band, four fins that reach the pad
     tank      propellant tank with a seam, rivet rows and a tier band near the top
-    payload   fairing with an MLI gold panel, stepped nose cone
+    payload   fairing with an MLI gold panel, stepped nose cone (asteroid miners)
+
+or, when the rocket carries a Survey Satellite, in place of the payload segment:
+
+    satellite_fairing   light steel fairing a little wider than the tank, split down the middle by a seam, an
+                        ogive nose in three steps up to the tier tinted tip
 
 All three share one cross section: two overlapping boxes (20x14 and 14x20 pixels) give a body 1.25 blocks
 across with stepped corners, which reads as round from a distance. Fins reach 23 pixels from the axis, inside
@@ -21,7 +26,9 @@ This script writes the three 64x64 sheets (textures/block/rocket/<segment>.png) 
 
     python3 tools/textures/gen/rocket.py              textures and models
     python3 tools/textures/gen/rocket.py --preview    also build/rocket_preview.png: all four tiers, the
-                                                      whole rocket assembled, next to Mekanism's digital miner
+                                                      whole rocket assembled, next to Mekanism's digital miner;
+                                                      and build/rocket_satellite_preview.png: Basic and Elite
+                                                      rockets with each payload segment
 """
 import json
 import re
@@ -37,6 +44,8 @@ SHEET = 64
 UV = SHEET / 16  # texels per UV unit: one texel per model pixel
 MODELS = REPO / "src" / "main" / "resources" / "assets" / "cryosat" / "models" / NAME
 SEGMENTS = ("engine", "tank", "payload")
+# Payload segments RocketRenderer picks from by the design's payload: the miner's foil panel, or a satellite fairing
+PAYLOADS = ("payload", "satellite_fairing")
 SEGMENT_HEIGHT = 32  # model pixels; RocketRenderer stacks the segments 2 blocks apart
 # Mekanism's BaseTier colours, which RocketTier.color() hands to the renderer as the tint
 TIER_COLORS = {"basic": "5fffb8", "advanced": "ff806a", "elite": "4bf8ff", "ultimate": "f787ff"}
@@ -372,13 +381,83 @@ def payload():
     return t, m
 
 
-# --- preview ---------------------------------------------------------------------------------------------
-def preview(out: Path) -> None:
-    from PIL import Image, ImageDraw
-    import model_preview as mp
+# --- satellite fairing (satellite workstream D) ---------------------------------------------------------
+# Wider than the tank (half width 11) so the satellite reads as a different rocket from a distance, on a short
+# dark adapter ring that sits on the tank. Rows of the side regions run top down from the element's top.
+S_BODY = (0, 0, 22, 16)        # fairing sides, local y 18..2
+S_SHOULDER = (22, 0, 22, 22)   # fairing top, around the nose
+S_UNDER = (0, 16, 22, 22)      # fairing underside, the ring outside the adapter
+S_ADAPTER = (44, 0, 20, 2)     # adapter ring sides, local y 2..0
+S_CONES = (  # (name, half width, notch, y from, y to, side region, top region): the ogive nose, bottom up
+    ("nose_lower", 9, 3, 18, 22, (44, 2, 18, 4), (22, 22, 18, 18)),
+    ("nose_middle", 7, 2, 22, 25, (44, 6, 14, 3), (44, 12, 14, 14)),
+    ("nose_upper", 4, 0, 25, 28, (44, 9, 8, 3), (44, 26, 8, 8)))
 
+
+def fairing_side(t: Tex, region, notch, light=True):
+    """Side region of a stepped fairing piece: light steel, the stepped corners (`notch` columns at each side)
+    a band darker, lit left edge, dark right edge, and the vertical seam where the fairing halves meet."""
+    x, y, w, h = region
+    # One tone with fine jitter only: a fairing is smooth painted shell, not plated steel
+    i = 4 if light else 3
+    t.fill(box(region), CASING, i, i, jitter=3)
+    if notch:
+        t.fill((x, y, x + notch - 1, y + h - 1), CASING, i - 1, i - 1, jitter=3)
+        t.fill((x + w - notch, y, x + w - 1, y + h - 1), CASING, i - 2, i - 2, jitter=3)
+    mid = x + w // 2
+    for r in range(h):
+        t.px(x, y + r, shade(CASING[5], t.rng.randint(-2, 0)))
+        t.px(x + w - 1, y + r, shade(PLATE[2], t.rng.randint(-2, 2)))
+        if notch:
+            t.px(x + notch - 1, y + r, shade(PLATE[3], t.rng.randint(-2, 2)))  # inner corner in shadow
+            t.px(x + w - notch, y + r, shade(PLATE[2], t.rng.randint(-2, 2)))
+            t.px(x + notch, y + r, shade(CASING[5], t.rng.randint(-2, 0)))     # lit edge of the main panel
+        t.px(mid - 1, y + r, shade(PLATE[1], t.rng.randint(-2, 2)))            # seam between the halves
+        t.px(mid, y + r, shade(GLINT[1], t.rng.randint(-2, 0)))
+    for c in range(w):
+        t.px(x + c, y, shade(GLINT[2] if 0 < c < w - 1 else CASING[5], t.rng.randint(-4, 0)))
+
+
+def satellite_fairing():
+    t = sheet("satellite_fairing")
+    fairing_side(t, S_BODY, 3)
+    x, y, w, h = S_BODY
+    for c in range(w):  # separation joint at the base, a row of shadow under the light body
+        t.px(x + c, y + h - 1, shade(PLATE[1], t.rng.randint(-2, 2)))
+        t.px(x + c, y + h - 2, shade(CASING[2], t.rng.randint(-2, 2)))
+    for c in (5, 16):  # access hatch outlines either side of the seam
+        t.outline((x + c - 1, y + 4, x + c + 1, y + 7), CASING[1])
+    cap(t, S_SHOULDER, lo=4, hi=4)
+    t.fill(box(S_UNDER), PLATE, 0, 2)
+    ax, ay, aw, ah = S_ADAPTER
+    t.fill(box(S_ADAPTER), FRAME, 2, 4)
+    for c in range(aw):
+        t.px(ax + c, ay, shade(PANEL[2], t.rng.randint(-2, 2)))
+    for _, half, notch, _, _, side, top in S_CONES:
+        fairing_side(t, side, notch, light=half < 9)
+        cap(t, top, lo=4, hi=4)
+
+    m = Model("satellite_fairing")
+    m.cross("adapter", "adapter", 10, 0, 2, Seen(S_ADAPTER, 2), faces=SIDES)
+    m.cross("fairing", "fairing", 11, 2, 18, Seen(S_BODY, 18), faces=SIDES,
+            overrides={"up": (Seen(S_SHOULDER), None), "down": (Seen(S_UNDER), None)})
+    for name, half, notch, y0, y1, side, top in S_CONES:
+        over = {"up": (Seen(top), None)}
+        if notch:
+            m.cross("nose", name, half, y0, y1, Seen(side, y1), notch=notch, faces=SIDES, overrides=over)
+        else:
+            m.box("nose", name, (8 - half, y0, 8 - half), (8 + half, y1, 8 + half), Seen(side, y1), faces=SIDES, overrides=over)
+    # Tip in the payload tier's colour (tint index 1), as on the miner's nose
+    m.box("nose", "nose_tip", (5, 28, 5), (11, 30.5, 11), Seen(ACCENT), faces=SIDES + ("up",), tint=1)
+    m.box("nose", "nose_point", (6.5, 30.5, 6.5), (9.5, 32, 9.5), Seen(ACCENT), faces=SIDES + ("up",), tint=1)
+    return t, m
+
+
+# --- preview ---------------------------------------------------------------------------------------------
+def assemble(payload_segment="payload"):
+    """The three segments merged into one model, stacked as RocketRenderer stacks them."""
     merged = {"textures": {}, "elements": []}
-    for i, seg in enumerate(SEGMENTS):
+    for i, seg in enumerate(SEGMENTS[:2] + (payload_segment,)):
         model = json.loads((MODELS / f"{seg}.json").read_text())
         merged["textures"][seg] = model["textures"]["all"]
         for el in model["elements"]:
@@ -388,20 +467,33 @@ def preview(out: Path) -> None:
             for face in el["faces"].values():
                 face["texture"] = f"#{seg}"
             merged["elements"].append(el)
+    return merged
+
+
+def preview(out: Path, rockets, nw) -> None:
+    """`rockets` are (rocket tier, payload tier, payload segment); `nw` is one of them, also shown from the north
+    west. The first four also appear small, about as they read from 20 blocks away."""
+    from PIL import Image, ImageDraw
+    import model_preview as mp
 
     def rgb(h):
         return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+    def shot(tier, payload_tier, segment, flip=False):
+        tints = {0: rgb(TIER_COLORS[tier]), 1: rgb(TIER_COLORS[payload_tier])}
+        return mp.render(assemble(segment), {}, scale, flip, tints)
+
+    def label(tier, payload_tier, segment):
+        name = tier if tier == payload_tier else f"{tier}, {payload_tier} payload"
+        return name if segment == "payload" else f"{name}, satellite"
 
     scale = 4
     miner = mp.render(mp.load_model(REPO / ".mekanism-refs/src/main/resources/assets/mekanism/models/block/digital_miner.json"),
                       {}, scale, False) if (REPO / ".mekanism-refs").exists() else None
     shots = [("digital miner", miner)] if miner else []
-    for tier, payload_tier in (("basic", "basic"), ("advanced", "advanced"), ("elite", "elite"), ("ultimate", "ultimate"),
-                               ("elite", "basic")):
-        tints = {0: rgb(TIER_COLORS[tier]), 1: rgb(TIER_COLORS[payload_tier])}
-        label = tier if tier == payload_tier else f"{tier}, {payload_tier} payload"
-        shots.append((label, mp.render(merged, {}, scale, False, tints)))
-    shots.append(("elite NW", mp.render(merged, {}, scale, True, {0: rgb(TIER_COLORS["elite"]), 1: rgb(TIER_COLORS["elite"])})))
+    for rocket in rockets:
+        shots.append((label(*rocket), shot(*rocket)))
+    shots.append((label(*nw) + " NW", shot(*nw, flip=True)))
     w = sum(s.width for _, s in shots) + 10 * len(shots)
     h = max(s.height for _, s in shots)
     small = [(n, s.resize((s.width // 6, s.height // 6))) for n, s in shots[1:5]]
@@ -423,12 +515,15 @@ def preview(out: Path) -> None:
 
 
 def main() -> None:
-    for build in (engine, tank, payload):
+    for build in (engine, tank, payload, satellite_fairing):
         t, m = build()
         print(t.save(f"{NAME}/{m.segment}.png").relative_to(REPO))
         print(write_model(m).relative_to(REPO))
     if "--preview" in sys.argv:
-        preview(REPO / "build" / "rocket_preview.png")
+        tiers = [(tier, tier, "payload") for tier in ("basic", "advanced", "elite", "ultimate")]
+        preview(REPO / "build" / "rocket_preview.png", tiers + [("elite", "basic", "payload")], ("elite", "elite", "payload"))
+        both = [(tier, tier, seg) for tier in ("basic", "elite") for seg in PAYLOADS]
+        preview(REPO / "build" / "rocket_satellite_preview.png", both, ("elite", "elite", "satellite_fairing"))
 
 
 if __name__ == "__main__":

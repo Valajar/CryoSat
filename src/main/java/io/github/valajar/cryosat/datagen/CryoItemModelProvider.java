@@ -29,6 +29,9 @@ public class CryoItemModelProvider extends ItemModelProvider {
 
         // Superconductors (superconductor workstream A): the coil
         basicItem(CryoItems.SUPERCONDUCTING_COIL.get());
+
+        // Survey Satellites (satellite workstream D)
+        tiered(CryoItems.SURVEY_SATELLITES);
     }
 
     private void tiered(Map<?, ? extends ItemRegistryObject<?>> items) {
