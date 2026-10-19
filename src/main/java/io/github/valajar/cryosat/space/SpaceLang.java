@@ -59,6 +59,11 @@ public enum SpaceLang implements ILangEntry {
         return Component.translatableWithFallback(Util.makeDescriptionId("destination", id), titleCase(id.getPath()));
     }
 
+    /** Name of a survey target, {@code survey_target.<ns>.<path>}, with the same fallback. */
+    public static Component surveyTargetName(ResourceLocation id) {
+        return Component.translatableWithFallback(Util.makeDescriptionId("survey_target", id), titleCase(id.getPath()));
+    }
+
     /** Name of an asteroid class, {@code asteroid.<ns>.<path>}, with the same fallback. */
     public static Component asteroidName(ResourceLocation id) {
         return Component.translatableWithFallback(Util.makeDescriptionId("asteroid", id), titleCase(id.getPath()));
