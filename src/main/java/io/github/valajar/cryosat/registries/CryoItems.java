@@ -3,6 +3,9 @@ package io.github.valajar.cryosat.registries;
 // Uplink Card (space workstream A)
 import io.github.valajar.cryosat.space.receiver.ItemUplinkCard;
 
+// Survey Locator (satellite workstream B)
+import io.github.valajar.cryosat.space.locator.ItemSurveyLocator;
+
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.space.PayloadType;
 import io.github.valajar.cryosat.space.RocketPartItem;
@@ -39,6 +42,9 @@ public final class CryoItems {
 
     // Superconductors: the crafted coil every superconducting block is built from (high temperature grade, liquid nitrogen)
     public static final ItemRegistryObject<Item> SUPERCONDUCTING_COIL = ITEMS.register("superconducting_coil");
+
+    // Survey Locator (satellite workstream B): a tech compass holding survey results from an Imaging Terminal
+    public static final ItemRegistryObject<ItemSurveyLocator> SURVEY_LOCATOR = ITEMS.registerItem("survey_locator", ItemSurveyLocator::new);
 
     private static Map<RocketTier, ItemRegistryObject<RocketPartItem>> tiered(String name, Kind kind, PayloadType payload) {
         Map<RocketTier, ItemRegistryObject<RocketPartItem>> items = new EnumMap<>(RocketTier.class);

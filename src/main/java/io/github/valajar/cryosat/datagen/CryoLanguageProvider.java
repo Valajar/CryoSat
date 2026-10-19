@@ -66,6 +66,8 @@ public class CryoLanguageProvider extends LanguageProvider {
         // Survey targets and SQUID Array (satellite workstream C)
         io.github.valajar.cryosat.datagen.squid.SurveyTargetLangData.addTo(this);
         io.github.valajar.cryosat.datagen.squid.SquidLangData.addTo(this);
+        // Survey Locator (satellite workstream B)
+        io.github.valajar.cryosat.datagen.locator.LocatorLangData.addTo(this);
     }
 
     /** Block name, plus the same name as the GUI title Mekanism looks up under {@code container.<ns>.<name>}. */

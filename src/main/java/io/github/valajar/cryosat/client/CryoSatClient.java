@@ -9,6 +9,9 @@ import io.github.valajar.cryosat.registries.CryoDataComponents;
 import io.github.valajar.cryosat.registries.CryoItems;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
+// Survey Locator (satellite workstream B)
+import io.github.valajar.cryosat.client.locator.SurveyLocatorClient;
+
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.client.gui.GuiAtmosphericCompressor;
 import io.github.valajar.cryosat.client.gui.GuiMissionControl;
@@ -48,6 +51,8 @@ public final class CryoSatClient {
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(CryoItems.UPLINK_CARD, CryoSat.rl("linked"),
               (stack, level, entity, seed) -> stack.has(CryoDataComponents.UPLINK_TARGET) ? 1 : 0));
+        // Survey Locator (satellite workstream B): the compass needle
+        event.enqueueWork(SurveyLocatorClient::registerNeedle);
     }
 
     // Launch Pad (workstream B): the rocket on the pad
