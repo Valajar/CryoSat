@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "tag": "c:circuits/advanced"
+    },
+    "K": {
+      "item": "minecraft:compass"
+    },
+    "O": {
+      "tag": "c:ingots/osmium"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    " O ",
+    "SKS",
+    "SCS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:survey_locator"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "cryosat:item/survey_locator_01",
+      "predicate": {
+        "cryosat:angle": 0.03125
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_02",
+      "predicate": {
+        "cryosat:angle": 0.09375
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_03",
+      "predicate": {
+        "cryosat:angle": 0.15625
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_04",
+      "predicate": {
+        "cryosat:angle": 0.21875
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_05",
+      "predicate": {
+        "cryosat:angle": 0.28125
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_06",
+      "predicate": {
+        "cryosat:angle": 0.34375
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_07",
+      "predicate": {
+        "cryosat:angle": 0.40625
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_08",
+      "predicate": {
+        "cryosat:angle": 0.46875
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_09",
+      "predicate": {
+        "cryosat:angle": 0.53125
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_10",
+      "predicate": {
+        "cryosat:angle": 0.59375
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_11",
+      "predicate": {
+        "cryosat:angle": 0.65625
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_12",
+      "predicate": {
+        "cryosat:angle": 0.71875
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_13",
+      "predicate": {
+        "cryosat:angle": 0.78125
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_14",
+      "predicate": {
+        "cryosat:angle": 0.84375
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator_15",
+      "predicate": {
+        "cryosat:angle": 0.90625
+      }
+    },
+    {
+      "model": "cryosat:item/survey_locator",
+      "predicate": {
+        "cryosat:angle": 0.96875
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "cryosat:item/survey_locator_00"
+  }
+}
