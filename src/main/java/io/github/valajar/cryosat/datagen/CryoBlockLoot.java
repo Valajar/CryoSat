@@ -60,6 +60,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         // Fusion Field Coils (superconductor workstream C): the controller keeps its coolant, config and security
         dropSelf(CryoBlocks.FIELD_COIL.get());
         dropMachine(CryoBlocks.FIELD_COIL_CONTROLLER.get());
+        // SQUID Array (satellite workstream C): keeps both tanks, config and security; it warms up again
+        dropMachine(CryoBlocks.SQUID_ARRAY.get());
     }
 
     private void dropMachine(Block block) {

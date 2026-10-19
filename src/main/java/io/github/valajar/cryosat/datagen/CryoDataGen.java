@@ -44,6 +44,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.separator.SeparatorModelProvider(output, files));
         // Fusion Field Coils (superconductor workstream C)
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.fusion.FusionCoilModelProvider(output, files));
+        // SQUID Array (satellite workstream C)
+        generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.squid.SquidModelProvider(output, files));
     }
 
     private CryoDataGen() {

@@ -62,6 +62,10 @@ public final class CryoMenus {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFieldCoilController>> FIELD_COIL_CONTROLLER =
           MENUS.custom(CryoBlocks.FIELD_COIL_CONTROLLER, TileEntityFieldCoilController.class).offset(0, FIELD_COIL_EXTRA_HEIGHT).build();
 
+    // SQUID Array (satellite workstream C): a standard sized Mekanism screen
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray>> SQUID_ARRAY =
+          MENUS.register(CryoBlocks.SQUID_ARRAY, io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray.class);
+
     private CryoMenus() {
     }
 }
