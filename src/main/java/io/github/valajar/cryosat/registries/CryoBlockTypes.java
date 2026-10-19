@@ -140,6 +140,18 @@ public final class CryoBlockTypes {
           .withSideConfig(TransmissionType.CHEMICAL)
           .build();
 
+    // Imaging Terminal (satellite workstream A): energy per request, Energy upgrades only; a redstone signal repeats the last
+    // request instead of Mekanism's redstone control, and there is no comparator output
+    public static final Machine<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal> IMAGING_TERMINAL = MachineBuilder
+          .createMachine(() -> CryoBlockEntities.IMAGING_TERMINAL, io.github.valajar.cryosat.space.survey.SurveyLang.DESCRIPTION)
+          .withGui(() -> CryoMenus.IMAGING_TERMINAL)
+          .withEnergyConfig(() -> io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal.BASE_ENERGY_PER_REQUEST,
+                () -> io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal.ENERGY_CAPACITY)
+          .withSideConfig(TransmissionType.ENERGY)
+          .withSupportedUpgrades(mekanism.api.Upgrade.ENERGY)
+          .without(Attributes.AttributeRedstone.class, Attributes.AttributeComparator.class)
+          .build();
+
     private CryoBlockTypes() {
     }
 }

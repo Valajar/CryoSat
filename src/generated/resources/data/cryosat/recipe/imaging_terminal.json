@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/advanced"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "Y": {
+      "item": "minecraft:spyglass"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "CMC",
+    "SYS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:imaging_terminal"
+  }
+}

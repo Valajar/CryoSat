@@ -66,6 +66,14 @@ public final class CryoMenus {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray>> SQUID_ARRAY =
           MENUS.register(CryoBlocks.SQUID_ARRAY, io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray.class);
 
+    // Imaging Terminal (satellite workstream A): a wide, tall screen, so the player inventory moves right and down
+    /** Offset of the player inventory in the Imaging Terminal screen, which is 248 by 243 instead of 176 by 166. */
+    public static final int IMAGING_TERMINAL_INVENTORY_X = 36;
+    public static final int IMAGING_TERMINAL_INVENTORY_Y = 77;
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal>> IMAGING_TERMINAL =
+          MENUS.custom(CryoBlocks.IMAGING_TERMINAL, io.github.valajar.cryosat.space.survey.TileEntityImagingTerminal.class)
+                .offset(IMAGING_TERMINAL_INVENTORY_X, IMAGING_TERMINAL_INVENTORY_Y).build();
+
     private CryoMenus() {
     }
 }

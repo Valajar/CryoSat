@@ -14,6 +14,7 @@
     "cryosat:superconducting_separator",
     "cryosat:field_coil",
     "cryosat:field_coil_controller",
-    "cryosat:squid_array"
+    "cryosat:squid_array",
+    "cryosat:imaging_terminal"
   ]
 }

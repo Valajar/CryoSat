@@ -62,6 +62,8 @@ public class CryoBlockLoot extends BlockLootSubProvider {
         dropMachine(CryoBlocks.FIELD_COIL_CONTROLLER.get());
         // SQUID Array (satellite workstream C): keeps both tanks, config and security; it warms up again
         dropMachine(CryoBlocks.SQUID_ARRAY.get());
+        // Imaging Terminal (satellite workstream A): keeps energy, its slots, upgrades, config and security; the log stays behind
+        dropMachine(CryoBlocks.IMAGING_TERMINAL.get());
     }
 
     private void dropMachine(Block block) {

@@ -61,6 +61,8 @@ public class CryoRecipeProvider extends RecipeProvider {
         io.github.valajar.cryosat.datagen.squid.SquidRecipes.build(output);
         // Survey Locator (satellite workstream B)
         io.github.valajar.cryosat.datagen.locator.LocatorRecipes.build(output);
+        // Imaging Terminal (satellite workstream A)
+        io.github.valajar.cryosat.datagen.survey.SurveyRecipes.build(output);
     }
 
     private static Item mekanism(String path) {

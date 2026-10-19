@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/imaging_terminal/bottom",
+    "east": "cryosat:block/imaging_terminal/left",
+    "north": "cryosat:block/imaging_terminal/front",
+    "particle": "cryosat:block/imaging_terminal/front",
+    "south": "cryosat:block/imaging_terminal/back",
+    "up": "cryosat:block/imaging_terminal/top",
+    "west": "cryosat:block/imaging_terminal/right"
+  }
+}

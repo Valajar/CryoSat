@@ -48,6 +48,8 @@ public final class CryoDataGen {
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.squid.SquidModelProvider(output, files));
         // Survey Locator (satellite workstream B): needle frame models
         generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.locator.LocatorModelProvider(output, files));
+        // Imaging Terminal (satellite workstream A)
+        generator.addProvider(event.includeClient(), new io.github.valajar.cryosat.datagen.survey.SurveyModelProvider(output, files));
     }
 
     private CryoDataGen() {
