@@ -87,9 +87,9 @@ public final class SurveySearch {
 
     /**
      * Finds the nearest unclaimed structure of the set around {@code origin} and claims it, like an explorer map. The search
-     * runs vanilla's rings out to {@code range} blocks in each direction (a square); a hit in the last ring beyond the range
-     * is claimed but not reported, as is a stronghold beyond it (strongholds sit on fixed rings that are always searched
-     * whole).
+     * runs vanilla's rings out to {@code range} blocks in each direction (a square). A first pass without claiming makes sure
+     * something is in range at all, so far structures are not claimed for nothing; only when the nearest in range was
+     * already claimed can the next one found lie beyond the range and be claimed without being reported.
      *
      * @return the structure's locate position, or {@code null} if there is none within range
      */
@@ -109,12 +109,18 @@ public final class SurveySearch {
             }
         }
         int rings = spacing == Integer.MAX_VALUE ? 0 : Math.max(1, Mth.ceil(range / (16.0 * spacing)));
-        Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator().findNearestMapStructure(level, structures, origin, rings, true);
-        if (found == null) {
+        // Look first without claiming: if even the nearest structure (found before or not) is out of range, stop here so a far
+        // structure is never claimed without being reported
+        Pair<BlockPos, Holder<Structure>> nearest = level.getChunkSource().getGenerator().findNearestMapStructure(level, structures, origin, rings, false);
+        if (nearest == null || !inRange(nearest.getFirst(), origin, range)) {
             return null;
         }
-        BlockPos pos = found.getFirst();
-        return Math.max(Math.abs(pos.getX() - origin.getX()), Math.abs(pos.getZ() - origin.getZ())) <= range ? pos : null;
+        Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator().findNearestMapStructure(level, structures, origin, rings, true);
+        return found != null && inRange(found.getFirst(), origin, range) ? found.getFirst() : null;
+    }
+
+    private static boolean inRange(BlockPos pos, BlockPos origin, int range) {
+        return Math.max(Math.abs(pos.getX() - origin.getX()), Math.abs(pos.getZ() - origin.getZ())) <= range;
     }
 
     /**
