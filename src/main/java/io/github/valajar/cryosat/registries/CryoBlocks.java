@@ -140,6 +140,21 @@ public final class CryoBlocks {
                 )
           );
 
+    // SQUID Array (satellite workstream C): the block item keeps the side config, ejector and both Cryostat tanks
+    public static final BlockRegistryObject<BlockTile<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray, BlockTypeTile<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray>>, ItemBlockTooltip<BlockTile<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray, BlockTypeTile<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray>>>> SQUID_ARRAY =
+          BLOCKS.register("squid_array", () -> new BlockTile<>(CryoBlockTypes.SQUID_ARRAY, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())),
+                (block, properties) -> new ItemBlockTooltip<>(block, true, properties
+                      .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+                      .component(MekanismDataComponents.SIDE_CONFIG, io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray.DEFAULT_SIDE_CONFIG)
+                )
+          ).forItemHolder(holder -> holder
+                .addAttachmentOnlyContainers(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
+                      .addBasic(Cryostat.COOLANT_CAPACITY, stack -> stack.is(CryoChemicals.LIQUID_NITROGEN))
+                      .addBasic(Cryostat.BOIL_OFF_CAPACITY)
+                      .build()
+                )
+          );
+
     private CryoBlocks() {
     }
 }

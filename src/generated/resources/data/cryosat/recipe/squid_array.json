@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "E": {
+      "tag": "c:circuits/elite"
+    },
+    "K": {
+      "item": "cryosat:superconducting_coil"
+    },
+    "M": {
+      "item": "mekanism:steel_casing"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "KCK",
+    "SMS",
+    "KEK"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cryosat:squid_array"
+  }
+}

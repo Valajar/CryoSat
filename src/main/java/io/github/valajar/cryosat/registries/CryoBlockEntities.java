@@ -121,6 +121,14 @@ public final class CryoBlockEntities {
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
 
+    // SQUID Array (satellite workstream C)
+    public static final TileEntityTypeRegistryObject<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray> SQUID_ARRAY = BLOCK_ENTITIES
+          .mekBuilder(CryoBlocks.SQUID_ARRAY, io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray::new)
+          .clientTicker(TileEntityMekanism::tickClient)
+          .serverTicker(TileEntityMekanism::tickServer)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+
     private CryoBlockEntities() {
     }
 }

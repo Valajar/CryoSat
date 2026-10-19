@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cryosat:block/squid_array/bottom",
+    "east": "cryosat:block/squid_array/side_active",
+    "north": "cryosat:block/squid_array/front_active",
+    "particle": "cryosat:block/squid_array/front",
+    "south": "cryosat:block/squid_array/back",
+    "up": "cryosat:block/squid_array/top_active",
+    "west": "cryosat:block/squid_array/side_active"
+  }
+}

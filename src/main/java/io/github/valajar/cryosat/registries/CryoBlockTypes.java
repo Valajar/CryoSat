@@ -132,6 +132,14 @@ public final class CryoBlockTypes {
           .withSideConfig(TransmissionType.CHEMICAL)
           .build();
 
+    // SQUID Array (satellite workstream C): like the Superconducting Separator, no energy or upgrades, kept cold by its Cryostat
+    public static final BlockTypeTile<io.github.valajar.cryosat.superconductor.squid.TileEntitySquidArray> SQUID_ARRAY = BlockTileBuilder
+          .createBlock(() -> CryoBlockEntities.SQUID_ARRAY, io.github.valajar.cryosat.superconductor.squid.SquidLang.DESCRIPTION)
+          .withGui(() -> CryoMenus.SQUID_ARRAY)
+          .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR)
+          .withSideConfig(TransmissionType.CHEMICAL)
+          .build();
+
     private CryoBlockTypes() {
     }
 }
