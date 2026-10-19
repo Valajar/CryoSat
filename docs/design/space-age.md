@@ -181,6 +181,8 @@ strongholds) need the SQUID survey sensor from Milestone 2.
 This uses the same lookup as `/locate` and explorer maps, so it is cheap to build and immediately
 useful in survival.
 
+Build plan and the decisions underneath it: `milestone3-plan.md`.
+
 ## Gas giants: helium and metallic hydrogen
 
 Scheduled after Milestone 3. Real helium comes from natural gas wells, but drilling gas pockets would
