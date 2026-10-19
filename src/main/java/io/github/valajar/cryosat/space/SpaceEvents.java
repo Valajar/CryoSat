@@ -18,6 +18,7 @@ public final class SpaceEvents {
     private static void addReloadListeners(AddReloadListenerEvent event) {
         event.addListener(SpaceData.DESTINATIONS);
         event.addListener(SpaceData.ASTEROIDS);
+        event.addListener(SpaceData.SURVEY_TARGETS);
     }
 
     private static void serverTick(ServerTickEvent.Post event) {

@@ -104,13 +104,13 @@ public class OrbitalTests {
     public static void minerDeliversEveryBatch(GameTestHelper helper) {
         helper.setBlock(BlockPos.ZERO, Blocks.CHEST);
         OrbitalAsset asset = launch(helper, BlockPos.ZERO);
-        helper.assertTrue(asset.asteroid != null, "miner has no asteroid");
+        helper.assertTrue(asset.miner().asteroid != null, "miner has no asteroid");
         fastForward(helper, asset);
         helper.assertTrue(asset.state == OrbitalAsset.State.RETIRED, "miner did not retire: " + asset.state);
-        helper.assertTrue(asset.batchesDelivered == asset.asteroid.batches(), "delivered " + asset.batchesDelivered + " of " + asset.asteroid.batches());
+        helper.assertTrue(asset.miner().batchesDelivered == asset.miner().asteroid.batches(), "delivered " + asset.miner().batchesDelivered + " of " + asset.miner().asteroid.batches());
         // A medium asteroid can hold more than one chest: whatever did not fit waits in orbit
         Map<Item, Integer> received = new HashMap<>();
-        for (CargoEntry entry : asset.pending) {
+        for (CargoEntry entry : asset.miner().pending) {
             received.merge(entry.item().value(), entry.count(), Integer::sum);
         }
         ChestBlockEntity chest = helper.getBlockEntity(BlockPos.ZERO);
@@ -120,13 +120,13 @@ public class OrbitalTests {
                 received.merge(stack.getItem(), stack.getCount(), Integer::sum);
             }
         }
-        for (CargoEntry entry : asset.asteroid.cargo()) {
+        for (CargoEntry entry : asset.miner().asteroid.cargo()) {
             int got = received.getOrDefault(entry.item().value(), 0);
             helper.assertTrue(got == entry.count(), BuiltInRegistries.ITEM.getKey(entry.item().value()) + ": expected " + entry.count() + ", got " + got);
         }
         int iron = received.getOrDefault(Items.RAW_IRON, 0);
-        double scale = asset.asteroid.size().multiplier() * asset.asteroid.extracted();
-        helper.assertTrue(iron >= 384 * scale && iron <= 640 * scale, "raw iron outside the chondrite range for a " + asset.asteroid.size().getSerializedName()
+        double scale = asset.miner().asteroid.size().multiplier() * asset.miner().asteroid.extracted();
+        helper.assertTrue(iron >= 384 * scale && iron <= 640 * scale, "raw iron outside the chondrite range for a " + asset.miner().asteroid.size().getSerializedName()
                                                                       + " asteroid: " + iron);
         OrbitalRegistry.get(helper.getLevel().getServer()).decommission(asset);
         helper.succeed();
@@ -136,12 +136,12 @@ public class OrbitalTests {
     public static void cargoWaitsForReceiver(GameTestHelper helper) {
         OrbitalAsset asset = launch(helper, BlockPos.ZERO);
         fastForward(helper, asset);
-        helper.assertFalse(asset.pending.isEmpty(), "cargo vanished without a receiver");
-        int waiting = asset.pending.stream().mapToInt(CargoEntry::count).sum();
+        helper.assertFalse(asset.miner().pending.isEmpty(), "cargo vanished without a receiver");
+        int waiting = asset.miner().pending.stream().mapToInt(CargoEntry::count).sum();
         helper.setBlock(BlockPos.ZERO, Blocks.CHEST);
         OrbitalRegistry.get(helper.getLevel().getServer()).tick(helper.getLevel().getServer());
-        int left = asset.pending.stream().mapToInt(CargoEntry::count).sum();
-        helper.assertTrue(left < waiting, "cargo not delivered once the receiver appeared: " + asset.pending);
+        int left = asset.miner().pending.stream().mapToInt(CargoEntry::count).sum();
+        helper.assertTrue(left < waiting, "cargo not delivered once the receiver appeared: " + asset.miner().pending);
         OrbitalRegistry.get(helper.getLevel().getServer()).decommission(asset);
         helper.succeed();
     }
@@ -179,7 +179,7 @@ public class OrbitalTests {
         var encoded = OrbitalAsset.CODEC.encodeStart(ops, asset).getOrThrow();
         OrbitalAsset decoded = OrbitalAsset.CODEC.parse(ops, encoded).getOrThrow();
         helper.assertTrue(decoded.id.equals(asset.id) && decoded.design.equals(asset.design) && decoded.state == asset.state
-                          && decoded.asteroid.equals(asset.asteroid) && decoded.number == asset.number, "asset changed after saving");
+                          && decoded.miner().asteroid.equals(asset.miner().asteroid) && decoded.number == asset.number, "asset changed after saving");
         OrbitalRegistry.get(helper.getLevel().getServer()).decommission(asset);
         helper.succeed();
     }

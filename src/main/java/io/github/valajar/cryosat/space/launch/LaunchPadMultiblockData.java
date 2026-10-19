@@ -40,6 +40,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -252,7 +253,7 @@ public class LaunchPadMultiblockData extends MultiblockData {
         } else if (design == null) {
             found = RocketDesign.assemble(engineSlot.getStack(), fuelTankSlot.getStack(), guidanceSlot.getStack(), payloadSlot.getStack()).right().orElse(null);
             status = found == null ? LaunchStatus.READY_TO_ASSEMBLE : LaunchStatus.ASSEMBLY_PROBLEM;
-        } else if ((found = OrbitalRegistry.check(design, destination)) != null) {
+        } else if ((found = OrbitalRegistry.check(design, destination, launchDimension())) != null) {
             status = LaunchStatus.MISSION_PROBLEM;
         } else if (!hasFuel()) {
             status = LaunchStatus.NEEDS_FUEL;
@@ -287,7 +288,7 @@ public class LaunchPadMultiblockData extends MultiblockData {
         }
         design = result.left().orElseThrow();
         parts = List.copyOf(used);
-        if (OrbitalRegistry.check(design, destination) != null) {
+        if (OrbitalRegistry.check(design, destination, launchDimension()) != null) {
             usableDestinations().stream().findFirst().ifPresent(id -> destination = id);
         }
         updateStatus();
@@ -322,10 +323,15 @@ public class LaunchPadMultiblockData extends MultiblockData {
         return true;
     }
 
+    @Nullable
+    private ResourceKey<Level> launchDimension() {
+        return getLevel() == null ? null : getLevel().dimension();
+    }
+
     /** Destinations the assembled rocket can go to (all of them while none is assembled), by id. */
     public List<ResourceLocation> usableDestinations() {
         return SpaceData.DESTINATIONS.all().keySet().stream()
-              .filter(id -> design == null || OrbitalRegistry.check(design, id) == null)
+              .filter(id -> design == null || OrbitalRegistry.check(design, id, launchDimension()) == null)
               .sorted()
               .toList();
     }
@@ -366,7 +372,7 @@ public class LaunchPadMultiblockData extends MultiblockData {
         }
         RocketDesign rocket = design;
         GlobalPos receiver = uplinkSlot.getStack().get(CryoDataComponents.UPLINK_TARGET);
-        Either<OrbitalAsset, MissionProblem> result = OrbitalRegistry.get(level.getServer()).launch(level.getServer(), owner, rocket, destination, receiver);
+        Either<OrbitalAsset, MissionProblem> result = OrbitalRegistry.get(level.getServer()).launch(level.getServer(), owner, rocket, destination, receiver, level.dimension());
         if (result.right().isPresent()) {
             problem = result.right().get().ordinal();
             status = LaunchStatus.MISSION_PROBLEM;

@@ -1,6 +1,7 @@
 package io.github.valajar.cryosat.space.receiver;
 
 import io.github.valajar.cryosat.space.CargoEntry;
+import io.github.valajar.cryosat.space.MinerState;
 import io.github.valajar.cryosat.space.OrbitalAsset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,12 +37,15 @@ public record LinkedMission(Component name, OrbitalAsset.State state, int delive
     );
 
     public static LinkedMission of(OrbitalAsset asset) {
+        MinerState miner = asset.miner();
         int waiting = 0;
-        for (CargoEntry entry : asset.pending) {
-            waiting += entry.count();
+        if (miner != null) {
+            for (CargoEntry entry : miner.pending) {
+                waiting += entry.count();
+            }
         }
-        boolean surveyed = asset.asteroid != null && asset.state != OrbitalAsset.State.TRAVELLING;
-        return new LinkedMission(asset.displayName(), asset.state, asset.batchesDelivered, surveyed ? asset.asteroid.batches() : 0, waiting);
+        boolean surveyed = miner != null && miner.asteroid != null && asset.state != OrbitalAsset.State.TRAVELLING;
+        return new LinkedMission(asset.displayName(), asset.state, miner == null ? 0 : miner.batchesDelivered, surveyed ? miner.asteroid.batches() : 0, waiting);
     }
 
     /** Mekanism container sync of the mission list; resent whenever the list's hash changes. */

@@ -3,33 +3,28 @@ package io.github.valajar.cryosat.space;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import io.github.valajar.cryosat.CryoSat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Every orbital asset of the world, saved with the overworld. Ticks missions on the server: arrival, mining batches and
- * delivery to the linked receiver. Times are overworld game time.
+ * Every orbital asset of the world, saved with the overworld. Ticks each asset's {@link PayloadState} on the server. Times
+ * are overworld game time.
  */
 public class OrbitalRegistry extends SavedData {
     private static final String DATA_NAME = CryoSat.MODID + "_orbital_registry";
@@ -69,9 +64,21 @@ public class OrbitalRegistry extends SavedData {
      */
     @Nullable
     public static MissionProblem check(RocketDesign design, ResourceLocation destinationId) {
+        return check(design, destinationId, null);
+    }
+
+    /**
+     * @param from dimension the rocket launches from, or {@code null} to skip that check
+     *
+     * @return why this design cannot go to the destination from there, or {@code null} if it can
+     */
+    @Nullable
+    public static MissionProblem check(RocketDesign design, ResourceLocation destinationId, @Nullable ResourceKey<Level> from) {
         Destination destination = SpaceData.DESTINATIONS.get(destinationId);
         if (destination == null) {
             return MissionProblem.UNKNOWN_DESTINATION;
+        } else if (from != null && !destination.canLaunchFrom(from)) {
+            return MissionProblem.WRONG_DIMENSION;
         } else if (!design.tier().atLeast(destination.minTier())) {
             return MissionProblem.DESTINATION_OUT_OF_REACH;
         } else if (!destination.payloads().contains(design.payload())) {
@@ -91,17 +98,28 @@ public class OrbitalRegistry extends SavedData {
      */
     public Either<OrbitalAsset, MissionProblem> launch(MinecraftServer server, UUID owner, RocketDesign design, ResourceLocation destinationId,
           @Nullable GlobalPos receiver) {
-        MissionProblem problem = check(design, destinationId);
+        return launch(server, owner, design, destinationId, receiver, Level.OVERWORLD);
+    }
+
+    /**
+     * @param from dimension the rocket launches from; satellites orbit it
+     */
+    public Either<OrbitalAsset, MissionProblem> launch(MinecraftServer server, UUID owner, RocketDesign design, ResourceLocation destinationId,
+          @Nullable GlobalPos receiver, ResourceKey<Level> from) {
+        MissionProblem problem = check(design, destinationId, from);
         if (problem != null) {
             return Either.right(problem);
         }
         Destination destination = SpaceData.DESTINATIONS.get(destinationId);
         RandomSource random = server.overworld().getRandom();
-        AsteroidRoll asteroid = design.payload() == PayloadType.ASTEROID_MINER ? rollAsteroid(design, destinationId, random) : null;
+        PayloadState payload = switch (design.payload()) {
+            case ASTEROID_MINER -> new MinerState(rollAsteroid(design, destinationId, random), 0, List.of());
+            case SURVEY_SATELLITE -> new SatelliteState(from, Orbit.roll(random), null);
+        };
         long now = server.overworld().getGameTime();
         launches++;
-        OrbitalAsset asset = new OrbitalAsset(UUID.randomUUID(), owner, "", launches, design, destinationId, receiver, asteroid, OrbitalAsset.State.TRAVELLING,
-              now, now + destination.travelTicks(), 0, List.of());
+        OrbitalAsset asset = new OrbitalAsset(UUID.randomUUID(), owner, "", launches, design, destinationId, receiver, payload, OrbitalAsset.State.TRAVELLING,
+              now, now + destination.travelTicks());
         assets.put(asset.id, asset);
         setDirty();
         return Either.left(asset);
@@ -173,96 +191,34 @@ public class OrbitalRegistry extends SavedData {
     public void tick(MinecraftServer server) {
         long now = server.overworld().getGameTime();
         boolean changed = false;
-        for (Iterator<OrbitalAsset> iterator = assets.values().iterator(); iterator.hasNext(); ) {
-            OrbitalAsset asset = iterator.next();
-            changed |= advance(server, asset, now);
-            if (!asset.pending.isEmpty()) {
-                changed |= deliver(server, asset);
-            }
+        for (OrbitalAsset asset : assets.values()) {
+            changed |= asset.payload.tick(server, asset, now);
         }
         if (changed) {
             setDirty();
         }
     }
 
-    private static boolean advance(MinecraftServer server, OrbitalAsset asset, long now) {
-        AsteroidRoll asteroid = asset.asteroid;
-        if (asteroid == null || asset.state == OrbitalAsset.State.RETIRED || now < asset.nextEventAt) {
-            return false;
-        }
-        if (asset.state == OrbitalAsset.State.TRAVELLING) {
-            asset.state = OrbitalAsset.State.MINING;
-            asset.nextEventAt = now + asteroid.batchTicks();
-            return true;
-        }
-        List<CargoEntry> batch = asteroid.batch(asset.batchesDelivered);
-        ICargoReceiver receiver = loadedReceiver(server, asset);
-        if (receiver != null) {
-            batch = receiver.processBatch(batch, asset, server.overworld().getRandom());
-        }
-        for (CargoEntry entry : batch) {
-            CargoEntry.merge(asset.pending, entry);
-        }
-        asset.batchesDelivered++;
-        if (asset.batchesDelivered >= asteroid.batches()) {
-            asset.state = OrbitalAsset.State.RETIRED;
-        } else {
-            asset.nextEventAt = now + asteroid.batchTicks();
-        }
-        return true;
-    }
+    // Satellites
 
-    /** @return the asset's linked receiver if its chunk is loaded and it is an {@link ICargoReceiver} */
-    @Nullable
-    private static ICargoReceiver loadedReceiver(MinecraftServer server, OrbitalAsset asset) {
-        GlobalPos receiver = asset.receiver;
-        if (receiver == null) {
-            return null;
-        }
-        ServerLevel level = server.getLevel(receiver.dimension());
-        if (level == null || !level.isLoaded(receiver.pos())) {
-            return null;
-        }
-        return level.getBlockEntity(receiver.pos()) instanceof ICargoReceiver cargoReceiver ? cargoReceiver : null;
-    }
-
-    private static boolean deliver(MinecraftServer server, OrbitalAsset asset) {
-        GlobalPos receiver = asset.receiver;
-        if (receiver == null) {
-            return false;
-        }
-        ServerLevel level = server.getLevel(receiver.dimension());
-        if (level == null || !level.isLoaded(receiver.pos())) {
-            return false;
-        }
-        BlockEntity blockEntity = level.getBlockEntity(receiver.pos());
-        ICargoReceiver cargoReceiver = blockEntity instanceof ICargoReceiver r ? r : null;
-        IItemHandler handler = cargoReceiver == null ? level.getCapability(Capabilities.ItemHandler.BLOCK, receiver.pos(), null) : null;
-        if (cargoReceiver == null && handler == null) {
-            return false;
-        }
-        boolean changed = false;
-        List<CargoEntry> remaining = new ArrayList<>();
-        for (CargoEntry entry : asset.pending) {
-            int left = entry.count();
-            while (left > 0) {
-                ItemStack stack = entry.withCount(left).takeStack();
-                int offered = stack.getCount();
-                ItemStack rest = cargoReceiver != null ? cargoReceiver.receiveCargo(stack, asset) : ItemHandlerHelper.insertItemStacked(handler, stack, false);
-                int accepted = offered - rest.getCount();
-                left -= accepted;
-                changed |= accepted > 0;
-                if (accepted < offered) {
-                    break;
-                }
-            }
-            if (left > 0) {
-                remaining.add(entry.withCount(left));
+    /**
+     * Queues an imaging pass on a free satellite of the viewer's constellation over the terminal's dimension.
+     *
+     * @return the task, or empty if every satellite is busy (or there are none)
+     */
+    public Optional<OrbitalTask> requestSurvey(MinecraftServer server, UUID requester, GlobalPos terminal, ResourceLocation target) {
+        Constellation constellation = Constellation.of(server, requester, terminal.dimension());
+        for (OrbitalAsset asset : constellation.satellites()) {
+            SatelliteState satellite = asset.satellite();
+            if (satellite != null && satellite.isFree()) {
+                long now = server.overworld().getGameTime();
+                OrbitalTask task = new OrbitalTask(UUID.randomUUID(), requester, terminal, target, now + SatelliteState.passTicks(asset.design.payloadTier()));
+                satellite.task = task;
+                setDirty();
+                return Optional.of(task);
             }
         }
-        asset.pending.clear();
-        asset.pending.addAll(remaining);
-        return changed;
+        return Optional.empty();
     }
 
     // Saving

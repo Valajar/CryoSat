@@ -111,6 +111,7 @@ public class GuiMissionList extends GuiScrollList {
         ChatFormatting color = switch (state) {
             case TRAVELLING -> ChatFormatting.YELLOW;
             case MINING -> ChatFormatting.AQUA;
+            case ORBITING -> ChatFormatting.AQUA;
             case RETIRED -> ChatFormatting.GRAY;
         };
         return state.getTextComponent().copy().withStyle(color);

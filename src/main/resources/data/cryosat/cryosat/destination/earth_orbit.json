@@ -1,0 +1,6 @@
+{
+  "min_tier": "basic",
+  "travel_ticks": 1200,
+  "payloads": ["survey_satellite"],
+  "launch_from": ["minecraft:overworld"]
+}

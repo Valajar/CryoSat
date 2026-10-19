@@ -91,7 +91,7 @@ public class SuperconductingSeparatorTests {
             Either<OrbitalAsset, MissionProblem> result = registry.launch(server, UUID.randomUUID(), BASIC_MINER, AsteroidClass.ASTEROID_BELT, target);
             helper.assertTrue(result.left().isPresent(), "launch failed: " + result);
             OrbitalAsset asset = result.left().get();
-            if (asset.asteroid != null && asset.asteroid.size() == AsteroidSize.SMALL) {
+            if (asset.miner().asteroid != null && asset.miner().asteroid.size() == AsteroidSize.SMALL) {
                 return asset;
             }
             registry.decommission(asset);
@@ -122,7 +122,7 @@ public class SuperconductingSeparatorTests {
                 produced.merge(slot.getStack().getItem(), slot.getCount(), Integer::sum);
             }
         }
-        for (CargoEntry entry : asset.pending) {
+        for (CargoEntry entry : asset.miner().pending) {
             produced.merge(entry.item().value(), entry.count(), Integer::sum);
         }
         return produced;
@@ -131,8 +131,8 @@ public class SuperconductingSeparatorTests {
     /** What the base cargo turns into when the first {@code separated} batches get the +50 percent. */
     private static Map<Item, Integer> expected(OrbitalAsset asset, int separated) {
         Map<Item, Integer> expected = new HashMap<>();
-        for (int i = 0; i < asset.asteroid.batches(); i++) {
-            for (CargoEntry entry : asset.asteroid.batch(i)) {
+        for (int i = 0; i < asset.miner().asteroid.batches(); i++) {
+            for (CargoEntry entry : asset.miner().asteroid.batch(i)) {
                 int count = i < separated ? (int) Math.round(entry.count() * SeparatorBonus.MULTIPLIER) : entry.count();
                 expected.merge(entry.item().value(), count, Integer::sum);
             }
@@ -142,7 +142,7 @@ public class SuperconductingSeparatorTests {
 
     private static Set<Item> bonusItems(OrbitalAsset asset) {
         Set<Item> items = new HashSet<>();
-        AsteroidClass asteroidClass = SpaceData.ASTEROIDS.get(asset.asteroid.asteroidClass());
+        AsteroidClass asteroidClass = SpaceData.ASTEROIDS.get(asset.miner().asteroid.asteroidClass());
         if (asteroidClass != null) {
             for (AsteroidClass.BonusYield bonus : asteroidClass.bonusYields()) {
                 bonus.yield().resolve().ifPresent(item -> items.add(item.value()));
@@ -192,7 +192,7 @@ public class SuperconductingSeparatorTests {
                   long before = cryostat.coolantTank.getStored();
                   OrbitalAsset asset = launch(helper);
                   fastForward(helper, asset);
-                  int batches = asset.asteroid.batches();
+                  int batches = asset.miner().asteroid.batches();
                   helper.assertTrue(separator.getBatchesProcessed() == batches, "separated " + separator.getBatchesProcessed() + " of " + batches + " batches");
                   long used = before - cryostat.coolantTank.getStored();
                   helper.assertTrue(used == batches * TileEntitySuperconductingSeparator.COOLANT_PER_BATCH,
@@ -201,7 +201,7 @@ public class SuperconductingSeparatorTests {
                   Map<Item, Integer> expected = expected(asset, batches);
                   Map<Item, Integer> produced = produced(receiver, asset);
                   assertProduced(helper, produced, expected, bonusItems(asset), true);
-                  int cargo = asset.asteroid.cargo().stream().mapToInt(CargoEntry::count).sum();
+                  int cargo = asset.miner().asteroid.cargo().stream().mapToInt(CargoEntry::count).sum();
                   int base = total(produced, expected.keySet());
                   helper.assertTrue(base >= cargo * 1.49 && base <= cargo * 1.51, "separated " + base + " from " + cargo + " items of cargo");
                   decommission(helper, asset);
@@ -275,7 +275,7 @@ public class SuperconductingSeparatorTests {
         OrbitalAsset asset = launch(helper);
         fastForward(helper, asset);
         helper.assertTrue(produced(receiver, asset).equals(expected(asset, 0)), "cargo in orbit is not the plain asteroid cargo");
-        helper.assertFalse(asset.pending.isEmpty(), "nothing waiting in orbit");
+        helper.assertFalse(asset.miner().pending.isEmpty(), "nothing waiting in orbit");
         chill(separator, Cryostat.COOLANT_CAPACITY);
         helper.startSequence()
               .thenWaitUntil(() -> helper.assertTrue(cryostat.isSuperconducting(), "not superconducting: " + cryostat.getState()))
@@ -284,7 +284,7 @@ public class SuperconductingSeparatorTests {
                   receiver.setControlType(RedstoneControl.DISABLED);
                   MinecraftServer server = helper.getLevel().getServer();
                   OrbitalRegistry.get(server).tick(server);
-                  helper.assertTrue(asset.pending.isEmpty(), "cargo still waiting: " + asset.pending);
+                  helper.assertTrue(asset.miner().pending.isEmpty(), "cargo still waiting: " + asset.miner().pending);
                   assertProduced(helper, produced(receiver, asset), expected(asset, 0), bonusItems(asset), false);
                   helper.assertTrue(separator.getBatchesProcessed() == 0 && cryostat.coolantTank.getStored() == before,
                         "waiting cargo was separated on delivery");
@@ -303,7 +303,7 @@ public class SuperconductingSeparatorTests {
               .thenWaitUntil(() -> helper.assertTrue(cryostat.isSuperconducting(), "not superconducting: " + cryostat.getState()))
               .thenExecute(() -> {
                   OrbitalAsset asset = launch(helper);
-                  List<CargoEntry> batch = asset.asteroid.batch(0);
+                  List<CargoEntry> batch = asset.miner().asteroid.batch(0);
                   separator.setControlType(RedstoneControl.HIGH);
                   long before = cryostat.coolantTank.getStored();
                   helper.assertTrue(separator.processBatch(batch, asset, helper.getLevel().getRandom()) == null, "separated while switched off by redstone");

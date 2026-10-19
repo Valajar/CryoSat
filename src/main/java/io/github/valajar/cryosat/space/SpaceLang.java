@@ -31,12 +31,15 @@ public enum SpaceLang implements ILangEntry {
     PROBLEM_DESTINATION_OUT_OF_REACH("mission", "problem.destination_out_of_reach"),
     PROBLEM_PAYLOAD_NOT_USABLE("mission", "problem.payload_not_usable"),
     PROBLEM_NOTHING_TO_MINE("mission", "problem.nothing_to_mine"),
+    PROBLEM_WRONG_DIMENSION("mission", "problem.wrong_dimension"),
 
     STATE_TRAVELLING("mission", "state.travelling"),
     STATE_MINING("mission", "state.mining"),
     STATE_RETIRED("mission", "state.retired"),
+    STATE_ORBITING("mission", "state.orbiting"),
 
     DEFAULT_MINER_NAME("mission", "default_name.asteroid_miner"),
+    DEFAULT_SATELLITE_NAME("mission", "default_name.survey_satellite"),
     LAUNCH_ANNOUNCEMENT("mission", "launch_announcement");
 
     private final String key;

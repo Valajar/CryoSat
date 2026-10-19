@@ -16,7 +16,7 @@ public final class SeparatorBonus {
         for (CargoEntry entry : batch) {
             CargoEntry.merge(result, entry.withCount((int) Math.round(entry.count() * MULTIPLIER)));
         }
-        AsteroidRoll asteroid = from.asteroid;
+        AsteroidRoll asteroid = from.miner() == null ? null : from.miner().asteroid;
         AsteroidClass asteroidClass = asteroid == null ? null : SpaceData.ASTEROIDS.get(asteroid.asteroidClass());
         if (asteroidClass != null) {
             for (CargoEntry extra : asteroidClass.rollBonus(random)) {

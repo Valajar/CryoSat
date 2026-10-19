@@ -20,6 +20,7 @@ public final class SpaceLangData {
             provider.addItem(CryoItems.ROCKET_ENGINES.get(tier), name + " Rocket Engine");
             provider.addItem(CryoItems.FUEL_TANKS.get(tier), name + " Fuel Tank");
             provider.addItem(CryoItems.ASTEROID_MINERS.get(tier), name + " Asteroid Miner");
+            provider.addItem(CryoItems.SURVEY_SATELLITES.get(tier), name + " Survey Satellite");
         }
         provider.addItem(CryoItems.GUIDANCE_COMPUTER, "Guidance Computer");
         provider.addItem(CryoItems.PROPELLANT_MIX, "Propellant Mix");
@@ -42,16 +43,20 @@ public final class SpaceLangData {
         add.accept(SpaceLang.PROBLEM_DESTINATION_OUT_OF_REACH, "Destination needs a higher tier rocket");
         add.accept(SpaceLang.PROBLEM_PAYLOAD_NOT_USABLE, "This payload has nothing to do there");
         add.accept(SpaceLang.PROBLEM_NOTHING_TO_MINE, "No asteroids this rocket can reach");
+        add.accept(SpaceLang.PROBLEM_WRONG_DIMENSION, "Cannot launch there from this dimension");
 
         add.accept(SpaceLang.STATE_TRAVELLING, "Travelling");
         add.accept(SpaceLang.STATE_MINING, "Mining");
         add.accept(SpaceLang.STATE_RETIRED, "Retired");
+        add.accept(SpaceLang.STATE_ORBITING, "Orbiting");
 
         add.accept(SpaceLang.DEFAULT_MINER_NAME, "%1$s Miner #%2$s");
+        add.accept(SpaceLang.DEFAULT_SATELLITE_NAME, "%1$s Satellite #%2$s");
         add.accept(SpaceLang.LAUNCH_ANNOUNCEMENT, "%1$s launched %2$s");
 
         // Names of the default space data; datapack additions fall back to a title cased id
         provider.add(Util.makeDescriptionId("destination", AsteroidClass.ASTEROID_BELT), "Asteroid Belt");
+        provider.add(Util.makeDescriptionId("destination", CryoSat.rl("earth_orbit")), "Earth Orbit");
         provider.add(Util.makeDescriptionId("asteroid", CryoSat.rl("chondrite")), "Chondrite");
         provider.add(SpaceLang.sizeKey(AsteroidSize.SMALL), "Small");
         provider.add(SpaceLang.sizeKey(AsteroidSize.MEDIUM), "Medium");

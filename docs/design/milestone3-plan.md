@@ -1,7 +1,7 @@
 # Milestone 3 build plan: satellite imagery
 
-Status: plan, revised after the user's first review; waiting for answers to the questions at the
-end. Builds on `space-age.md` and the finished Milestones 1 and 2.
+Status: agreed, in progress. Builds on `space-age.md` and the finished Milestones 1 and 2. Guiding
+rule from the user: do not overengineer.
 
 ## Gameplay
 
@@ -12,15 +12,19 @@ end. Builds on `space-age.md` and the finished Milestones 1 and 2.
    and how many requests run **at once** (one per satellite).
 3. At an **Imaging Terminal** (powered ground block), pick a structure type and request a survey. After
    the imaging pass the terminal logs the result: an estimated location with an uncertainty radius
-   that shrinks as coverage grows.
+   that shrinks as coverage grows. From **95 percent coverage** results are exact coordinates.
 4. **The log remembers what was found.** A new request for the same type finds the next nearest
    unclaimed structure instead of the one you already looted. Old entries stay in the log until
    dismissed.
-5. Put a **Survey Locator** (a tech compass) into the terminal to load log entries onto it. Held in
-   hand, it points to the selected target, shows the distance and the search radius, and marks the
-   spot in the world with a waypoint beam. Sneak use cycles between stored targets.
-6. Underground structures (ancient cities, strongholds and so on) need a **SQUID Array** next to the
-   terminal: a superconducting ground module cooled with liquid nitrogen, like the Separator.
+5. Put a **Survey Locator** (a tech compass, no power needed) into the terminal to load log entries
+   onto it. Held in hand, its needle points to the selected target and a waypoint beam marks the
+   spot in the world. Sneak use cycles between stored targets.
+6. Underground structures (ancient cities, strongholds, trial chambers, mineshafts) need a **SQUID
+   Array** next to the terminal: a superconducting ground module cooled with liquid nitrogen, like
+   the Separator; without it they are not searchable at all. Dungeons (the small spawner rooms) are
+   world features, not structures, so nothing can locate them.
+7. A constellation is shared with your team: your satellites plus those of players who trust you
+   in Mekanism's Security Desk.
 
 There is no orbit over the Nether (a bedrock ceiling, and hell) or the End (already an asteroid field
 with nothing to orbit). Satellites do not wear out in this milestone.
@@ -32,7 +36,7 @@ question 1). With total value `V`:
 
 ```
 coverage  = 1 - e^(-V / 8)                      asymptotic, never 100 percent
-precision = 512 blocks * (1 - coverage)         uncertainty radius of a result
+precision = 512 blocks * (1 - coverage)         uncertainty radius; exact from 95 percent coverage
 range     = 1000 + 15000 * coverage blocks      how far around the terminal it searches
 parallel  = number of satellites                requests in progress at once
 ```
@@ -45,7 +49,8 @@ parallel  = number of satellites                requests in progress at once
 | 6 Elite | 24 | 95% | 25 | 15300 |
 | 4 Ultimate | 32 | 98% | 9 | 15700 |
 
-The reported location is the true one shifted by a random offset inside the uncertainty radius,
+Below 95 percent the reported location is the true one shifted by a random offset inside the
+uncertainty radius,
 fixed per result, so the Locator leads into the right area and the last stretch is exploring.
 Launching more or better satellites later does not sharpen old results; a new request does.
 
@@ -96,23 +101,22 @@ Results come from the lookup behind `/locate` and explorer maps, run once when a
 bounded by the constellation's range and limited to a few per tick server wide. With "skip known
 structures" on, vanilla marks each found structure as claimed (one claim per structure), which is how
 two explorer maps never lead to the same place. That gives the log's "find the next unclaimed one"
-for free. The catch: the mark is world wide and shared with explorer maps (open question 3).
+for free. The mark is world wide and shared with explorer maps, which is accepted.
 
 ### 7. A locator item instead of maps
 
 The Survey Locator stores a small list of targets (dimension, position, uncertainty radius, type)
-as an item data component. The needle uses vanilla's compass logic aimed at a stored position, the
-action bar shows distance and radius while held, and a client side waypoint beam renders at the
-target when within render distance. Data on the item, not the player, so locators can be handed to
+as an item data component. The needle uses vanilla's compass logic aimed at a stored position and a
+client side waypoint beam renders at the target. No energy. Data on the item, not the player, so locators can be handed to
 other players or kept for different targets. Map mod waypoint integration (JourneyMap, Xaero) can be
 added later as optional compat on top of the same data.
 
-### 8. Ground modules by adjacency
+### 8. Ground modules by adjacency, kept simple
 
 Anything that needs coolant stays on the ground next to the block that receives results: the SQUID
-Array next to the terminal, as the Separator sits next to the Cargo Receiver. A shared
-`IGroundModule` lookup (the receiving block asks its six neighbours) replaces the receiver's private
-loop, and Space Station docks will accept the same modules.
+Array next to the terminal, as the Separator sits next to the Cargo Receiver. Each receiving block
+asks its six neighbours for the one small interface it cares about (`ICargoProcessor`,
+`IDeepScanModule`); no shared module framework until a third case needs one.
 
 ### 9. Networking follows the Mekanism container pattern
 
@@ -128,42 +132,43 @@ orbit data built here are what they will need.
 
 ## Build steps
 
-### Foundation (me, before the parallel work)
+### Foundation (done)
 
-* Decisions 1 to 4: payload state split with migration, `data_version`, `launch_from` on
-  destinations, `cryosat:earth_orbit`, cosmetic orbit parameters rolled at launch (for the future
-  globe), `OrbitalTask` and result delivery, `PayloadType.SURVEY_SATELLITE`, the four Survey
-  Satellite items, the coverage calculation.
-* Mission Control and the Cargo Receiver adapted with no visible change; `IGroundModule` with the
-  Separator moved onto it.
-* Game tests: an old save loads into `MinerState`, every existing test passes unchanged, coverage
-  maths, a satellite reaches Earth orbit and accepts a task, no launch from the Nether.
+| Piece | What it is |
+| --- | --- |
+| `PayloadState` (`MinerState`, `SatelliteState`) | Per payload state with its own tick, saved by a codec dispatching on `PayloadType`. `OrbitalAsset.miner()` and `.satellite()` give typed access. Old saves (miner fields on the asset) load as `MinerState` |
+| `SatelliteState` | Orbit dimension, cosmetic `Orbit`, at most one `OrbitalTask`. Travelling, then `ORBITING`. `passTicks(tier)` 4 to 1 minutes, `coverageValue(tier)` 1, 2, 4, 8 |
+| `OrbitalTask`, `ISurveyTerminal` | A pass for a terminal; when done it is offered to the `ISurveyTerminal` at the terminal position while loaded, kept until accepted, dropped if the terminal is gone |
+| `Constellation` | `of(server, viewer, dimension)`: own satellites plus those of owners who trust the viewer in Mekanism's Security Desk. `coverage()`, `uncertainty()` (0 from 95 percent), `range()`, `free()` |
+| `OrbitalRegistry.requestSurvey` | Queues a pass on a free satellite of the requester's constellation |
+| `Destination.launch_from`, `cryosat:earth_orbit` | Earth orbit only from the Overworld; `MissionProblem.WRONG_DIMENSION`; the Launch Pad passes its dimension |
+| `SurveyTarget`, `SpaceData.SURVEY_TARGETS` | Datapack type in `data/<ns>/cryosat/survey_target/` (structures tag or id, `deep_scan`, `icon`), resolved against the world's structure registry |
+| `IDeepScanModule` | What the SQUID Array implements for the terminal |
+| `LocatorData`, `CryoDataComponents.LOCATOR_DATA` | Up to 8 results (position, uncertainty, target id) and the selected one, on the Survey Locator item |
+| `CryoItems.SURVEY_SATELLITES` | The four tiered Survey Satellite payload items (no textures or recipes yet) |
+
+Tests: `gametest/SatelliteTests`.
 
 ### Parallel workstreams
 
 * **A. Imaging Terminal**: block, GUI (targets, coverage, queue, log with dismiss), requests, energy
-  cost, structure search with range and the per tick limit, uncertainty offset, loading results onto
-  a Locator, redstone repeat. Game tests: search finds a placed structure, the second request skips
+  cost, implements `ISurveyTerminal` and runs the structure search when a pass arrives (range, the
+  per tick limit, the uncertainty offset), deep targets only with an adjacent `IDeepScanModule`,
+  loading log entries onto a Locator slot, redstone repeat. Game tests: search finds a placed structure, the second request skips
   it, results wait while the terminal is unloaded.
-* **B. Survey Locator**: item with stored targets, compass needle, action bar readout, sneak cycling,
+* **B. Survey Locator**: item with stored targets, compass needle, sneak cycling,
   client waypoint beam, textures.
-* **C. Survey targets and SQUID Array**: the datapack type, vanilla target set and lang, and the
-  SQUID Array ground module with a `Cryostat` gating deep scans.
+* **C. Survey targets and SQUID Array**: the vanilla target set as data files with lang names, and
+  the SQUID Array ground module (`IDeepScanModule`) with a `Cryostat`.
 * **D. Satellite visuals**: Survey Satellite item textures; a satellite fairing on the rocket model
   when it carries one.
 
-## Open questions
+## Decisions from the review
 
-1. **Coverage numbers:** tier values 1, 2, 4, 8 and the curve above (8 value for 63 percent)? Should
-   coverage drive all three of precision, range and parallel requests, or only some?
-2. **What precision means in play:** a search circle the Locator leads you into (as above), or exact
-   coordinates once coverage passes a threshold, say 95 percent?
-3. **"Already found" scope:** use vanilla's world wide claim (simple; also hides our finds from
-   cartographer maps and the other way round), or a per player log (each player can find the same
-   structure; more work, our own search loop)?
-4. **The Locator:** compass needle plus distance readout plus waypoint beam, or a subset? Should it
-   run on Mekanism energy like other tech tools?
-5. **Underground targets:** still behind the SQUID Array, and which ones: ancient city, stronghold,
-   trial chambers, mineshaft?
-6. **Sharing:** is a constellation per player, or shared with a team (for example everyone on the
-   same Mekanism security frequency)?
+1. Tier values 1, 2, 4, 8; coverage drives precision, range and parallel requests.
+2. Exact coordinates from 95 percent coverage; below that a search circle.
+3. Vanilla's world wide "already found" mark; keep it simple.
+4. Locator: needle plus waypoint beam, no energy.
+5. Ancient cities, strongholds, trial chambers and mineshafts need the SQUID Array and are not
+   searchable without it.
+6. Constellations are shared through Mekanism's trusted players.

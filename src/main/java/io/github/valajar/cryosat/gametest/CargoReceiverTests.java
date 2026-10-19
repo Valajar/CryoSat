@@ -71,7 +71,7 @@ public class CargoReceiverTests {
             Either<OrbitalAsset, MissionProblem> result = registry.launch(server, UUID.randomUUID(), BASIC_MINER, AsteroidClass.ASTEROID_BELT, target);
             helper.assertTrue(result.left().isPresent(), "launch failed: " + result);
             OrbitalAsset asset = result.left().get();
-            if (asset.asteroid != null && asset.asteroid.size() == AsteroidSize.SMALL) {
+            if (asset.miner().asteroid != null && asset.miner().asteroid.size() == AsteroidSize.SMALL) {
                 return asset;
             }
             registry.decommission(asset);
@@ -102,7 +102,7 @@ public class CargoReceiverTests {
 
     private static void assertReceivedAll(GameTestHelper helper, TileEntityCargoReceiver receiver, OrbitalAsset asset) {
         Map<Item, Integer> received = contents(receiver);
-        for (CargoEntry entry : asset.asteroid.cargo()) {
+        for (CargoEntry entry : asset.miner().asteroid.cargo()) {
             int got = received.getOrDefault(entry.item().value(), 0);
             helper.assertTrue(got == entry.count(), BuiltInRegistries.ITEM.getKey(entry.item().value()) + ": expected " + entry.count() + ", got " + got);
         }
@@ -116,7 +116,7 @@ public class CargoReceiverTests {
         helper.assertTrue(linked.size() == 1 && linked.getFirst().state() == OrbitalAsset.State.TRAVELLING, "receiver should list the new mission: " + linked);
 
         fastForward(helper, asset);
-        helper.assertTrue(asset.pending.isEmpty(), "cargo left in orbit: " + asset.pending);
+        helper.assertTrue(asset.miner().pending.isEmpty(), "cargo left in orbit: " + asset.miner().pending);
         assertReceivedAll(helper, receiver, asset);
         helper.assertTrue(receiver.getCurrentRedstoneLevel() > 0 || receiver.getRedstoneLevel() > 0, "comparator output stays at 0 with cargo inside");
         // Done missions drop off the receiver's list
@@ -135,14 +135,14 @@ public class CargoReceiverTests {
         }
         OrbitalAsset asset = launch(helper, BlockPos.ZERO);
         fastForward(helper, asset);
-        helper.assertFalse(asset.pending.isEmpty(), "everything fit into two slots?");
+        helper.assertFalse(asset.miner().pending.isEmpty(), "everything fit into two slots?");
         int landed = 0;
         for (int i = slots.size() - 2; i < slots.size(); i++) {
             helper.assertTrue(slots.get(i).getCount() == slots.get(i).getLimit(slots.get(i).getStack()), "free slot " + i + " not filled up");
             landed += slots.get(i).getCount();
         }
         int waiting = receiver.getLinkedMissions().getFirst().waiting();
-        int total = asset.asteroid.cargo().stream().mapToInt(CargoEntry::count).sum();
+        int total = asset.miner().asteroid.cargo().stream().mapToInt(CargoEntry::count).sum();
         helper.assertTrue(landed + waiting == total, "landed " + landed + " plus waiting " + waiting + " is not the asteroid's " + total);
 
         // Empty the receiver; the next orbital tick delivers the rest
@@ -151,7 +151,7 @@ public class CargoReceiverTests {
         }
         MinecraftServer server = helper.getLevel().getServer();
         OrbitalRegistry.get(server).tick(server);
-        helper.assertTrue(asset.pending.isEmpty(), "cargo still waiting after slots were freed: " + asset.pending);
+        helper.assertTrue(asset.miner().pending.isEmpty(), "cargo still waiting after slots were freed: " + asset.miner().pending);
         Map<Item, Integer> received = contents(receiver);
         int got = received.values().stream().mapToInt(Integer::intValue).sum();
         helper.assertTrue(got == waiting, "received " + got + " of the " + waiting + " waiting items");
@@ -181,12 +181,12 @@ public class CargoReceiverTests {
         receiver.setControlType(mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl.HIGH);
         OrbitalAsset asset = launch(helper, BlockPos.ZERO);
         fastForward(helper, asset);
-        helper.assertFalse(asset.pending.isEmpty(), "receiver accepted cargo while switched off by redstone");
+        helper.assertFalse(asset.miner().pending.isEmpty(), "receiver accepted cargo while switched off by redstone");
         helper.assertTrue(contents(receiver).isEmpty(), "receiver holds cargo while switched off");
         receiver.setControlType(mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl.DISABLED);
         MinecraftServer server = helper.getLevel().getServer();
         OrbitalRegistry.get(server).tick(server);
-        helper.assertTrue(asset.pending.isEmpty(), "cargo not delivered once the receiver was back on: " + asset.pending);
+        helper.assertTrue(asset.miner().pending.isEmpty(), "cargo not delivered once the receiver was back on: " + asset.miner().pending);
         assertReceivedAll(helper, receiver, asset);
         OrbitalRegistry.get(server).decommission(asset);
         helper.succeed();

@@ -141,6 +141,7 @@ public class GuiMissionControl extends GuiMekanismTile<TileEntityMissionControl,
         lines.add(switch (mission.state()) {
             case TRAVELLING -> MissionLang.ARRIVES_IN.translate(timeUntil(mission.nextEventAt()));
             case MINING -> MissionLang.NEXT_BATCH_IN.translate(timeUntil(mission.nextEventAt()));
+            case ORBITING -> SpaceLang.STATE_ORBITING.translate();
             case RETIRED -> MissionLang.MINING_COMPLETE.translate();
         });
         lines.add(MissionLang.CARGO.translate(mission.cargoInOrbit()));

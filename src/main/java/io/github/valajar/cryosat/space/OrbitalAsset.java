@@ -3,7 +3,6 @@ package io.github.valajar.cryosat.space;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
  * server thread and through the registry, which marks the saved data dirty.
  */
 public class OrbitalAsset {
+    /** Written in place of the legacy miner fields, which then encode to nothing. */
+    private static final MinerState LEGACY_EMPTY = new MinerState(null, 0, List.of());
     public static final Codec<OrbitalAsset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           UUIDUtil.CODEC.fieldOf("id").forGetter(asset -> asset.id),
           UUIDUtil.CODEC.fieldOf("owner").forGetter(asset -> asset.owner),
@@ -33,13 +34,14 @@ public class OrbitalAsset {
           RocketDesign.CODEC.fieldOf("design").forGetter(asset -> asset.design),
           ResourceLocation.CODEC.fieldOf("destination").forGetter(asset -> asset.destination),
           GlobalPos.CODEC.optionalFieldOf("receiver").forGetter(asset -> Optional.ofNullable(asset.receiver)),
-          AsteroidRoll.CODEC.optionalFieldOf("asteroid").forGetter(asset -> Optional.ofNullable(asset.asteroid)),
           State.CODEC.fieldOf("state").forGetter(asset -> asset.state),
           Codec.LONG.fieldOf("launched_at").forGetter(asset -> asset.launchedAt),
           Codec.LONG.fieldOf("next_event_at").forGetter(asset -> asset.nextEventAt),
-          Codec.INT.fieldOf("batches_delivered").forGetter(asset -> asset.batchesDelivered),
-          CargoEntry.CODEC.listOf().optionalFieldOf("pending", List.of()).forGetter(asset -> asset.pending)
-    ).apply(instance, OrbitalAsset::new));
+          PayloadState.CODEC.optionalFieldOf("payload").forGetter(asset -> Optional.of(asset.payload)),
+          // Saves from before payload states kept the miner's fields on the asset itself
+          MinerState.CODEC.forGetter(asset -> LEGACY_EMPTY)
+    ).apply(instance, (id, owner, name, number, design, destination, receiver, state, launchedAt, nextEventAt, payload, legacy) ->
+          new OrbitalAsset(id, owner, name, number, design, destination, receiver.orElse(null), payload.orElse(legacy), state, launchedAt, nextEventAt)));
 
     public final UUID id;
     public final UUID owner;
@@ -49,21 +51,18 @@ public class OrbitalAsset {
     public final int number;
     public final RocketDesign design;
     public final ResourceLocation destination;
+    /** Where cargo goes, for payloads that send any. */
     @Nullable
     public GlobalPos receiver;
-    /** The asteroid an Asteroid Miner works on; rolled at launch, only show it once {@link #state} is past travelling. */
-    @Nullable
-    public final AsteroidRoll asteroid;
+    /** What the payload does in orbit; its type matches {@code design.payload()}. */
+    public final PayloadState payload;
     public State state;
     public final long launchedAt;
     /** Game time (overworld) of the next arrival or batch. */
     public long nextEventAt;
-    public int batchesDelivered;
-    /** Cargo that arrived but did not fit into the receiver yet. */
-    public final List<CargoEntry> pending;
 
     public OrbitalAsset(UUID id, UUID owner, String name, int number, RocketDesign design, ResourceLocation destination, @Nullable GlobalPos receiver,
-          @Nullable AsteroidRoll asteroid, State state, long launchedAt, long nextEventAt, int batchesDelivered, List<CargoEntry> pending) {
+          PayloadState payload, State state, long launchedAt, long nextEventAt) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -71,32 +70,42 @@ public class OrbitalAsset {
         this.design = design;
         this.destination = destination;
         this.receiver = receiver;
-        this.asteroid = asteroid;
+        this.payload = payload;
         this.state = state;
         this.launchedAt = launchedAt;
         this.nextEventAt = nextEventAt;
-        this.batchesDelivered = batchesDelivered;
-        this.pending = new ArrayList<>(pending);
     }
 
-    private OrbitalAsset(UUID id, UUID owner, String name, int number, RocketDesign design, ResourceLocation destination, Optional<GlobalPos> receiver,
-          Optional<AsteroidRoll> asteroid, State state, long launchedAt, long nextEventAt, int batchesDelivered, List<CargoEntry> pending) {
-        this(id, owner, name, number, design, destination, receiver.orElse(null), asteroid.orElse(null), state, launchedAt, nextEventAt, batchesDelivered, pending);
+    /** @return the miner state, or {@code null} if this is not an Asteroid Miner */
+    @Nullable
+    public MinerState miner() {
+        return payload instanceof MinerState miner ? miner : null;
+    }
+
+    /** @return the satellite state, or {@code null} if this is not a satellite */
+    @Nullable
+    public SatelliteState satellite() {
+        return payload instanceof SatelliteState satellite ? satellite : null;
     }
 
     /** @return the player given name, or the default name such as "Basic Miner #3" */
     public Component displayName() {
-        return name.isEmpty() ? SpaceLang.DEFAULT_MINER_NAME.translate(design.payloadTier().baseTier().getSimpleName(), number) : Component.literal(name);
+        if (!name.isEmpty()) {
+            return Component.literal(name);
+        }
+        SpaceLang lang = payload instanceof SatelliteState ? SpaceLang.DEFAULT_SATELLITE_NAME : SpaceLang.DEFAULT_MINER_NAME;
+        return lang.translate(design.payloadTier().baseTier().getSimpleName(), number);
     }
 
     /** @return whether the asset has nothing left to do and nothing left to deliver */
     public boolean isDone() {
-        return state == State.RETIRED && pending.isEmpty();
+        return state == State.RETIRED && (!(payload instanceof MinerState miner) || miner.isEmpty());
     }
 
     public enum State implements StringRepresentable, IHasTextComponent {
         TRAVELLING("travelling", SpaceLang.STATE_TRAVELLING),
         MINING("mining", SpaceLang.STATE_MINING),
+        ORBITING("orbiting", SpaceLang.STATE_ORBITING),
         RETIRED("retired", SpaceLang.STATE_RETIRED);
 
         public static final StringRepresentable.EnumCodec<State> CODEC = StringRepresentable.fromEnum(State::values);

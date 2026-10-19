@@ -21,6 +21,7 @@ public class SpaceData<T> extends SimpleJsonResourceReloadListener {
 
     public static final SpaceData<Destination> DESTINATIONS = new SpaceData<>("destination", Destination.CODEC);
     public static final SpaceData<AsteroidClass> ASTEROIDS = new SpaceData<>("asteroid", AsteroidClass.CODEC);
+    public static final SpaceData<SurveyTarget> SURVEY_TARGETS = new SpaceData<>("survey_target", SurveyTarget.CODEC);
 
     private final String name;
     private final Codec<T> codec;

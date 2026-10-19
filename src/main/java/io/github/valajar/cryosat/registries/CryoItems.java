@@ -28,6 +28,7 @@ public final class CryoItems {
     public static final ItemRegistryObject<RocketPartItem> GUIDANCE_COMPUTER = ITEMS.registerItem("guidance_computer",
           properties -> new RocketPartItem(properties, Kind.GUIDANCE_COMPUTER, null, null));
     public static final Map<RocketTier, ItemRegistryObject<RocketPartItem>> ASTEROID_MINERS = tiered("asteroid_miner", Kind.PAYLOAD, PayloadType.ASTEROID_MINER);
+    public static final Map<RocketTier, ItemRegistryObject<RocketPartItem>> SURVEY_SATELLITES = tiered("survey_satellite", Kind.PAYLOAD, PayloadType.SURVEY_SATELLITE);
 
     // Basic tier propellant: sulfur, carbon and a slime binder, pressed into grains
     public static final ItemRegistryObject<Item> PROPELLANT_MIX = ITEMS.register("propellant_mix");

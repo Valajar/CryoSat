@@ -3,6 +3,7 @@ package io.github.valajar.cryosat.space.mission;
 import io.github.valajar.cryosat.space.AsteroidRoll;
 import io.github.valajar.cryosat.space.AsteroidSize;
 import io.github.valajar.cryosat.space.CargoEntry;
+import io.github.valajar.cryosat.space.MinerState;
 import io.github.valajar.cryosat.space.OrbitalAsset;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,11 +34,12 @@ public record MissionSummary(UUID id, Component displayName, String customName, 
     public static final StreamCodec<RegistryFriendlyByteBuf, MissionSummary> STREAM_CODEC = StreamCodec.ofMember(MissionSummary::write, MissionSummary::read);
 
     public static MissionSummary of(OrbitalAsset asset) {
-        AsteroidRoll roll = asset.asteroid;
+        MinerState miner = asset.miner();
+        AsteroidRoll roll = miner == null ? null : miner.asteroid;
         boolean surveyed = roll != null && asset.state != OrbitalAsset.State.TRAVELLING;
         Optional<Asteroid> asteroid = surveyed ? Optional.of(new Asteroid(roll.asteroidClass(), roll.size(), roll.hardness(), roll.extracted())) : Optional.empty();
-        long cargo = asset.pending.stream().mapToLong(CargoEntry::count).sum();
-        return new MissionSummary(asset.id, asset.displayName(), asset.name, asset.state, asset.destination, asteroid, asset.batchesDelivered,
+        long cargo = miner == null ? 0 : miner.pending.stream().mapToLong(CargoEntry::count).sum();
+        return new MissionSummary(asset.id, asset.displayName(), asset.name, asset.state, asset.destination, asteroid, miner == null ? 0 : miner.batchesDelivered,
               surveyed ? roll.batches() : 0, asset.nextEventAt, cargo, Optional.ofNullable(asset.receiver));
     }
 

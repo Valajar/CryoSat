@@ -101,8 +101,8 @@ public class MissionControlTests {
         registry(helper).tick(server(helper));
         MissionSummary arrived = MissionControl.summaries(server(helper), alice).get(0);
         helper.assertTrue(arrived.state() == OrbitalAsset.State.MINING && arrived.asteroid().isPresent()
-                          && arrived.totalBatches() == first.asteroid.batches(), "asteroid not shown after arrival: " + arrived);
-        helper.assertTrue(arrived.asteroid().get().asteroidClass().equals(first.asteroid.asteroidClass()), "wrong asteroid class");
+                          && arrived.totalBatches() == first.miner().asteroid.batches(), "asteroid not shown after arrival: " + arrived);
+        helper.assertTrue(arrived.asteroid().get().asteroidClass().equals(first.miner().asteroid.asteroidClass()), "wrong asteroid class");
         cleanUp(helper, first, other, second);
         helper.succeed();
     }
@@ -113,8 +113,8 @@ public class MissionControlTests {
         OrbitalAsset asset = launch(helper, owner, GlobalPos.of(Level.OVERWORLD, new BlockPos(1, 2, 3)));
         asset.nextEventAt = 0;
         registry(helper).tick(server(helper));
-        asset.pending.add(new CargoEntry(Items.RAW_IRON.builtInRegistryHolder(), 100));
-        asset.pending.add(new CargoEntry(Items.RAW_GOLD.builtInRegistryHolder(), 23));
+        asset.miner().pending.add(new CargoEntry(Items.RAW_IRON.builtInRegistryHolder(), 100));
+        asset.miner().pending.add(new CargoEntry(Items.RAW_GOLD.builtInRegistryHolder(), 23));
         registry(helper).rename(asset, "Ceres Hauler");
         MissionSummary summary = MissionSummary.of(asset);
         helper.assertTrue(summary.cargoInOrbit() == 123, "cargo not summed: " + summary.cargoInOrbit());
@@ -181,7 +181,7 @@ public class MissionControlTests {
             asset.nextEventAt = 0;
             registry(helper).tick(server(helper));
         }
-        helper.assertFalse(asset.pending.isEmpty(), "no cargo waiting in orbit");
+        helper.assertFalse(asset.miner().pending.isEmpty(), "no cargo waiting in orbit");
         helper.assertTrue(MissionControl.summaries(server(helper), owner).get(0).cargoInOrbit() > 0, "list shows no cargo in orbit");
 
         helper.assertTrue(act(helper, owner, MissionAction.DECOMMISSION, asset, "", ItemStack.EMPTY) == MissionResult.DECOMMISSIONED, "decommission refused");
@@ -227,7 +227,7 @@ public class MissionControlTests {
             registry(helper).tick(server(helper));
         }
         helper.assertTrue(MissionControl.hasWorkInOrbit(server(helper), owner), "retired miner with cargo waiting counts as done");
-        asset.pending.clear();
+        asset.miner().pending.clear();
         helper.assertFalse(MissionControl.hasWorkInOrbit(server(helper), owner), "retired, delivered miner still counts as work");
         cleanUp(helper, asset);
 
