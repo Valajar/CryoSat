@@ -126,7 +126,7 @@ and their defining trait is that they **only work while kept cold**.
 
 * **Two grades.** High temperature superconductors are cooled with liquid nitrogen (77 K) and come
   first. Low temperature superconductors need liquid helium (4 K) and are stronger, for the endgame.
-  Helium comes from gas giants (see "Gas giants" below), so the stronger grade is gated
+  Helium comes from gas giants (see "Milestone 4" below), so the stronger grade is gated
   behind Elite rockets.
 * **Coolant is consumed.** Every superconducting block takes its coolant through a tube and slowly
   boils it off, faster when working harder. The boil off returns as nitrogen gas, which can be piped
@@ -179,21 +179,51 @@ the End.
 
 Build plan and the decisions underneath it: `milestone3-plan.md`.
 
-## Gas giants: helium and metallic hydrogen
+## Milestone 4: Gas giants (proposal, open questions below)
 
-Scheduled after Milestone 3. Real helium comes from natural gas wells, but drilling gas pockets would
-be a ground side detour; scooping it from a gas giant's atmosphere is more in theme.
+Real helium comes from natural gas wells, but drilling gas pockets would be a ground side detour;
+scooping it from a gas giant's atmosphere is more in theme. This milestone ends with the first
+Ultimate rocket on the pad.
 
-* **Atmospheric Scoop** (payload, Elite rocket and up): skims a gas giant and returns pressurised
-  gas canisters to the Cargo Receiver, which empties them into tanks like a chemical output.
-  Gas giant and exoplanet atmospheres reuse the atmosphere format the Atmospheric Compressor
-  already reads, so they are datapack defined too.
-* **Helium** is liquefied in the plant at 4 K, the hardest recipe it has, and feeds the low
-  temperature superconductors.
-* **Deep dives** with a better scoop return a little **metallic hydrogen**, the late material for
-  the Ultimate propellant.
-* Possible later bonus: helium 3 as an alternative fusion fuel, if it fits alongside Mekanism's
-  D T fuel.
+The loop:
+
+```
+Elite rocket + Atmospheric Scoop -> Jupiter
+  skims: Jovian gas batches -> Cargo Receiver chemical tank
+  dives at end of life: metallic hydrogen -> Cargo Receiver item slots
+Plant at 20 K: Jovian gas -> liquid hydrogen (Elite fuel, cooling) + helium gas
+Plant at 4 K:  helium gas -> liquid helium
+Cryogenic Caster (cooled by liquid helium): metallic hydrogen + liquid oxygen -> Cryogenic Propellant Grain
+Ultimate parts (LTS coils, metallic hydrogen) + grain, kept cold on the pad -> Ultimate rocket
+```
+
+* **Jupiter** is a destination file (Elite minimum, long trip). The destination format gains an
+  optional `scoop` block: the chemical a scoop returns and what a dive brings back. Saturn and
+  modpack exoplanets are then just data. This replaces the earlier idea of reusing the atmosphere
+  format, which maps a dimension to one chemical and does not fit.
+* **Atmospheric Scoop** (payload, Elite and Ultimate only, since nothing lower reaches Jupiter).
+  It skims for its lifetime, sending batches of **Jovian gas** (hydrogen and helium, like
+  compressed air) to its linked Cargo Receiver. When it wears out, or when Mission Control
+  decommissions it early, it **dives**: one last delivery of **metallic hydrogen** before it is
+  crushed, like the Galileo probe. An Ultimate scoop skims longer and dives deeper (more metallic
+  hydrogen). Every scoop dives, so an Elite rocket gets the first metallic hydrogen and there is no
+  chicken and egg with Ultimate rockets.
+* **Cargo Receiver** gains a chemical output tank (Mekanism side config, auto eject). Gas that does
+  not fit waits in orbit like item cargo. The Separator keeps working on items only.
+* **Two stage separation in the plant**, as in a real cold box: Jovian gas at 20 K gives liquid
+  hydrogen and helium gas; helium gas at 4 K gives liquid helium, the hardest recipe the plant has.
+  The liquid hydrogen pays for the next Elite launch.
+* **Helium's uses**: Low Temperature Superconducting Coils (a crafting component of Ultimate parts),
+  and the coolant of the Cryogenic Caster. `Cryostat` gets a grade: liquid nitrogen boiling off to
+  nitrogen, or liquid helium boiling off to helium gas, both re-liquefiable in the plant.
+* **Cryogenic Caster**: a Mekanism machine like the compressor. It freezes liquid oxygen around
+  metallic hydrogen into the Ultimate grain while its liquid helium cryostat holds it cold.
+* **Ultimate rocket**: recipes for the Ultimate parts, and the grain as its fuel. On the pad, a
+  loaded Ultimate rocket slowly draws liquid hydrogen through the existing propellant port to stay
+  cold; without it the grain warms and the rocket cannot launch until it is chilled again. Never
+  explodes.
+* Later: helium 3 (Moon) as an alternative fusion fuel; LTS grade versions of the existing
+  superconducting blocks.
 
 ## Space Hub (planned after the early game)
 
