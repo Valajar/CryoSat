@@ -3,6 +3,8 @@ package io.github.valajar.cryosat.gametest;
 import io.github.valajar.cryosat.CryoSat;
 import io.github.valajar.cryosat.datagen.space.SpaceRecipes;
 import io.github.valajar.cryosat.registries.CryoItems;
+import io.github.valajar.cryosat.space.PayloadType;
+import io.github.valajar.cryosat.space.RocketPartItem;
 import io.github.valajar.cryosat.space.RocketTier;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +56,18 @@ public class SpaceItemTests {
         for (RecipeHolder<CraftingRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
             Item result = holder.value().getResultItem(helper.getLevel().registryAccess()).getItem();
             helper.assertFalse(ultimate.contains(result), "ultimate part is craftable through " + holder.id());
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void payloadLookupMatchesItems(GameTestHelper helper) {
+        // The Launch Pad screen names the payload through this lookup
+        for (PayloadType type : PayloadType.values()) {
+            for (RocketTier tier : RocketTier.values()) {
+                RocketPartItem item = CryoItems.payload(type, tier);
+                helper.assertTrue(item.payload() == type && item.tier() == tier, type + " " + tier + " looks up " + item);
+            }
         }
         helper.succeed();
     }

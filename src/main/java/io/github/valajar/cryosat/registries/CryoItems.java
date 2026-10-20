@@ -46,6 +46,15 @@ public final class CryoItems {
     // Survey Locator (satellite workstream B): a tech compass holding survey results from an Imaging Terminal
     public static final ItemRegistryObject<ItemSurveyLocator> SURVEY_LOCATOR = ITEMS.registerItem("survey_locator", ItemSurveyLocator::new);
 
+    /** @return the payload item of the given type and tier */
+    public static RocketPartItem payload(PayloadType type, RocketTier tier) {
+        Map<RocketTier, ItemRegistryObject<RocketPartItem>> items = switch (type) {
+            case ASTEROID_MINER -> ASTEROID_MINERS;
+            case SURVEY_SATELLITE -> SURVEY_SATELLITES;
+        };
+        return items.get(tier).get();
+    }
+
     private static Map<RocketTier, ItemRegistryObject<RocketPartItem>> tiered(String name, Kind kind, PayloadType payload) {
         Map<RocketTier, ItemRegistryObject<RocketPartItem>> items = new EnumMap<>(RocketTier.class);
         for (RocketTier tier : RocketTier.values()) {

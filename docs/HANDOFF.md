@@ -21,19 +21,19 @@ prerelease; `v*` tags make releases.
 | JEI for liquefaction recipes | Done | |
 | Milestone 1: asteroid mining (rockets, Launch Pad, Cargo Receiver, Mission Control) | Done, playtested | `milestone1-plan.md` |
 | Milestone 2: superconductors (Separator, Fusion Field Coils, seamless casing) | Done, playtested | `milestone2-plan.md` |
-| Milestone 3: satellite imagery (Survey Satellites, Imaging Terminal, Survey Locator, SQUID Array) | Built and merged; **not yet playtested by the user** | `milestone3-plan.md` |
+| Milestone 3: satellite imagery (Survey Satellites, Imaging Terminal, Survey Locator, SQUID Array) | Done, playtested in single player (team sharing untested) | `milestone3-plan.md` |
 
-104 game tests pass (`./gradlew runGameTestServer`). The user playtests each milestone from
+105 game tests pass (`./gradlew runGameTestServer`). The user playtests each milestone from
 `docs/testing-guide.md` (sections 1 to 8) and reports back; fix what they find before starting the
 next milestone.
 
 ## Next steps
 
-1. Wait for the user's Milestone 3 playtest report and fix what it finds. Not yet seen in a real
-   client: the Survey Locator needle and beam, team sharing through Mekanism trust, a full launch to
-   survey to locate loop in a normal world. Known gaps: breaking the Imaging Terminal loses its log;
-   in a rare case a structure just beyond range can be claimed without being reported
-   (`space/survey/SurveySearch`).
+1. Milestone 3 playtest (single player) found two GUI bugs, both fixed: the Launch Pad screen named
+   every payload an Asteroid Miner, and the Imaging Terminal status overflowed with three or more
+   passes. Still unseen: team sharing through Mekanism trust (needs a second player). Known gaps:
+   breaking the Imaging Terminal loses its log; in a rare case a structure just beyond range can be
+   claimed without being reported (`space/survey/SurveySearch`).
 2. Then, in the agreed order (all in `docs/design/space-age.md`): **gas giants** (Atmospheric Scoop,
    helium, metallic hydrogen, the Ultimate rocket's cryogenic fuel), then the **Space Hub** (a station
    dimension with an Earth model in the sky, cheaper launches, reusable rockets, docks that accept the

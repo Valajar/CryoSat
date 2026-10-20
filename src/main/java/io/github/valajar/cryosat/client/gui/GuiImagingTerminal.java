@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GuiImagingTerminal extends GuiMekanismTile<TileEntityImagingTerminal, MekanismTileContainer<TileEntityImagingTerminal>> {
     private static final int WIDTH = 176 + 2 * CryoMenus.IMAGING_TERMINAL_INVENTORY_X;
-    private static final int SHOWN_PASSES = 2;
+    private static final int PASS_LINES = 2;
 
     private GuiSideConfigurationTab<TileEntityImagingTerminal> sideConfigTab;
     private GuiSurveyTargetList targets;
@@ -112,13 +112,15 @@ public class GuiImagingTerminal extends GuiMekanismTile<TileEntityImagingTermina
         lines.add(SurveyLang.SATELLITES.translate(coverage.satellites(), coverage.free()));
         lines.add(SurveyLang.COVERAGE.translate(Math.round(coverage.coverage() * 100) + "%", coverage.range()));
         lines.add(coverage.uncertainty() > 0 ? SurveyLang.UNCERTAINTY.translate(coverage.uncertainty()) : SurveyLang.EXACT.translate());
+        // The screen fits PASS_LINES lines for passes; when they overflow, the last line counts the rest (always two or more)
         List<PassInfo> passes = tile.passes();
-        for (int i = 0; i < passes.size() && i < SHOWN_PASSES; i++) {
+        int shown = passes.size() <= PASS_LINES ? passes.size() : PASS_LINES - 1;
+        for (int i = 0; i < shown; i++) {
             PassInfo pass = passes.get(i);
             lines.add(SurveyLang.PASS.translate(SpaceLang.surveyTargetName(pass.target()), timeUntil(pass.completesAt())));
         }
-        if (passes.size() > SHOWN_PASSES) {
-            lines.add(SurveyLang.MORE_PASSES.translate(passes.size() - SHOWN_PASSES));
+        if (shown < passes.size()) {
+            lines.add(SurveyLang.MORE_PASSES.translate(passes.size() - shown));
         }
         return lines;
     }

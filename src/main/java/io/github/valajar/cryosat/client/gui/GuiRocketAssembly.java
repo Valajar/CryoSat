@@ -116,7 +116,7 @@ public class GuiRocketAssembly extends GuiMekanismTile<TileEntityLaunchControlle
         }
         lines.add(LaunchLang.ROCKET.translate(Component.literal(design.tier().baseTier().getSimpleName())
               .withStyle(style -> style.withColor(design.tier().baseTier().getColor()))));
-        lines.add(LaunchLang.PAYLOAD.translate(CryoItems.ASTEROID_MINERS.get(design.payloadTier()).get().getDescription()));
+        lines.add(LaunchLang.PAYLOAD.translate(CryoItems.payload(design.payload(), design.payloadTier()).getDescription()));
         Fuel fuel = design.tier().fuel().orElse(null);
         if (fuel != null && fuel.isSolid()) {
             lines.add(LaunchLang.FUEL_GRAINS.translate(pad.solidFuelSlot.getCount(), fuel.solidCount()));
