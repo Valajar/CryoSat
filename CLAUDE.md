@@ -1,5 +1,7 @@
 # CryoSat
 
+Starting a new session: read `docs/HANDOFF.md` first (state, next steps, how we work).
+
 NeoForge 1.21.1 addon for Mekanism 10.7 (cryogenics plus orbital/space content). Parchment mappings
 on top of Mojang names. Java 21. Package `io.github.valajar.cryosat`, mod id `cryosat`.
 
