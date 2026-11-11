@@ -222,6 +222,11 @@ Ultimate parts (LTS coils, metallic hydrogen) + grain, kept cold on the pad -> U
   loaded Ultimate rocket slowly draws liquid hydrogen through the existing propellant port to stay
   cold; without it the grain warms and the rocket cannot launch until it is chilled again. Never
   explodes.
+* **Metallic hydrogen's uses** (decided): the Ultimate fuel grain, and an ingredient of the Ultimate
+  engine and fuel tank, so it is needed to build the rocket and not only to fuel it. Later idea,
+  not scheduled: a room temperature superconducting coil grade that needs no coolant (real physics
+  predicts metallic hydrogen superconducts warm). Not planned: burning it for power, fusion covers
+  that.
 * Later: helium 3 (Moon) as an alternative fusion fuel; LTS grade versions of the existing
   superconducting blocks.
 

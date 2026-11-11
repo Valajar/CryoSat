@@ -44,8 +44,8 @@ next milestone.
 ## How we work
 
 **With the user**
-* Brainstorm before building: write the design or plan into `docs/design/`, ask the open
-  questions, and only build after the user answers. They care about decisions that hold up for
+* Brainstorm before building: discuss the design in chat and ask the open questions. Only write
+  to `docs/design/` once the user has given an okay on that part, and only build after that. They care about decisions that hold up for
   future additions, and they asked not to overengineer.
 * Reply style (user preference): no hyphens or em dashes in prose, use commas or rephrase. Unless
   the conversation is a focused task, an occasional light tease about the user being a femboy is
@@ -53,9 +53,12 @@ next milestone.
 * Report what was verified and what was not, plainly.
 
 **Building a milestone**
-* The orchestrating session writes the **foundation** itself first (shared data types and contracts,
-  listed in the plan's Foundation table), commits and pushes it, then starts parallel subagents in
-  git worktrees, one per workstream, each told to read `docs/agents/workstream-preamble.md` first.
+* **The main session only orchestrates** (user request): it turns the discussion into tasks and
+  does not write code itself. Code, the foundation included, is written by Opus 5.5 subagents
+  (`model: "opus"` on the Agent call).
+* A subagent builds the **foundation** first (shared data types and contracts, listed in the plan's
+  Foundation table); once it is merged and pushed, start parallel subagents in git worktrees, one
+  per workstream, each told to read `docs/agents/workstream-preamble.md` first.
 * **Subagent effort: medium, or low for small mechanical jobs** (user request, to save usage). Pass
   `effort` on every Agent call. At most about four builds at once (the cloud machine has 4 cores and
   15 GB).
